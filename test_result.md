@@ -120,15 +120,18 @@ backend:
         comment: "✅ TESTED: GET /api returns {'message': 'Hello World'} with status 200. Endpoint working correctly via ingress path."
   - task: "Create Status Check (POST /api/status)"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Stores a status check in Mongo and returns it"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: POST /api/status with {'client_name': 'e2e'} creates record and returns object with id, client_name, and timestamp. MongoDB integration working."
   - task: "List Status Checks (GET /api/status)"
     implemented: true
     working: false
