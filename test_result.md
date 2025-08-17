@@ -162,15 +162,18 @@ backend:
         comment: "✅ TESTED: GET /api/quran/surahs returns 5 surahs including Al-Fatiha with correct structure (number, nameAr, nameEn). JSON data loading working."
   - task: "Qur’an search API (/api/quran/search)"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Implements token AND search on AR/EN/ES with bilingual param for snippets"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All search scenarios working: Arabic search with diacritics (الْحَمْدُ finds Al-Fatiha 1:2), English bilingual search (merciful&bilingual=en returns 2 results with en field), Spanish bilingual search (Señor&bilingual=es returns 4 results with es field). Note: Arabic search requires exact text matching including diacritical marks."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
