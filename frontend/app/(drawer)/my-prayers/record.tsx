@@ -2,17 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
-import { getJson } from "../../../src/api/client";
+import { searchQuran, type SearchItem as DBItem } from "../../../src/db/quran";
 
-interface SearchItem {
-  surahNumber: number;
-  ayah: number;
-  textAr: string;
-  nameAr: string;
-  nameEn: string;
-  en?: string;
-  es?: string;
-}
+interface SearchItem extends DBItem {}
 
 export default function RecordPrayer() {
   const { prayer } = useLocalSearchParams<{ prayer?: string }>();
@@ -27,14 +19,14 @@ export default function RecordPrayer() {
   const doSearch = async () => {
     if (!query.trim()) { setResults([]); return; }
     try {
-      const res = await getJson<{ results: SearchItem[] }>(`/quran/search?query=${encodeURIComponent(query)}${bilingualParam ? `&bilingual=${bilingualParam}` : ""}`);
-      setResults(res.results);
+      const rows = await searchQuran(query, (bilingualParam as any) || '');
+      setResults(rows as SearchItem[]);
     } catch (e) {
       console.warn("search error", e);
     }
   };
 
-  useEffect(() => { const t = setTimeout(doSearch, 350); return () => clearTimeout(t); }, [query, bilingualParam]);
+  useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam]);
 
   const toggle = (item: SearchItem) => {
     const key = `${item.surahNumber}:${item.ayah}`;
