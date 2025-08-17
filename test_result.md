@@ -134,15 +134,18 @@ backend:
         comment: "✅ TESTED: POST /api/status with {'client_name': 'e2e'} creates record and returns object with id, client_name, and timestamp. MongoDB integration working."
   - task: "List Status Checks (GET /api/status)"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "low"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Fetches last 1000 checks"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/status returns list of status checks. After POST test, found 2 records in database. Persistence working correctly."
   - task: "Qur’an Surah list API (/api/quran/surahs)"
     implemented: true
     working: false
