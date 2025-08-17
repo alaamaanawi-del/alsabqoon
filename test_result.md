@@ -101,3 +101,124 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Build ALSABQON – Prayer Tracker & Qur’an Study with Arabic default, drawer nav, My Prayers, and MVP Qur’an search (AR default, optional AR+EN/AR+ES)."
+backend:
+  - task: "Root health endpoint"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api returning Hello World"
+  - task: "Create Status Check (POST /api/status)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Stores a status check in Mongo and returns it"
+  - task: "List Status Checks (GET /api/status)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Fetches last 1000 checks"
+  - task: "Qur’an Surah list API (/api/quran/surahs)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Returns number, nameAr, nameEn"
+  - task: "Qur’an search API (/api/quran/search)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implements token AND search on AR/EN/ES with bilingual param for snippets"
+frontend:
+  - task: "Drawer navigation + RTL root layout"
+    implemented: true
+    working: NA
+    file: "/app/frontend/app/_layout.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Enabled force RTL and created drawer group"
+  - task: "Home screen"
+    implemented: true
+    working: NA
+    file: "/app/frontend/app/(drawer)/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Hero and quick links"
+  - task: "My Prayers list UI"
+    implemented: true
+    working: NA
+    file: "/app/frontend/app/(drawer)/my-prayers/index.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Prayers with navigation to record"
+  - task: "Record screen with Qur’an search integration"
+    implemented: true
+    working: NA
+    file: "/app/frontend/app/(drawer)/my-prayers/record.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Debounced search + bilingual toggles"
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Root health endpoint"
+    - "Qur’an Surah list API (/api/quran/surahs)"
+    - "Qur’an search API (/api/quran/search)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Please run backend tests for the above three API routes (health, surah list, search) and basic status endpoints using the existing FastAPI backend on /api."
