@@ -106,15 +106,18 @@ user_problem_statement: "Build ALSABQON – Prayer Tracker & Qur’an Study with
 backend:
   - task: "Root health endpoint"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Implemented GET /api returning Hello World"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api returns {'message': 'Hello World'} with status 200. Endpoint working correctly via ingress path."
   - task: "Create Status Check (POST /api/status)"
     implemented: true
     working: false
