@@ -148,15 +148,18 @@ backend:
         comment: "✅ TESTED: GET /api/status returns list of status checks. After POST test, found 2 records in database. Persistence working correctly."
   - task: "Qur’an Surah list API (/api/quran/surahs)"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "main"
         comment: "Returns number, nameAr, nameEn"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/quran/surahs returns 5 surahs including Al-Fatiha with correct structure (number, nameAr, nameEn). JSON data loading working."
   - task: "Qur’an search API (/api/quran/search)"
     implemented: true
     working: false
