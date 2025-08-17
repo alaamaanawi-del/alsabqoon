@@ -2,9 +2,10 @@ import React from "react";
 import { Drawer } from "expo-router/drawer";
 import { Colors } from "../../src/theme/colors";
 import { Image, View, Text } from "react-native";
-import { logoBase64 } from "../../src/assets/logo";
+import { useLogoBase64 } from "../../src/hooks/useLogoBase64";
 
 export default function DrawerLayout() {
+  const b64 = useLogoBase64();
   return (
     <Drawer
       screenOptions={{
@@ -15,10 +16,12 @@ export default function DrawerLayout() {
         drawerStyle: { backgroundColor: Colors.greenTeal },
         headerTitle: () => (
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image
-              source={{ uri: `data:image/png;base64,${logoBase64}` }}
-              style={{ width: 28, height: 28, marginHorizontal: 8 }}
-            />
+            {b64 ? (
+              <Image
+                source={{ uri: `data:image/png;base64,${b64}` }}
+                style={{ width: 28, height: 28, marginHorizontal: 8 }}
+              />
+            ) : null}
             <Text style={{ color: Colors.light, fontWeight: "700", fontSize: 18 }}>ALSABQON</Text>
           </View>
         ),
