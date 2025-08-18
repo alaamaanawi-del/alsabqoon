@@ -14,6 +14,17 @@ export interface SearchItem {
 
 let db: SQLite.SQLiteDatabase | null = null;
 
+// Arabic normalization: remove diacritics and unify Alef/Hamza forms
+export function normalizeArabic(input: string): string {
+  if (!input) return '';
+  let s = input
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') // tashkeel/harakat
+    .replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627') // آأإٱ → ا
+    .replace(/\u0629/g, '\u0647') // ة → ه (common normalization)
+    .replace(/\u0649/g, '\u064A'); // ى → ي
+  return s;
+}
+
 export async function getDb() {
   if (!db) {
     db = await SQLite.openDatabaseAsync('quran.db');
@@ -34,15 +45,30 @@ async function initDb(database: SQLite.SQLiteDatabase) {
       surahNumber INTEGER NOT NULL,
       ayah INTEGER NOT NULL,
       textAr TEXT NOT NULL,
+      textArNorm TEXT,
       en TEXT,
       es TEXT,
       PRIMARY KEY (surahNumber, ayah),
       FOREIGN KEY (surahNumber) REFERENCES surahs(number)
     );
   `);
+
+  // Ensure textArNorm column exists and is populated
+  const cols = await database.getAllAsync<any>(`PRAGMA table_info(ayahs);`);
+  const hasNorm = cols.some((c: any) => c.name === 'textArNorm');
+  if (!hasNorm) {
+    await database.execAsync(`ALTER TABLE ayahs ADD COLUMN textArNorm TEXT;`);
+  }
+
   const row = await database.getFirstAsync<{ c: number }>(`SELECT COUNT(1) as c FROM surahs;`);
   if (!row || row.c === 0) {
     await seedImport(database);
+  } else {
+    // Backfill normalization if any NULLs
+    const needs = await database.getFirstAsync<{ c: number }>(`SELECT COUNT(1) as c FROM ayahs WHERE textArNorm IS NULL;`);
+    if (needs && needs.c > 0) {
+      await normalizeAll(database);
+    }
   }
 }
 
@@ -51,8 +77,19 @@ async function seedImport(database: SQLite.SQLiteDatabase) {
     for (const s of (seed as any).surahs) {
       await database.runAsync(`INSERT INTO surahs(number, nameAr, nameEn) VALUES(?,?,?)`, [s.number, s.nameAr, s.nameEn]);
       for (const a of s.ayahs) {
-        await database.runAsync(`INSERT INTO ayahs(surahNumber, ayah, textAr, en, es) VALUES(?,?,?,?,?)`, [s.number, a.ayah, a.textAr, a.en || null, a.es || null]);
+        const norm = normalizeArabic(a.textAr);
+        await database.runAsync(`INSERT INTO ayahs(surahNumber, ayah, textAr, textArNorm, en, es) VALUES(?,?,?,?,?,?)`, [s.number, a.ayah, a.textAr, norm, a.en || null, a.es || null]);
       }
+    }
+  });
+}
+
+async function normalizeAll(database: SQLite.SQLiteDatabase) {
+  const rows = await database.getAllAsync<{ surahNumber: number; ayah: number; textAr: string }>(`SELECT surahNumber, ayah, textAr FROM ayahs WHERE textArNorm IS NULL`);
+  await database.withTransactionAsync(async () => {
+    for (const r of rows) {
+      const norm = normalizeArabic(r.textAr);
+      await database.runAsync(`UPDATE ayahs SET textArNorm=? WHERE surahNumber=? AND ayah=?`, [norm, r.surahNumber, r.ayah]);
     }
   });
 }
@@ -62,13 +99,23 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
   const q = (query || '').trim();
   if (!q) return [];
   const tokens = q.split(/\s+/).filter(Boolean);
-  const makeConds = (col: string) => tokens.map(() => `${col} LIKE ?`).join(' AND ');
-  const paramsAr: any[] = tokens.map(t => `%${t}%`);
-  const paramsEn: any[] = tokens.map(t => `%${t}%`);
-  const paramsEs: any[] = tokens.map(t => `%${t}%`);
+  const tokensNorm = tokens.map(normalizeArabic);
 
-  const where = `(( ${makeConds('a.textAr')} ) OR ( ${makeConds('a.en')} ) OR ( ${makeConds('a.es')} ))`;
-  const params = [...paramsAr, ...paramsEn, ...paramsEs];
+  // Build AND over tokens where each token can match either raw Arabic or normalized Arabic
+  const conds: string[] = [];
+  const params: any[] = [];
+  tokens.forEach((t, i) => {
+    conds.push(`(a.textAr LIKE ? OR a.textArNorm LIKE ?)`);
+    params.push(`%${t}%`, `%${tokensNorm[i]}%`);
+  });
+
+  // Add bilingual flat search on translations (optional tokens same as Arabic tokens, using original query)
+  const enConds = tokens.map(() => `a.en LIKE ?`).join(' AND ');
+  const esConds = tokens.map(() => `a.es LIKE ?`).join(' AND ');
+  const allWhere = conds.length
+    ? `( ${conds.join(' AND ')} ) OR ( ${enConds} ) OR ( ${esConds} )`
+    : `(a.textAr LIKE ?)`;
+  const transParams = [...tokens.map(t => `%${t}%`), ...tokens.map(t => `%${t}%`)];
 
   const rows = await database.getAllAsync<any>(
     `SELECT s.number as surahNumber, s.nameAr, s.nameEn, a.ayah, a.textAr,
@@ -76,9 +123,9 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
             CASE WHEN ?='es' THEN a.es END as es
        FROM ayahs a
        JOIN surahs s ON s.number=a.surahNumber
-      WHERE ${where}
+      WHERE ${allWhere}
       LIMIT 100`,
-    [bilingual, bilingual, ...params]
+    [bilingual, bilingual, ...params, ...transParams]
   );
   return rows as SearchItem[];
 }
