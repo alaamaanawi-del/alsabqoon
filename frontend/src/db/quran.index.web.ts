@@ -1,0 +1,1 @@
+export { searchQuran } from './quran.web';

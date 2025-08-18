@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
+import { searchQuran } from "../../../src/db/quran.index";
 
-// Dynamic platform-specific search loader to avoid importing expo-sqlite on web
-type DBItem = {
+// Types for search rows
+interface DBItem {
   surahNumber: number;
   nameAr: string;
   nameEn: string;
@@ -12,16 +13,7 @@ type DBItem = {
   textAr: string;
   en?: string | null;
   es?: string | null;
-};
-
-function getSearch() {
-  // require resolves at runtime; prevents bundling expo-sqlite on web
-  const mod = Platform.OS === 'web'
-    ? require("../../../src/db/quran.web")
-    : require("../../../src/db/quran.native");
-  return mod.searchQuran as (q: string, bilingual: '' | 'en' | 'es') => Promise<DBItem[]>;
 }
-
 interface SearchItem extends DBItem {}
 
 export default function RecordPrayer() {
@@ -40,7 +32,6 @@ export default function RecordPrayer() {
   const doSearch = async () => {
     if (!query.trim()) { setResults([]); return; }
     try {
-      const searchQuran = getSearch();
       const rows = await searchQuran(query, (bilingualParam as any) || '');
       setResults(rows as SearchItem[]);
     } catch (e) {
@@ -62,17 +53,14 @@ export default function RecordPrayer() {
   };
 
   const onVerseNumberPress = (item: SearchItem) => {
-    // First tap: set start; Second tap (same surah): set end
     if (!rangeStart) { setRangeStart(item); return; }
     if (rangeStart && !rangeEnd) {
       if (item.surahNumber !== rangeStart.surahNumber) {
-        // start a new selection on a different surah
         setRangeStart(item); setRangeEnd(null); return;
       }
       setRangeEnd(item);
       return;
     }
-    // If both exist, start new selection from this item
     setRangeStart(item); setRangeEnd(null);
   };
 
