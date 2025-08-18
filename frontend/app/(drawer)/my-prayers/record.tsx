@@ -2,7 +2,25 @@ import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
-import { searchQuran, type SearchItem as DBItem } from "../../../src/db/quran";
+
+// Dynamic platform-specific search loader to avoid importing expo-sqlite on web
+type DBItem = {
+  surahNumber: number;
+  nameAr: string;
+  nameEn: string;
+  ayah: number;
+  textAr: string;
+  en?: string | null;
+  es?: string | null;
+};
+
+function getSearch() {
+  // require resolves at runtime; prevents bundling expo-sqlite on web
+  const mod = Platform.OS === 'web'
+    ? require("../../../src/db/quran.web")
+    : require("../../../src/db/quran.native");
+  return mod.searchQuran as (q: string, bilingual: '' | 'en' | 'es') => Promise<DBItem[]>;
+}
 
 interface SearchItem extends DBItem {}
 
