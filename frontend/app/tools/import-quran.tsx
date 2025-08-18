@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { Colors } from '../../src/theme/colors';
-import { importQuranFromUrl, isFullQuranImported } from '../../src/db/fullImport';
 
 export default function ImportQuranScreen() {
   const [url, setUrl] = useState('');
@@ -9,10 +8,15 @@ export default function ImportQuranScreen() {
   const [progress, setProgress] = useState<{total: number; inserted: number} | null>(null);
 
   const start = async () => {
+    if (Platform.OS === 'web') {
+      setStatus('الاستيراد متاح على الجوال فقط (Android / iOS).');
+      return;
+    }
     try {
       setStatus('جارٍ التحميل والاستيراد...');
       setProgress({ total: 0, inserted: 0 });
-      await importQuranFromUrl(url, (p) => setProgress(p));
+      const { importQuranFromUrl, isFullQuranImported } = await import('../../src/db/fullImport');
+      await importQuranFromUrl(url, (p: any) => setProgress(p));
       const ok = await isFullQuranImported();
       setStatus(ok ? 'تم استيراد القرآن الكريم بالكامل' : 'انتهى الاستيراد (تحقق من العدد)');
     } catch (e: any) {
@@ -25,6 +29,9 @@ export default function ImportQuranScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>استيراد القرآن الكريم</Text>
         <Text style={styles.body}>ألصق رابط ملف JSON الكامل (surahs → ayahs) ثم اضغط استيراد. سيتم الحفظ محليًا.</Text>
+        {Platform.OS === 'web' && (
+          <Text style={[styles.body, { color: '#ffb4b4' }]}>ملاحظة: هذه الصفحة للعرض فقط على الويب. الرجاء استخدام الهاتف للاستيراد.</Text>
+        )}
         <TextInput
           placeholder="رابط ملف JSON"
           placeholderTextColor="#888"
