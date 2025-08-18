@@ -40,6 +40,7 @@ export default function RecordPrayer() {
   const doSearch = async () => {
     if (!query.trim()) { setResults([]); return; }
     try {
+      const searchQuran = getSearch();
       const rows = await searchQuran(query, (bilingualParam as any) || '');
       setResults(rows as SearchItem[]);
     } catch (e) {
