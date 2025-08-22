@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard, Switch } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
 import { searchQuran } from "../../../src/db/quran.index";
+import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex } from "../../../src/storage/prayer";
 
 // Types for search rows
 interface DBItem {
@@ -16,9 +17,22 @@ interface DBItem {
 }
 interface SearchItem extends DBItem {}
 
+const todayStr = () => {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const da = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${da}`;
+};
+
 export default function RecordPrayer() {
   const { prayer } = useLocalSearchParams<{ prayer?: string }>();
   const router = useRouter();
+  const p = (prayer as string) || 'fajr';
+
+  const [record, setRecord] = useState<PrayerRecord | null>(null);
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1);
+
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<"ar" | "ar_en" | "ar_es">("ar");
   const [results, setResults] = useState<SearchItem[]>([]);
@@ -29,6 +43,25 @@ export default function RecordPrayer() {
 
   const bilingualParam = useMemo(() => (lang === "ar_en" ? "en" : lang === "ar_es" ? "es" : ""), [lang]);
 
+  useEffect(() => {
+    (async () => {
+      const r = await loadPrayerRecord(p, todayStr());
+      setRecord(r);
+    })();
+  }, [p]);
+
+  // Autosave debounce
+  const saveRef = useRef<any>(null);
+  useEffect(() => {
+    if (!record) return;
+    clearTimeout(saveRef.current);
+    saveRef.current = setTimeout(async () => {
+      await savePrayerRecord(record);
+      await syncTasksFromRecord(record);
+    }, 300);
+    return () => clearTimeout(saveRef.current);
+  }, [record]);
+
   const doSearch = async () => {
     if (!query.trim()) { setResults([]); return; }
     try {
@@ -38,7 +71,6 @@ export default function RecordPrayer() {
       console.warn("search error", e);
     }
   };
-
   useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam]);
 
   const clearRange = () => { setRangeStart(null); setRangeEnd(null); };
@@ -77,15 +109,77 @@ export default function RecordPrayer() {
     } catch {}
   };
 
+  const addCurrentRange = () => {
+    if (!record || !rangeStart || !rangeEnd) return;
+    const fromAyah = Math.min(rangeStart.ayah, rangeEnd.ayah);
+    const toAyah = Math.max(rangeStart.ayah, rangeEnd.ayah);
+    const vr: VerseRange = {
+      surahNumber: rangeStart.surahNumber,
+      nameAr: rangeStart.nameAr,
+      nameEn: rangeStart.nameEn,
+      fromAyah,
+      toAyah,
+    };
+    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...record.rakka[activeRakka], ranges: [...record.rakka[activeRakka].ranges, vr] } } };
+    setRecord(next);
+    clearRange();
+  };
+
+  const removeRange = (idx: number) => {
+    if (!record) return;
+    const list = [...record.rakka[activeRakka].ranges];
+    list.splice(idx, 1);
+    setRecord({ ...record, rakka: { ...record.rakka, [activeRakka]: { ...record.rakka[activeRakka], ranges: list } } });
+  };
+
+  const toggleQuestion = (key: 'understood' | 'dua' | 'followed' | 'taught') => {
+    if (!record) return;
+    const rk = record.rakka[activeRakka];
+    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, questions: { ...rk.questions, [key]: !rk.questions[key] } } } };
+    setRecord(next);
+  };
+
+  const setTaughtCount = (n: string) => {
+    if (!record) return;
+    const val = parseInt(n || '0', 10) || 0;
+    const rk = record.rakka[activeRakka];
+    setRecord({ ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, taughtCount: val } } });
+  };
+
+  const toggleTask = (key: 'understood' | 'dua' | 'followed' | 'taught') => {
+    if (!record) return;
+    const rk = record.rakka[activeRakka];
+    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, addToTask: { ...rk.addToTask, [key]: !rk.addToTask[key] } } } };
+    setRecord(next);
+  };
+
+  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.header}>تسجيل - {prayer || "صلاة"}</Text>
+        <Text style={styles.header}>تسجيل - {p}</Text>
+
+        {/* Score bar */}
+        <View style={styles.scoreBox}>
+          <Text style={styles.scoreTxt}>الدرجة اليوم: {Math.round(sc.total)} / 100</Text>
+          <View style={styles.progressOuter}><View style={[styles.progressInner, { width: `${Math.min(100, sc.total)}%` }]} /></View>
+          <Text style={styles.subScore}>ركعة 1: {Math.round(sc.r1)} • ركعة 2: {Math.round(sc.r2)}</Text>
+        </View>
+
+        {/* Rakka tabs */}
+        <View style={styles.tabs}>
+          <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => setActiveRakka(1)} />
+          <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
+        </View>
+
+        {/* Language chips */}
         <View style={styles.langRow}>
           <LangChip active={lang === "ar"} label="عربي" onPress={() => setLang("ar")} />
           <LangChip active={lang === "ar_en"} label="عربي + English" onPress={() => setLang("ar_en")} />
           <LangChip active={lang === "ar_es"} label="عربي + Español" onPress={() => setLang("ar_es")} />
         </View>
+
         <TextInput
           placeholder="ابحث في القرآن..."
           placeholderTextColor={"#ccc"}
@@ -105,34 +199,86 @@ export default function RecordPrayer() {
                 {rangeStart ? `${rangeStart.nameAr} ${rangeStart.surahNumber}: ${Math.min(rangeStart.ayah, rangeEnd?.ayah ?? rangeStart.ayah)}` : ''}
                 {rangeEnd ? ` → ${Math.max(rangeStart!.ayah, rangeEnd.ayah)}` : ''}
               </Text>
+              <TouchableOpacity onPress={addCurrentRange} style={styles.saveRangeBtn}><Text style={styles.saveRangeTxt}>حفظ النطاق</Text></TouchableOpacity>
               <TouchableOpacity onPress={clearRange} style={styles.clearBtn}><Text style={styles.clearTxt}>مسح</Text></TouchableOpacity>
             </View>
           )}
         </View>
 
-        <FlatList
-          data={results}
-          keyExtractor={(it) => `${it.surahNumber}:${it.ayah}`}
-          renderItem={({ item }) => (
-            <View style={[styles.item, withinRange(item) && styles.itemActive]}>
-              <View style={styles.itemHeaderRow}>
-                <TouchableOpacity onPress={() => onVerseNumberPress(item)} style={styles.ayahBadge}>
-                  <Text style={styles.ayahBadgeText}>{item.ayah}</Text>
-                </TouchableOpacity>
-                <Text style={styles.meta}>{item.nameAr} • {item.nameEn} • {item.surahNumber}:{item.ayah}</Text>
+        {/* Saved range chips */}
+        {record && record.rakka[activeRakka].ranges.length > 0 && (
+          <View style={styles.chipsWrap}>
+            {record.rakka[activeRakka].ranges.map((r, idx) => (
+              <View key={`${r.surahNumber}-${r.fromAyah}-${r.toAyah}-${idx}`} style={styles.chip}>
+                <Text style={styles.chipTxt}>{r.nameAr} {r.surahNumber}: {r.fromAyah} - {r.toAyah}</Text>
+                <TouchableOpacity onPress={() => removeRange(idx)} style={styles.chipX}><Text style={styles.chipXTxt}>×</Text></TouchableOpacity>
               </View>
-              <Text style={styles.ayahAr}>{item.textAr}</Text>
-              {lang === "ar_en" && !!item.en && <Text style={styles.tr}>{item.en}</Text>}
-              {lang === "ar_es" && !!item.es && <Text style={styles.tr}>{item.es}</Text>}
-            </View>
-          )}
-          contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
-        />
+            ))}
+          </View>
+        )}
+
+        {/* Questions + Add to task */}
+        {record && (
+          <View style={{ paddingHorizontal: 12, paddingTop: 8 }}>
+            <QuestionRow
+              label="فهمت الآيات؟"
+              value={record.rakka[activeRakka].questions.understood}
+              onToggle={() => toggleQuestion('understood')}
+              taskOn={record.rakka[activeRakka].addToTask.understood}
+              onTask={() => toggleTask('understood')}
+            />
+            <QuestionRow
+              label="هل دعوت؟"
+              value={record.rakka[activeRakka].questions.dua}
+              onToggle={() => toggleQuestion('dua')}
+              taskOn={record.rakka[activeRakka].addToTask.dua}
+              onTask={() => toggleTask('dua')}
+            />
+            <QuestionRow
+              label="هل اتبعت الآيات؟"
+              value={record.rakka[activeRakka].questions.followed}
+              onToggle={() => toggleQuestion('followed')}
+              taskOn={record.rakka[activeRakka].addToTask.followed}
+              onTask={() => toggleTask('followed')}
+            />
+            <QuestionRow
+              label="هل علّمت الآيات؟"
+              value={record.rakka[activeRakka].questions.taught}
+              onToggle={() => toggleQuestion('taught')}
+              taskOn={record.rakka[activeRakka].addToTask.taught}
+              onTask={() => toggleTask('taught')}
+            />
+            {record.rakka[activeRakka].questions.taught && (
+              <View style={styles.countRow}>
+                <Text style={styles.countLabel}>كم شخصًا؟</Text>
+                <TextInput
+                  placeholder="0"
+                  placeholderTextColor="#888"
+                  value={String(record.rakka[activeRakka].taughtCount || 0)}
+                  onChangeText={setTaughtCount}
+                  keyboardType="number-pad"
+                  style={styles.countInput}
+                  textAlign="center"
+                />
+              </View>
+            )}
+          </View>
+        )}
+
+        <View style={styles.spacer} />
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => router.back()} style={styles.primaryBtn}><Text style={styles.primaryText}>تم</Text></TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
+  );
+}
+
+function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  return (
+    <TouchableOpacity onPress={onPress} style={[styles.tabBtn, active && styles.tabBtnActive]}>
+      <Text style={{ color: active ? Colors.dark : Colors.light, fontWeight: '800' }}>{label}</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -144,9 +290,31 @@ function LangChip({ active, label, onPress }: { active: boolean; label: string; 
   );
 }
 
+function QuestionRow({ label, value, onToggle, taskOn, onTask }: { label: string; value: boolean; onToggle: () => void; taskOn: boolean; onTask: () => void }) {
+  return (
+    <View style={styles.qRow}>
+      <TouchableOpacity onPress={onTask} style={[styles.taskBtn, taskOn && { backgroundColor: Colors.warmOrange }]}>
+        <Text style={{ color: taskOn ? Colors.dark : Colors.light, fontWeight: '800' }}>مهمة</Text>
+      </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.qLabel}>{label}</Text>
+      </View>
+      <Switch value={value} onValueChange={onToggle} thumbColor={value ? Colors.warmOrange : '#ccc'} trackColor={{ true: '#705100', false: '#666' }} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.dark },
   header: { color: Colors.light, fontSize: 18, fontWeight: "800", padding: 16 },
+  scoreBox: { backgroundColor: '#1d2a29', marginHorizontal: 12, borderRadius: 12, padding: 12, marginBottom: 8 },
+  scoreTxt: { color: Colors.light, fontWeight: '800' },
+  subScore: { color: '#A6D3CF', marginTop: 6 },
+  progressOuter: { height: 8, backgroundColor: '#263736', borderRadius: 6, marginTop: 8 },
+  progressInner: { height: 8, backgroundColor: Colors.warmOrange, borderRadius: 6 },
+  tabs: { flexDirection: 'row-reverse', gap: 8, paddingHorizontal: 12, marginBottom: 8 },
+  tabBtn: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16 },
+  tabBtnActive: { backgroundColor: Colors.warmOrange },
   langRow: { flexDirection: "row-reverse", paddingHorizontal: 16, gap: 8 },
   langChip: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 },
   langChipActive: { backgroundColor: Colors.warmOrange },
@@ -156,16 +324,22 @@ const styles = StyleSheet.create({
   wholeSurahTxt: { color: Colors.light, fontWeight: '800' },
   rangeBar: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, backgroundColor: '#1d2a29', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
   rangeText: { color: Colors.light, fontSize: 14 },
-  clearBtn: { backgroundColor: Colors.warmOrange, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6 },
+  saveRangeBtn: { backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6, marginLeft: 8 },
+  saveRangeTxt: { color: Colors.light, fontWeight: '800' },
+  clearBtn: { backgroundColor: Colors.warmOrange, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6, marginLeft: 8 },
   clearTxt: { color: Colors.dark, fontWeight: '700' },
-  item: { backgroundColor: "#1d2a29", borderRadius: 12, padding: 12, marginBottom: 8 },
-  itemActive: { borderColor: Colors.warmOrange, borderWidth: 1 },
-  itemHeaderRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between' },
-  ayahBadge: { backgroundColor: Colors.warmOrange, minWidth: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginLeft: 8 },
-  ayahBadgeText: { color: Colors.dark, fontWeight: '800' },
-  ayahAr: { color: Colors.light, fontSize: 16, lineHeight: 28, marginTop: 6 },
-  meta: { color: "#A6D3CF", marginTop: 6, fontSize: 12, flex: 1, textAlign: 'left' },
-  tr: { color: "#d7d7d7", marginTop: 6, fontSize: 13 },
+  chipsWrap: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: 8, paddingHorizontal: 12, paddingVertical: 8 },
+  chip: { flexDirection: 'row-reverse', alignItems: 'center', backgroundColor: '#23403d', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 },
+  chipTxt: { color: Colors.light },
+  chipX: { marginHorizontal: 6 },
+  chipXTxt: { color: Colors.warmOrange, fontWeight: '800' },
+  qRow: { flexDirection: 'row-reverse', alignItems: 'center', backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8, gap: 8 },
+  qLabel: { color: Colors.light, fontWeight: '700', textAlign: 'right' },
+  taskBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12, borderColor: Colors.warmOrange, borderWidth: 1 },
+  countRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8 },
+  countLabel: { color: Colors.light },
+  countInput: { backgroundColor: '#263736', color: Colors.light, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minWidth: 64 },
+  spacer: { height: 80 },
   footer: { position: "absolute", left: 0, right: 0, bottom: 0, padding: 12, backgroundColor: "rgba(0,0,0,0.6)" },
   primaryBtn: { backgroundColor: Colors.warmOrange, paddingVertical: 12, borderRadius: 12, alignItems: "center" },
   primaryText: { color: Colors.dark, fontWeight: "800", fontSize: 16 },
