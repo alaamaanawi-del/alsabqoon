@@ -26,10 +26,11 @@ export default function MyPrayers() {
   const [scores, setScores] = useState<Record<string, { r1: number; r2: number }>>({});
   const [showCal, setShowCal] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
     (async () => {
-      const date = todayStr();
+      const date = fmtYMD(selectedDate);
       const out: Record<string, { r1: number; r2: number }> = {};
       for (const p of PRAYERS) {
         const rec = await loadPrayerRecord(p.key, date);
@@ -38,9 +39,9 @@ export default function MyPrayers() {
       }
       setScores(out);
     })();
-  }, []);
+  }, [selectedDate]);
 
-  const last7 = new Array(7).fill(0).map((_, i) => addDays(new Date(), -(6 - i)));
+  const last7 = new Array(7).fill(0).map((_, i) => addDays(selectedDate, -(6 - i)));
 
   const avgForDate = async (ymd: string) => {
     let sum = 0; const prayers = ['fajr','dhuhr','asr','maghrib','isha'];
@@ -49,14 +50,9 @@ export default function MyPrayers() {
   };
 
   const onSelectDate = (d: Date) => {
-    // Navigate to Record of selected date for Fajr (user can switch prayers in drawer)
-    // We pass date param and let Record load that day
-    // For smoother UX, we might add a daily summary screen later
-    // @ts-ignore
-    const date = fmtYMD(d);
-    // Use Link-style deep link
-    // But here simple navigation suggestion: open Fajr by default
+    setSelectedDate(d);
   };
+
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
