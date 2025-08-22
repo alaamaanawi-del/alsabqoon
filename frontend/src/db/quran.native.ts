@@ -14,14 +14,13 @@ export interface SearchItem {
 
 let db: SQLite.SQLiteDatabase | null = null;
 
-// Arabic normalization: remove diacritics and unify Alef/Hamza forms
 export function normalizeArabic(input: string): string {
   if (!input) return '';
   let s = input
-    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') // tashkeel/harakat
-    .replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627') // آأإٱ → ا
-    .replace(/\u0629/g, '\u0647') // ة → ه
-    .replace(/\u0649/g, '\u064A'); // ى → ي
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED]/g, '')
+    .replace(/[\u0622\u0623\u0625\u0671]/g, '\u0627')
+    .replace(/\u0629/g, '\u0647')
+    .replace(/\u0649/g, '\u064A');
   return s;
 }
 
@@ -92,10 +91,10 @@ async function normalizeAll(database: SQLite.SQLiteDatabase) {
   });
 }
 
-export async function searchQuran(query: string, bilingual: Bilingual): Promise<SearchItem[]> {
+export async function searchQuran(query: string, bilingual: Bilingual) {
   const database = await getDb();
   const q = (query || '').trim();
-  if (!q) return [];
+  if (!q) return [] as SearchItem[];
   const tokens = q.split(/\s+/).filter(Boolean);
   const tokensNorm = tokens.map(normalizeArabic);
 
@@ -124,4 +123,11 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
     [bilingual, bilingual, ...params, ...transParams]
   );
   return rows as SearchItem[];
+}
+
+export async function getSurahRange(surahNumber: number): Promise<{ fromAyah: number; toAyah: number } | null> {
+  const database = await getDb();
+  const row = await database.getFirstAsync<{ max: number }>(`SELECT MAX(ayah) as max FROM ayahs WHERE surahNumber=?`, [surahNumber]);
+  if (!row || !row.max) return null;
+  return { fromAyah: 1, toAyah: row.max };
 }

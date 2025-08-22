@@ -64,6 +64,19 @@ export default function RecordPrayer() {
     setRangeStart(item); setRangeEnd(null);
   };
 
+  const selectWholeSurah = async () => {
+    const base = rangeStart || results[0];
+    if (!base) return;
+    try {
+      const mod = Platform.OS === 'web' ? await import("../../../src/db/quran.web") : await import("../../../src/db/quran.native");
+      const range = await mod.getSurahRange(base.surahNumber);
+      if (range) {
+        setRangeStart({ ...base, ayah: range.fromAyah });
+        setRangeEnd({ ...base, ayah: range.toAyah });
+      }
+    } catch {}
+  };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -84,15 +97,18 @@ export default function RecordPrayer() {
           textAlign="right"
         />
 
-        {(rangeStart || rangeEnd) && (
-          <View style={styles.rangeBar}>
-            <Text style={styles.rangeText}>
-              {rangeStart ? `${rangeStart.nameAr} ${rangeStart.surahNumber}: ${Math.min(rangeStart.ayah, rangeEnd?.ayah ?? rangeStart.ayah)}` : ''}
-              {rangeEnd ? ` → ${Math.max(rangeStart!.ayah, rangeEnd.ayah)}` : ''}
-            </Text>
-            <TouchableOpacity onPress={clearRange} style={styles.clearBtn}><Text style={styles.clearTxt}>مسح</Text></TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.actionsRow}>
+          <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}><Text style={styles.wholeSurahTxt}>السورة كاملة</Text></TouchableOpacity>
+          {(rangeStart || rangeEnd) && (
+            <View style={styles.rangeBar}>
+              <Text style={styles.rangeText}>
+                {rangeStart ? `${rangeStart.nameAr} ${rangeStart.surahNumber}: ${Math.min(rangeStart.ayah, rangeEnd?.ayah ?? rangeStart.ayah)}` : ''}
+                {rangeEnd ? ` → ${Math.max(rangeStart!.ayah, rangeEnd.ayah)}` : ''}
+              </Text>
+              <TouchableOpacity onPress={clearRange} style={styles.clearBtn}><Text style={styles.clearTxt}>مسح</Text></TouchableOpacity>
+            </View>
+          )}
+        </View>
 
         <FlatList
           data={results}
@@ -135,7 +151,10 @@ const styles = StyleSheet.create({
   langChip: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 },
   langChipActive: { backgroundColor: Colors.warmOrange },
   input: { backgroundColor: "#1d2a29", color: Colors.light, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 12, margin: 12, textAlign: "right" },
-  rangeBar: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 12, marginBottom: 8, backgroundColor: '#1d2a29', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
+  actionsRow: { paddingHorizontal: 12, gap: 8 },
+  wholeSurahBtn: { alignSelf: 'flex-start', backgroundColor: Colors.greenTeal, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
+  wholeSurahTxt: { color: Colors.light, fontWeight: '800' },
+  rangeBar: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, backgroundColor: '#1d2a29', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
   rangeText: { color: Colors.light, fontSize: 14 },
   clearBtn: { backgroundColor: Colors.warmOrange, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6 },
   clearTxt: { color: Colors.dark, fontWeight: '700' },

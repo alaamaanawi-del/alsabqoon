@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { Colors } from '../../src/theme/colors';
 
+const DEFAULT_URL = 'https://customer-assets.emergentagent.com/job_prayertracker/artifacts/py7wm3yr_hafs_smart_v8.json';
+
 export default function ImportQuranScreen() {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(DEFAULT_URL);
   const [status, setStatus] = useState<string>('');
   const [progress, setProgress] = useState<{total: number; inserted: number} | null>(null);
 
@@ -28,9 +30,9 @@ export default function ImportQuranScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.title}>استيراد القرآن الكريم</Text>
-        <Text style={styles.body}>ألصق رابط ملف JSON الكامل (surahs → ayahs) ثم اضغط استيراد. سيتم الحفظ محليًا.</Text>
+        <Text style={styles.body}>استخدم الرابط المسبق أو ألصق رابط JSON ثم اضغط استيراد (على الجوال فقط).</Text>
         {Platform.OS === 'web' && (
-          <Text style={[styles.body, { color: '#ffb4b4' }]}>ملاحظة: هذه الصفحة للعرض فقط على الويب. الرجاء استخدام الهاتف للاستيراد.</Text>
+          <Text style={[styles.body, { color: '#ffb4b4' }]}>ملاحظة: الاستيراد غير متاح على الويب. الرجاء استخدام التطبيق على الجوال.</Text>
         )}
         <TextInput
           placeholder="رابط ملف JSON"

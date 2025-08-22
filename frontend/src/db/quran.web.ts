@@ -50,3 +50,10 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
   }
   return results;
 }
+
+export async function getSurahRange(surahNumber: number) {
+  const surah = (seed as any).surahs.find((s: any) => s.number === surahNumber);
+  if (!surah) return null;
+  const max = Math.max(...surah.ayahs.map((a: any) => a.ayah));
+  return { fromAyah: 1, toAyah: max };
+}
