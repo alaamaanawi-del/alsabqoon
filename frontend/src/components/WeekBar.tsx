@@ -238,7 +238,13 @@ export default function WeekBar({
       const color = colorForScore(percent);
       const selected = selYmd === ymd;
       return (
-        <TouchableOpacity key={ymd + idx} style={styles.cell} onPress={() => onSelectDate(d)}>
+        <TouchableOpacity 
+          key={ymd + idx} 
+          style={styles.cell} 
+          onPress={() => handleDayPress(d)}
+          onLongPress={() => showActionSheet(d)}
+          delayLongPress={500}
+        >
           <ProgressRing size={42} strokeWidth={5} percent={percent} color={color} trackColor="#263736" neon={selected} />
           <View style={styles.labelWrap}>
             <Text style={styles.dayNum}>{d.getDate()}</Text>
