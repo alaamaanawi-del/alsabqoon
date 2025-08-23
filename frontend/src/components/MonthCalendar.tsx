@@ -3,8 +3,22 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../theme/colors';
 import { addDays, colorForScore, daysInMonth, dayOfWeek, fmtYMD, hijriDayString, startOfMonth } from '../utils/date';
 import { loadPrayerRecord, computeScore } from '../storage/prayer';
+import ProgressRing from './ProgressRing';
 
 const WEEKDAYS = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // Sun..Sat in Arabic initials
+
+function hijriMonthYear(d: Date): string {
+  try {
+    const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { month: 'long', year: 'numeric' } as any);
+    return fmt.format(d);
+  } catch { return ''; }
+}
+function gregMonthYear(d: Date): string {
+  try {
+    const fmt = new Intl.DateTimeFormat('ar', { month: 'long', year: 'numeric' } as any);
+    return fmt.format(d);
+  } catch { return ''; }
+}
 
 export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, onSelectDate }: { monthDate: Date; selectedDate: Date; onChangeMonth: (d: Date) => void; onSelectDate: (date: Date) => void; }) {
   const [scoresByDate, setScoresByDate] = useState<Record<string, number>>({});
@@ -34,10 +48,8 @@ export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, 
   useEffect(() => {
     (async () => {
       const map: Record<string, number> = {};
-      // Collect unique YMDs in current month view only
       for (const c of days) {
         const ymd = c.ymd;
-        // Compute average across 5 prayers (r1+r2 totals per prayer)/5
         let sum = 0;
         const prayers = ['fajr','dhuhr','asr','maghrib','isha'];
         for (const p of prayers) {
@@ -52,12 +64,16 @@ export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, 
   }, [days]);
 
   const selectedYmd = fmtYMD(selectedDate);
+  const todayYmd = fmtYMD(new Date());
 
   return (
     <View style={styles.wrap}>
       <View style={styles.headerRow}>
         <TouchableOpacity onPress={() => onChangeMonth(new Date(monthDate.getFullYear(), monthDate.getMonth() - 1, 1))} style={styles.navBtn}><Text style={styles.navTxt}>‹</Text></TouchableOpacity>
-        <Text style={styles.monthTitle}>{monthDate.getFullYear()} / {monthDate.getMonth() + 1}</Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={styles.monthTitle}>{hijriMonthYear(monthDate)}</Text>
+          <Text style={styles.monthSub}>{gregMonthYear(monthDate)}</Text>
+        </View>
         <TouchableOpacity onPress={() => onChangeMonth(new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 1))} style={styles.navBtn}><Text style={styles.navTxt}>›</Text></TouchableOpacity>
       </View>
 
@@ -69,32 +85,48 @@ export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, 
         {days.map(({ date, ymd }, idx) => {
           const inMonth = date.getMonth() === monthDate.getMonth();
           const sc = scoresByDate[ymd] ?? 0;
-          const border = colorForScore(sc);
+          const color = colorForScore(sc);
           const hijri = hijriDayString(date);
           const isSelected = ymd === selectedYmd;
           return (
-            <TouchableOpacity key={ymd + idx} onPress={() => onSelectDate(date)} style={[styles.cell, { opacity: inMonth ? 1 : 0.35, borderColor: border }, isSelected && styles.cellSelected]}> 
-              <Text style={styles.hijri}>{hijri}</Text>
-              <Text style={styles.greg}>{date.getDate()}</Text>
+            <TouchableOpacity key={ymd + idx} onPress={() => onSelectDate(date)} style={[styles.cell, { opacity: inMonth ? 1 : 0.35 }]}> 
+              <ProgressRing size={42} strokeWidth={5} percent={sc} color={color} trackColor="#263736" neon={isSelected} />
+              <View style={styles.cellTextWrap}>
+                <Text style={styles.hijri}>{hijri}</Text>
+                <Text style={styles.greg}>{date.getDate()}</Text>
+              </View>
             </TouchableOpacity>
           );
         })}
       </View>
+
+      {/* Today button */}
+      {selectedYmd !== todayYmd && (
+        <View style={styles.todayWrap}>
+          <TouchableOpacity onPress={() => onSelectDate(new Date())} style={styles.todayBtn}>
+            <Text style={styles.todayTxt}>اليوم</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: { backgroundColor: '#0e1615', borderRadius: 12, marginHorizontal: 12, marginBottom: 12 },
-  headerRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 8 },
+  wrap: { backgroundColor: '#0e1615', borderRadius: 12, marginHorizontal: 12, marginBottom: 12, paddingBottom: 8 },
+  headerRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingTop: 8 },
   navBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#1d2a29', borderRadius: 8 },
   navTxt: { color: Colors.light, fontWeight: '800' },
-  monthTitle: { color: Colors.light, fontWeight: '800' },
+  monthTitle: { color: Colors.warmOrange, fontWeight: '800' },
+  monthSub: { color: Colors.light },
   weekRow: { flexDirection: 'row-reverse', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 4 },
   weekTxt: { color: '#A6D3CF' },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', padding: 8 },
-  cell: { width: `${100/7}%`, aspectRatio: 1, borderWidth: 2, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginVertical: 4 },
-  cellSelected: { borderWidth: 3, backgroundColor: '#142826' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8, paddingTop: 6 },
+  cell: { width: `${100/7}%`, aspectRatio: 1, alignItems: 'center', justifyContent: 'center', marginVertical: 4 },
+  cellTextWrap: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
   hijri: { color: Colors.warmOrange, fontSize: 12 },
   greg: { color: Colors.light, marginTop: 4, fontWeight: '800' },
+  todayWrap: { alignItems: 'center', marginTop: 8 },
+  todayBtn: { backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 8 },
+  todayTxt: { color: Colors.light, fontWeight: '800' },
 });

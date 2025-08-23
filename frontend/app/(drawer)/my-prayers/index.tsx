@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Colors } from "../../../src/theme/colors";
 import { Link } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
 import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
+import ProgressRing from "../../../src/components/ProgressRing";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
@@ -52,7 +53,7 @@ export default function MyPrayers() {
         <Text style={styles.gregTxt}>{gregFullString(selectedDate)}</Text>
       </View>
 
-      {/* 7-day quick bar */}
+      {/* 7-day quick bar with progress rings */}
       <View style={styles.quickRow}>
         {last7.map((d, idx) => (
           <QuickDay key={idx} date={d} selected={fmtYMD(d)===fmtYMD(selectedDate)} onPress={() => setSelectedDate(d)} />
@@ -87,10 +88,13 @@ export default function MyPrayers() {
 function QuickDay({ date, selected, onPress }: { date: Date; selected: boolean; onPress: () => void }) {
   const [score, setScore] = useState<number>(0);
   useEffect(() => { (async () => { setScore(await (async () => { let sum=0; for (const p of ['fajr','dhuhr','asr','maghrib','isha']) { const rec = await loadPrayerRecord(p, fmtYMD(date)); sum += computeScore(rec).total; } return Math.round(sum/5); })()); })(); }, [date]);
-  const border = colorForScore(score);
+  const color = colorForScore(score);
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.quickDot, { borderColor: border }, selected && styles.quickSelected]}> 
-      <Text style={styles.quickTxt}>{date.getDate()}</Text>
+    <TouchableOpacity onPress={onPress} style={styles.quickCell}>
+      <ProgressRing size={42} strokeWidth={5} percent={score} color={color} trackColor="#263736" neon={selected} />
+      <View style={styles.quickLabelWrap}>
+        <Text style={styles.quickTxt}>{date.getDate()}</Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -105,8 +109,8 @@ const styles = StyleSheet.create({
   hijriTxt: { color: Colors.warmOrange, fontWeight: '800', textAlign: 'right' },
   gregTxt: { color: Colors.light, opacity: 0.9, textAlign: 'right', marginTop: 4 },
   quickRow: { flexDirection: 'row-reverse', justifyContent: 'space-between', marginBottom: 12 },
-  quickDot: { width: `${100/7 - 1}%`, aspectRatio: 1, borderWidth: 2, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
-  quickSelected: { borderWidth: 3, backgroundColor: '#142826' },
+  quickCell: { width: `${100/7 - 1}%`, alignItems: 'center', justifyContent: 'center' },
+  quickLabelWrap: { position: 'absolute' },
   quickTxt: { color: Colors.light, fontWeight: '800' },
   row: { flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 16, marginBottom: 8 },
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
