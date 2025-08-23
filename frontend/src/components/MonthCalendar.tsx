@@ -5,7 +5,8 @@ import { addDays, colorForScore, daysInMonth, dayOfWeek, fmtYMD, hijriDayString,
 import { loadPrayerRecord, computeScore } from '../storage/prayer';
 import ProgressRing from './ProgressRing';
 
-const WEEKDAYS = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // Sun..Sat in Arabic initials
+// Full Arabic weekday names, starting Sunday → Saturday to match Date.getDay()
+const WEEKDAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
 function hijriMonthYear(d: Date): string {
   try {
