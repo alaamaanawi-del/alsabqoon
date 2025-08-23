@@ -119,6 +119,53 @@ export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: P
   const todayYmd = fmtYMD(new Date());
   const selYmd = fmtYMD(selectedDate);
 
+  // Animated styles for smooth transitions
+  const currentWeekStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+      opacity: interpolate(
+        Math.abs(translateX.value),
+        [0, screenWidth * 0.5, screenWidth],
+        [1, 0.7, 0],
+        Extrapolation.CLAMP
+      ),
+    };
+  });
+
+  const nextWeekStyle = useAnimatedStyle(() => {
+    const isMovingRight = translateX.value > 0;
+    const startPosition = isMovingRight ? -screenWidth : screenWidth;
+    
+    return {
+      transform: [{ translateX: startPosition + translateX.value }],
+      opacity: interpolate(
+        Math.abs(translateX.value),
+        [0, screenWidth * 0.5, screenWidth],
+        [0, 0.7, 1],
+        Extrapolation.CLAMP
+      ),
+    };
+  });
+
+  // Render week function
+  const renderWeek = (weekDays: Date[], weekScores: Record<string, number>) => {
+    return weekDays.map((d, idx) => {
+      const ymd = fmtYMD(d);
+      const percent = weekScores[ymd] ?? 0;
+      const color = colorForScore(percent);
+      const selected = selYmd === ymd;
+      return (
+        <TouchableOpacity key={ymd + idx} style={styles.cell} onPress={() => onSelectDate(d)}>
+          <ProgressRing size={42} strokeWidth={5} percent={percent} color={color} trackColor="#263736" neon={selected} />
+          <View style={styles.labelWrap}>
+            <Text style={styles.dayNum}>{d.getDate()}</Text>
+            <Text style={styles.dayName}>{weekdayShort(d, 'ar')}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    });
+  };
+
   return (
     <PanGestureHandler ref={panRef} onHandlerStateChange={onGestureEvent}>
       <View style={styles.wrap}>
