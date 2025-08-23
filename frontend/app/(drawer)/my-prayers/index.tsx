@@ -112,19 +112,51 @@ export default function MyPrayers() {
       )}
 
       {PRAYERS.map((p) => {
-        const sc = scores[p.key] || { r1: 0, r2: 0 };
+        const ymd = fmtYMD(selectedDate);
+        const score = scores[p.key] ?? 0;
+        const isRecorded = score > 0;
+        const prayerIcon = icons?.[p.key as keyof typeof icons];
+        
         return (
-          <View key={p.key} style={styles.row}>
-            <View style={{ flexDirection: 'row-reverse', alignItems: 'center', gap: 8 }}>
-              <Text style={styles.prayer}>{p.label}</Text>
-              <View style={[styles.badge, { backgroundColor: colorForScore(sc.r1) }]}><Text style={styles.badgeTxt}>ر1 {Math.round(sc.r1)}</Text></View>
-              <View style={[styles.badge, { backgroundColor: colorForScore(sc.r2) }]}><Text style={styles.badgeTxt}>ر2 {Math.round(sc.r2)}</Text></View>
+          <View key={p.key} style={styles.enhancedRow}>
+            {/* Prayer Icon */}
+            <View style={styles.iconContainer}>
+              {prayerIcon ? (
+                <Image 
+                  source={{ uri: `data:image/png;base64,${prayerIcon}` }} 
+                  style={styles.prayerIcon}
+                  resizeMode="contain"
+                />
+              ) : (
+                <View style={styles.placeholderIcon} />
+              )}
             </View>
-            <Link asChild href={{ pathname: "/(drawer)/my-prayers/record", params: { prayer: p.key } }}>
-              <TouchableOpacity style={styles.recordBtn}>
-                <Text style={{ color: Colors.dark, fontWeight: "700" }}>تسجيل</Text>
-              </TouchableOpacity>
-            </Link>
+            
+            {/* Prayer Name and Progress Bar */}
+            <View style={styles.prayerContent}>
+              <Text style={styles.prayer}>{p.label}</Text>
+              <TaskProgressBar score={score} showPercentage={isRecorded} />
+            </View>
+            
+            {/* Action Buttons */}
+            <View style={styles.actionContainer}>
+              {isRecorded ? (
+                <View style={styles.statusContainer}>
+                  <View style={styles.checkmarkContainer}>
+                    <Text style={styles.checkmark}>✓</Text>
+                  </View>
+                  <View style={styles.taskIconContainer}>
+                    <Text style={styles.taskIcon}>📝</Text>
+                  </View>
+                </View>
+              ) : (
+                <Link href={{ pathname: '/(drawer)/my-prayers/record', params: { prayer: p.key, date: ymd } }} asChild>
+                  <TouchableOpacity style={styles.recordBtn}>
+                    <Text style={styles.recordBtnText}>تسجيل</Text>
+                  </TouchableOpacity>
+                </Link>
+              )}
+            </View>
           </View>
         );
       })}
