@@ -81,7 +81,9 @@ export default function MyPrayers() {
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.headerRow}>
         <Text style={styles.header}>صلاتي</Text>
-        <TouchableOpacity onPress={() => setShowCal((s) => !s)} style={styles.calBtn}><Text style={styles.calTxt}>التقويم</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowCal((s) => !s)} style={styles.calBtn}>
+          <Text style={styles.calTxt}>{showCal ? 'إغلاق' : 'التقويم'}</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Week bar - visible only in week view, hidden in month view */}
