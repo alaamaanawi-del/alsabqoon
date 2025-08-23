@@ -6,7 +6,7 @@ import { loadPrayerRecord, computeScore } from '../storage/prayer';
 
 const WEEKDAYS = ['ح', 'ن', 'ث', 'ر', 'خ', 'ج', 'س']; // Sun..Sat in Arabic initials
 
-export default function MonthCalendar({ monthDate, onChangeMonth, onSelectDate }: { monthDate: Date; onChangeMonth: (d: Date) => void; onSelectDate: (date: Date) => void; }) {
+export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, onSelectDate }: { monthDate: Date; selectedDate: Date; onChangeMonth: (d: Date) => void; onSelectDate: (date: Date) => void; }) {
   const [scoresByDate, setScoresByDate] = useState<Record<string, number>>({});
 
   const days = useMemo(() => {
@@ -51,6 +51,8 @@ export default function MonthCalendar({ monthDate, onChangeMonth, onSelectDate }
     })();
   }, [days]);
 
+  const selectedYmd = fmtYMD(selectedDate);
+
   return (
     <View style={styles.wrap}>
       <View style={styles.headerRow}>
@@ -69,8 +71,9 @@ export default function MonthCalendar({ monthDate, onChangeMonth, onSelectDate }
           const sc = scoresByDate[ymd] ?? 0;
           const border = colorForScore(sc);
           const hijri = hijriDayString(date);
+          const isSelected = ymd === selectedYmd;
           return (
-            <TouchableOpacity key={ymd + idx} onPress={() => onSelectDate(date)} style={[styles.cell, { opacity: inMonth ? 1 : 0.35, borderColor: border }]}> 
+            <TouchableOpacity key={ymd + idx} onPress={() => onSelectDate(date)} style={[styles.cell, { opacity: inMonth ? 1 : 0.35, borderColor: border }, isSelected && styles.cellSelected]}> 
               <Text style={styles.hijri}>{hijri}</Text>
               <Text style={styles.greg}>{date.getDate()}</Text>
             </TouchableOpacity>
@@ -91,6 +94,7 @@ const styles = StyleSheet.create({
   weekTxt: { color: '#A6D3CF' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', padding: 8 },
   cell: { width: `${100/7}%`, aspectRatio: 1, borderWidth: 2, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginVertical: 4 },
+  cellSelected: { borderWidth: 3, backgroundColor: '#142826' },
   hijri: { color: Colors.warmOrange, fontSize: 12 },
   greg: { color: Colors.light, marginTop: 4, fontWeight: '800' },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { Colors } from "../../../src/theme/colors";
 import { Link } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
@@ -55,12 +55,12 @@ export default function MyPrayers() {
       {/* 7-day quick bar */}
       <View style={styles.quickRow}>
         {last7.map((d, idx) => (
-          <QuickDay key={idx} date={d} />
+          <QuickDay key={idx} date={d} selected={fmtYMD(d)===fmtYMD(selectedDate)} onPress={() => setSelectedDate(d)} />
         ))}
       </View>
 
       {showCal && (
-        <MonthCalendar monthDate={monthDate} onChangeMonth={setMonthDate} onSelectDate={onSelectDate} />
+        <MonthCalendar monthDate={monthDate} selectedDate={selectedDate} onChangeMonth={setMonthDate} onSelectDate={onSelectDate} />
       )}
 
       {PRAYERS.map((p) => {
@@ -84,14 +84,14 @@ export default function MyPrayers() {
   );
 }
 
-function QuickDay({ date }: { date: Date }) {
+function QuickDay({ date, selected, onPress }: { date: Date; selected: boolean; onPress: () => void }) {
   const [score, setScore] = useState<number>(0);
   useEffect(() => { (async () => { setScore(await (async () => { let sum=0; for (const p of ['fajr','dhuhr','asr','maghrib','isha']) { const rec = await loadPrayerRecord(p, fmtYMD(date)); sum += computeScore(rec).total; } return Math.round(sum/5); })()); })(); }, [date]);
   const border = colorForScore(score);
   return (
-    <View style={[styles.quickDot, { borderColor: border }]}> 
+    <TouchableOpacity onPress={onPress} style={[styles.quickDot, { borderColor: border }, selected && styles.quickSelected]}> 
       <Text style={styles.quickTxt}>{date.getDate()}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
   gregTxt: { color: Colors.light, opacity: 0.9, textAlign: 'right', marginTop: 4 },
   quickRow: { flexDirection: 'row-reverse', justifyContent: 'space-between', marginBottom: 12 },
   quickDot: { width: `${100/7 - 1}%`, aspectRatio: 1, borderWidth: 2, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
+  quickSelected: { borderWidth: 3, backgroundColor: '#142826' },
   quickTxt: { color: Colors.light, fontWeight: '800' },
   row: { flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 16, marginBottom: 8 },
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
