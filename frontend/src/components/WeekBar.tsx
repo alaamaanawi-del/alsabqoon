@@ -36,18 +36,53 @@ export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: P
   }, [selectedDate]);
 
   const days = useMemo(() => new Array(7).fill(0).map((_, i) => addDays(weekStart, i)), [weekStart]);
+  const nextDays = useMemo(() => 
+    nextWeekStart ? new Array(7).fill(0).map((_, i) => addDays(nextWeekStart, i)) : [], 
+    [nextWeekStart]
+  );
+
+  // Function to load scores for a week
+  const loadWeekScores = async (weekDays: Date[]): Promise<Record<string, number>> => {
+    const map: Record<string, number> = {};
+    for (const d of weekDays) {
+      const ymd = fmtYMD(d);
+      let sum = 0; 
+      for (const p of ['fajr','dhuhr','asr','maghrib','isha']) { 
+        const rec = await loadPrayerRecord(p, ymd); 
+        sum += computeScore(rec).total; 
+      }
+      map[ymd] = Math.round(sum / 5);
+    }
+    return map;
+  };
 
   useEffect(() => {
     (async () => {
-      const map: Record<string, number> = {};
-      for (const d of days) {
-        const ymd = fmtYMD(d);
-        let sum = 0; for (const p of ['fajr','dhuhr','asr','maghrib','isha']) { const rec = await loadPrayerRecord(p, ymd); sum += computeScore(rec).total; }
-        map[ymd] = Math.round(sum / 5);
-      }
+      const map = await loadWeekScores(days);
       setScores(map);
     })();
   }, [days]);
+
+  useEffect(() => {
+    if (nextDays.length > 0) {
+      (async () => {
+        const map = await loadWeekScores(nextDays);
+        setNextScores(map);
+      })();
+    }
+  }, [nextDays]);
+
+  // Function to complete week transition
+  const completeTransition = () => {
+    if (nextWeekStart) {
+      setWeekStart(nextWeekStart);
+      setScores(nextScores);
+      setNextWeekStart(null);
+      setNextScores({});
+    }
+    translateX.value = 0;
+    animating.value = false;
+  };
 
   // Horizontal swipe to change week
   const panRef = useRef<any>();
