@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Colors } from "../../../src/theme/colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
 import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
 import ProgressRing from "../../../src/components/ProgressRing";
+import { getSettings, saveSettings } from "../../../src/storage/settings";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
@@ -20,6 +21,19 @@ export default function MyPrayers() {
   const [showCal, setShowCal] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const router = useRouter();
+  const [remember, setRemember] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const s = await getSettings();
+      setRemember(s.rememberSelectedDate);
+      if (s.rememberSelectedDate && s.lastSelectedDate) {
+        setSelectedDate(new Date(s.lastSelectedDate));
+        setMonthDate(new Date(s.lastSelectedDate));
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -31,6 +45,11 @@ export default function MyPrayers() {
         out[p.key] = { r1: sc.r1, r2: sc.r2 };
       }
       setScores(out);
+      // Persist lastSelectedDate if remember enabled
+      const s = await getSettings();
+      if (s.rememberSelectedDate) {
+        await saveSettings({ ...s, lastSelectedDate: date });
+      }
     })();
   }, [selectedDate]);
 
@@ -38,6 +57,8 @@ export default function MyPrayers() {
 
   const onSelectDate = (d: Date) => {
     setSelectedDate(d);
+    // Navigate to daily summary on day tap
+    router.push({ pathname: '/(drawer)/my-prayers/day-summary', params: { date: fmtYMD(d) } });
   };
 
   return (
