@@ -90,16 +90,18 @@ export default function MyPrayers() {
       </View>
 
       {/* Week bar - visible only in week view, hidden in month view */}
-      {!showCal && (
-        <WeekBar 
-          selectedDate={selectedDate} 
-          onSelectDate={onSelectDate} 
-          onExpandMonth={() => setShowCal(true)}
-          onNavigateToSummary={onNavigateToSummary}
-          onNavigateToRecord={onNavigateToRecord}
-          onNavigateToTasks={onNavigateToTasks}
-        />
-      )}
+      <View style={{ display: showCal ? 'none' : 'flex' }}>
+        {!showCal && (
+          <WeekBar 
+            selectedDate={selectedDate} 
+            onSelectDate={onSelectDate} 
+            onExpandMonth={() => setShowCal(true)}
+            onNavigateToSummary={onNavigateToSummary}
+            onNavigateToRecord={onNavigateToRecord}
+            onNavigateToTasks={onNavigateToTasks}
+          />
+        )}
+      </View>
 
       {/* Selected date label (Hijri + Gregorian) */}
       <View style={styles.dateLabelBox}>
