@@ -186,6 +186,17 @@ frontend:
       - working: NA
         agent: "main"
         comment: "Enabled force RTL and created drawer group"
+  - task: "Smooth animated week transitions in WeekBar"
+    implemented: true
+    working: NA
+    file: "/app/frontend/src/components/WeekBar.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented smooth slide transitions using react-native-reanimated v3. Added animated values (translateX), smooth swipe detection, next week preloading, and interpolated opacity effects. Week navigation now has 300ms smooth slide animations with proper RTL support."
   - task: "Home screen"
     implemented: true
     working: NA
