@@ -230,15 +230,18 @@ frontend:
         comment: "✅ TESTED: Long-press action sheet implementation verified. TouchableOpacity has delayLongPress={500} with showActionSheet function. ActionSheetIOS.showActionSheetWithOptions for iOS and Alert.alert for Android. Arabic labels: 'عرض الملخص', 'تسجيل صلاة', 'المهام', 'إلغاء'. Navigation functions properly passed from parent component."
   - task: "Hide week bar in month calendar view"
     implemented: true
-    working: NA
+    working: false
     file: "/app/frontend/app/(drawer)/my-prayers/index.tsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: NA
         agent: "main"
         comment: "Implemented conditional WeekBar visibility based on showCal state. WeekBar hidden when showCal=true (month view), visible when showCal=false (week view). Enhanced calendar button text to show 'إغلاق' (Close) in month view and 'التقويم' (Calendar) in week view for better UX."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND: WeekBar conditional visibility is NOT working. Both WeekBar and MonthCalendar are visible simultaneously when month calendar is opened. The conditional rendering {!showCal && <WeekBar />} is not functioning properly. Button text changes correctly ('التقويم' ↔ 'إغلاق'), but WeekBar remains visible when showCal=true. This creates UI clutter and defeats the purpose of the clean month view. Requires immediate fix to React state management or conditional rendering logic."
   - task: "Home screen"
     implemented: true
     working: NA
