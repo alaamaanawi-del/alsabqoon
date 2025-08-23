@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Colors } from "../../../src/theme/colors";
 import { Link, useRouter } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
