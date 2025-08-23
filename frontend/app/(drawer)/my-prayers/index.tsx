@@ -119,7 +119,15 @@ export default function MyPrayers() {
         const prayerIcon = icons?.[p.key as keyof typeof icons];
         
         return (
-          <View key={p.key} style={styles.enhancedRow}>
+          <TouchableOpacity 
+            key={p.key} 
+            style={styles.enhancedRow}
+            onPress={() => router.push({ 
+              pathname: '/(drawer)/my-prayers/record', 
+              params: { prayer: p.key, date: ymd } 
+            })}
+            activeOpacity={0.7}
+          >
             {/* Prayer Icon */}
             <View style={styles.iconContainer}>
               {prayerIcon ? (
@@ -139,7 +147,7 @@ export default function MyPrayers() {
               <TaskProgressBar score={score} showPercentage={isRecorded} />
             </View>
             
-            {/* Action Buttons */}
+            {/* Status Indicators */}
             <View style={styles.actionContainer}>
               {isRecorded ? (
                 <View style={styles.statusContainer}>
@@ -151,14 +159,12 @@ export default function MyPrayers() {
                   </View>
                 </View>
               ) : (
-                <Link href={{ pathname: '/(drawer)/my-prayers/record', params: { prayer: p.key, date: ymd } }} asChild>
-                  <TouchableOpacity style={styles.recordBtn}>
-                    <Text style={styles.recordBtnText}>تسجيل</Text>
-                  </TouchableOpacity>
-                </Link>
+                <View style={styles.unrecordedIndicator}>
+                  <Text style={styles.recordBtnText}>تسجيل</Text>
+                </View>
               )}
             </View>
-          </View>
+          </TouchableOpacity>
         );
       })}
     </ScrollView>
