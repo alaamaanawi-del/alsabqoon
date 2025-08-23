@@ -197,6 +197,28 @@ frontend:
       - working: NA
         agent: "main"
         comment: "Implemented smooth slide transitions using react-native-reanimated v3. Added animated values (translateX), smooth swipe detection, next week preloading, and interpolated opacity effects. Week navigation now has 300ms smooth slide animations with proper RTL support."
+  - task: "Haptic feedback on day select (mobile)"
+    implemented: true
+    working: NA
+    file: "/app/frontend/src/components/WeekBar.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Added haptic feedback using expo-haptics. Light impact feedback on day selection, medium impact on long press. Platform detection to disable on web."
+  - task: "Long-press quick action sheet for days"
+    implemented: true
+    working: NA
+    file: "/app/frontend/src/components/WeekBar.tsx, /app/frontend/app/(drawer)/my-prayers/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented long-press action sheet with 500ms delay. Shows 'View Summary', 'Record Prayer', and 'Tasks' options. Uses ActionSheetIOS on iOS and Alert on Android. Added navigation functions to parent component."
   - task: "Home screen"
     implemented: true
     working: NA
