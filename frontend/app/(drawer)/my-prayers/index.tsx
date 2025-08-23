@@ -61,6 +61,22 @@ export default function MyPrayers() {
     router.push({ pathname: '/(drawer)/my-prayers/day-summary', params: { date: fmtYMD(d) } });
   };
 
+  // Navigation functions for WeekBar action sheet
+  const onNavigateToSummary = (date: Date) => {
+    setSelectedDate(date);
+    router.push({ pathname: '/(drawer)/my-prayers/day-summary', params: { date: fmtYMD(date) } });
+  };
+
+  const onNavigateToRecord = (date: Date) => {
+    setSelectedDate(date);
+    router.push({ pathname: '/(drawer)/my-prayers/record', params: { prayer: 'fajr', date: fmtYMD(date) } });
+  };
+
+  const onNavigateToTasks = (date: Date) => {
+    setSelectedDate(date);
+    router.push('/(drawer)/tasks');
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.headerRow}>
