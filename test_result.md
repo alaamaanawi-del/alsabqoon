@@ -241,6 +241,7 @@ test_plan:
     - "Root health endpoint"
     - "Qur’an Surah list API (/api/quran/surahs)"
     - "Qur’an search API (/api/quran/search)"
+    - "Smooth animated week transitions in WeekBar"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
