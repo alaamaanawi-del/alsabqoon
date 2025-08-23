@@ -1,8 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  FlatList, 
+  Image, 
+  ScrollView,
+  Alert,
+  Dimensions 
+} from 'react-native';
 import { Colors } from '../../src/theme/colors';
 import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
 import { Link } from 'expo-router';
+import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
+import TaskProgressBar from '../../src/components/TaskProgressBar';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function TasksScreen() {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
