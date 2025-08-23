@@ -251,3 +251,5 @@ agent_communication:
     message: "Please run backend tests for the above three API routes (health, surah list, search) and basic status endpoints using the existing FastAPI backend on /api."
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE: All 5 backend tasks tested successfully. Health endpoint, status endpoints (POST/GET), Qur'an surahs list, and Qur'an search (Arabic/English/Spanish) all working correctly via ingress path /api. MongoDB integration confirmed. Created comprehensive backend_test.py for future testing. Note: Arabic search requires exact text matching including diacritical marks (الْحَمْدُ vs الحمد)."
+  - agent: "main"
+    message: "Implemented smooth animated week transitions in WeekBar component using react-native-reanimated v3. Added slide animations with 300ms duration, opacity interpolation, and proper RTL support. Need backend testing first, then frontend testing for the new animation functionality."
