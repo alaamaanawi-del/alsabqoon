@@ -19,9 +19,6 @@ const PRAYERS = [
 export default function MyPrayers() {
   const [scores, setScores] = useState<Record<string, { r1: number; r2: number }>>({});
   const [showCal, setShowCal] = useState(false);
-  
-  // Debug logging to track state changes
-  console.log('MyPrayers render - showCal:', showCal);
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const router = useRouter();
