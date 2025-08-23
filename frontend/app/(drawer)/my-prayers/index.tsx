@@ -134,8 +134,8 @@ export default function MyPrayers() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.dark },
-  headerRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between' },
-  header: { color: Colors.light, fontSize: 22, fontWeight: "800", marginBottom: 12 },
+  headerRow: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  header: { color: Colors.light, fontSize: 22, fontWeight: "800" },
   calBtn: { backgroundColor: Colors.greenTeal, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
   calTxt: { color: Colors.light, fontWeight: '800' },
   dateLabelBox: { backgroundColor: '#0e1615', borderRadius: 12, padding: 12, marginTop: 10, marginBottom: 12 },
