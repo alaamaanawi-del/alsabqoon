@@ -174,6 +174,73 @@ const styles = StyleSheet.create({
   hijriTxt: { color: Colors.warmOrange, fontWeight: '800', textAlign: 'right' },
   gregTxt: { color: Colors.light, opacity: 0.9, textAlign: 'right', marginTop: 4 },
   row: { flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 16, marginBottom: 8 },
+  enhancedRow: { 
+    flexDirection: "row-reverse", 
+    alignItems: "center", 
+    backgroundColor: Colors.greenTeal, 
+    borderRadius: 12, 
+    paddingHorizontal: 12, 
+    paddingVertical: 16, 
+    marginBottom: 8,
+    gap: 12
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  prayerIcon: {
+    width: 32,
+    height: 32,
+  },
+  placeholderIcon: {
+    width: 32,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+  },
+  prayerContent: {
+    flex: 1,
+    gap: 8,
+  },
+  actionContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  checkmarkContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.warmOrange,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkmark: {
+    color: Colors.dark,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  taskIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  taskIcon: {
+    fontSize: 16,
+  },
+  recordBtnText: {
+    color: Colors.dark,
+    fontWeight: "700"
+  },
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   badgeTxt: { color: '#fff', fontWeight: '800', fontSize: 12 },
