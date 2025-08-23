@@ -23,6 +23,13 @@ interface Props {
 export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: Props) {
   const [weekStart, setWeekStart] = useState<Date>(startOfWeek(selectedDate));
   const [scores, setScores] = useState<Record<string, number>>({});
+  const [nextWeekStart, setNextWeekStart] = useState<Date | null>(null);
+  const [nextScores, setNextScores] = useState<Record<string, number>>({});
+  
+  // Animation values
+  const translateX = useSharedValue(0);
+  const animating = useSharedValue(false);
+  const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     setWeekStart(startOfWeek(selectedDate));
