@@ -44,9 +44,24 @@ export function hijriFullString(date: Date): string {
 }
 export function gregFullString(date: Date): string {
   try {
-    const fmt = new Intl.DateTimeFormat('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as any);
+    const fmt = new Intl.DateTimeFormat('ar', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as any);
     return fmt.format(date);
   } catch {
     return fmtYMD(date);
   }
+}
+export function startOfWeek(d: Date, weekStartsOn: 0 | 6 = 0) {
+  // weekStartsOn: 0 (Sunday) or 6 (Saturday)
+  const day = d.getDay();
+  const diff = weekStartsOn === 0 ? day : (day === 6 ? 0 : day + 1);
+  const x = new Date(d);
+  x.setDate(d.getDate() - diff);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+export function weekdayShort(date: Date, locale: string = 'ar') {
+  try {
+    const fmt = new Intl.DateTimeFormat(locale, { weekday: 'short' } as any);
+    return fmt.format(date);
+  } catch { return ''; }
 }
