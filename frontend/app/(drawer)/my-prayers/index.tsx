@@ -23,6 +23,7 @@ export default function MyPrayers() {
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const router = useRouter();
+  const { icons } = usePrayerIcons();
 
   useEffect(() => {
     (async () => {
