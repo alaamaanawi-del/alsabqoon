@@ -228,6 +228,17 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Long-press action sheet implementation verified. TouchableOpacity has delayLongPress={500} with showActionSheet function. ActionSheetIOS.showActionSheetWithOptions for iOS and Alert.alert for Android. Arabic labels: 'عرض الملخص', 'تسجيل صلاة', 'المهام', 'إلغاء'. Navigation functions properly passed from parent component."
+  - task: "Hide week bar in month calendar view"
+    implemented: true
+    working: NA
+    file: "/app/frontend/app/(drawer)/my-prayers/index.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented conditional WeekBar visibility based on showCal state. WeekBar hidden when showCal=true (month view), visible when showCal=false (week view). Enhanced calendar button text to show 'إغلاق' (Close) in month view and 'التقويم' (Calendar) in week view for better UX."
   - task: "Home screen"
     implemented: true
     working: NA
