@@ -168,22 +168,21 @@ export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: P
 
   return (
     <PanGestureHandler ref={panRef} onHandlerStateChange={onGestureEvent}>
-      <View style={styles.wrap}>
-        {days.map((d, idx) => {
-          const ymd = fmtYMD(d);
-          const percent = scores[ymd] ?? 0;
-          const color = colorForScore(percent);
-          const selected = selYmd === ymd;
-          return (
-            <TouchableOpacity key={ymd + idx} style={styles.cell} onPress={() => onSelectDate(d)}>
-              <ProgressRing size={42} strokeWidth={5} percent={percent} color={color} trackColor="#263736" neon={selected} />
-              <View style={styles.labelWrap}>
-                <Text style={styles.dayNum}>{d.getDate()}</Text>
-                <Text style={styles.dayName}>{weekdayShort(d, 'ar')}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+      <View style={styles.container}>
+        <View style={styles.wrap}>
+          {/* Current week */}
+          <Animated.View style={[styles.weekContainer, currentWeekStyle]}>
+            {renderWeek(days, scores)}
+          </Animated.View>
+          
+          {/* Next/Previous week during transition */}
+          {nextWeekStart && (
+            <Animated.View style={[styles.weekContainer, styles.nextWeek, nextWeekStyle]}>
+              {renderWeek(nextDays, nextScores)}
+            </Animated.View>
+          )}
+        </View>
+        
         {selYmd !== todayYmd && (
           <TouchableOpacity onPress={() => onSelectDate(new Date())} style={styles.todayBtn}>
             <Text style={styles.todayTxt}>اليوم</Text>
