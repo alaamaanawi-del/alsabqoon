@@ -286,6 +286,7 @@ test_plan:
     - "Smooth animated week transitions in WeekBar"
     - "Haptic feedback on day select (mobile)"
     - "Long-press quick action sheet for days"
+    - "Hide week bar in month calendar view"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
