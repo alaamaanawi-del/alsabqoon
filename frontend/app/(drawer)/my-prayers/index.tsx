@@ -4,7 +4,7 @@ import { Colors } from "../../../src/theme/colors";
 import { Link } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
 import MonthCalendar from "../../../src/components/MonthCalendar";
-import { addDays, colorForScore, fmtYMD } from "../../../src/utils/date";
+import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
@@ -13,14 +13,6 @@ const PRAYERS = [
   { key: "maghrib", label: "المغرب" },
   { key: "isha", label: "العشاء" },
 ];
-
-const todayStr = () => {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const da = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${da}`;
-};
 
 export default function MyPrayers() {
   const [scores, setScores] = useState<Record<string, { r1: number; r2: number }>>({});
@@ -43,22 +35,21 @@ export default function MyPrayers() {
 
   const last7 = new Array(7).fill(0).map((_, i) => addDays(selectedDate, -(6 - i)));
 
-  const avgForDate = async (ymd: string) => {
-    let sum = 0; const prayers = ['fajr','dhuhr','asr','maghrib','isha'];
-    for (const p of prayers) { const rec = await loadPrayerRecord(p, ymd); sum += computeScore(rec).total; }
-    return Math.round(sum / 5);
-  };
-
   const onSelectDate = (d: Date) => {
     setSelectedDate(d);
   };
-
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.headerRow}>
         <Text style={styles.header}>صلاتي</Text>
         <TouchableOpacity onPress={() => setShowCal((s) => !s)} style={styles.calBtn}><Text style={styles.calTxt}>التقويم</Text></TouchableOpacity>
+      </View>
+
+      {/* Selected date label (Hijri + Gregorian) */}
+      <View style={styles.dateLabelBox}>
+        <Text style={styles.hijriTxt}>{hijriFullString(selectedDate)}</Text>
+        <Text style={styles.gregTxt}>{gregFullString(selectedDate)}</Text>
       </View>
 
       {/* 7-day quick bar */}
@@ -69,7 +60,7 @@ export default function MyPrayers() {
       </View>
 
       {showCal && (
-        <MonthCalendar monthDate={monthDate} onChangeMonth={setMonthDate} onSelectDate={() => {}} />
+        <MonthCalendar monthDate={monthDate} onChangeMonth={setMonthDate} onSelectDate={onSelectDate} />
       )}
 
       {PRAYERS.map((p) => {
@@ -110,6 +101,9 @@ const styles = StyleSheet.create({
   header: { color: Colors.light, fontSize: 22, fontWeight: "800", marginBottom: 12 },
   calBtn: { backgroundColor: Colors.greenTeal, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
   calTxt: { color: Colors.light, fontWeight: '800' },
+  dateLabelBox: { backgroundColor: '#0e1615', borderRadius: 12, padding: 12, marginTop: 10, marginBottom: 12 },
+  hijriTxt: { color: Colors.warmOrange, fontWeight: '800', textAlign: 'right' },
+  gregTxt: { color: Colors.light, opacity: 0.9, textAlign: 'right', marginTop: 4 },
   quickRow: { flexDirection: 'row-reverse', justifyContent: 'space-between', marginBottom: 12 },
   quickDot: { width: `${100/7 - 1}%`, aspectRatio: 1, borderWidth: 2, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
   quickTxt: { color: Colors.light, fontWeight: '800' },

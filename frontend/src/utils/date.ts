@@ -28,10 +28,25 @@ export function colorForScore(n: number) {
 }
 export function hijriDayString(date: Date): string {
   try {
-    // Try Intl Islamic-Umm al-Qura calendar
     const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric' } as any);
     return fmt.format(date);
   } catch {
     return '-';
+  }
+}
+export function hijriFullString(date: Date): string {
+  try {
+    const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as any);
+    return fmt.format(date);
+  } catch {
+    return '-';
+  }
+}
+export function gregFullString(date: Date): string {
+  try {
+    const fmt = new Intl.DateTimeFormat('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' } as any);
+    return fmt.format(date);
+  } catch {
+    return fmtYMD(date);
   }
 }
