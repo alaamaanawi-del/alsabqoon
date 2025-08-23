@@ -275,5 +275,19 @@ const styles = StyleSheet.create({
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   badgeTxt: { color: '#fff', fontWeight: '800', fontSize: 12 },
-  recordBtn: { backgroundColor: Colors.warmOrange, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 24 }
+  recordBtn: { backgroundColor: Colors.warmOrange, paddingHorizontal: 16, paddingVertical: 10, borderRadius: 24 },
+  dailyProgressContainer: {
+    backgroundColor: '#0e1615',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  dailyProgressTitle: {
+    color: Colors.warmOrange,
+    fontSize: 18,
+    fontWeight: '800',
+    textAlign: 'right',
+    marginBottom: 12,
+  },
 });
