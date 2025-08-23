@@ -34,7 +34,14 @@ interface Props {
   onNavigateToTasks?: (date: Date) => void;
 }
 
-export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: Props) {
+export default function WeekBar({ 
+  selectedDate, 
+  onSelectDate, 
+  onExpandMonth,
+  onNavigateToSummary,
+  onNavigateToRecord,
+  onNavigateToTasks 
+}: Props) {
   const [weekStart, setWeekStart] = useState<Date>(startOfWeek(selectedDate));
   const [scores, setScores] = useState<Record<string, number>>({});
   const [nextWeekStart, setNextWeekStart] = useState<Date | null>(null);
