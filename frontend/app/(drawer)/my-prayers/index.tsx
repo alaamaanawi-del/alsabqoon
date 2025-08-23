@@ -81,9 +81,6 @@ export default function MyPrayers() {
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.headerRow}>
         <Text style={styles.header}>صلاتي</Text>
-        <View style={{ backgroundColor: 'blue', padding: 10 }}>
-          <Text style={{ color: 'white' }}>TEST</Text>
-        </View>
         <TouchableOpacity onPress={() => setShowCal((s) => !s)} style={styles.calBtn}>
           <Text style={styles.calTxt}>{showCal ? 'إغلاق' : 'التقويم'}</Text>
         </TouchableOpacity>
