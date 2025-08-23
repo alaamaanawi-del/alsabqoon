@@ -85,7 +85,14 @@ export default function MyPrayers() {
       </View>
 
       {/* Week bar always visible */}
-      <WeekBar selectedDate={selectedDate} onSelectDate={onSelectDate} onExpandMonth={() => setShowCal(true)} />
+      <WeekBar 
+        selectedDate={selectedDate} 
+        onSelectDate={onSelectDate} 
+        onExpandMonth={() => setShowCal(true)}
+        onNavigateToSummary={onNavigateToSummary}
+        onNavigateToRecord={onNavigateToRecord}
+        onNavigateToTasks={onNavigateToTasks}
+      />
 
       {/* Selected date label (Hijri + Gregorian) */}
       <View style={styles.dateLabelBox}>
