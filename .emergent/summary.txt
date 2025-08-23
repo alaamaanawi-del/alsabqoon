@@ -1,0 +1,60 @@
+<analysis>
+The AI engineer successfully initiated development of the ALSABQON mobile application based on detailed product requirements, focusing on a Flutter/Firebase stack (though implemented with Expo/FastAPI/MongoDB). The work progressed through several critical features, including initial setup, backend API creation, frontend UI development with RTL support, Qur'an search implementation (migrating from backend to on-device SQLite), verse range selection, scoring, task management, and an elaborate calendar/week view. A significant portion of the trajectory involved persistent debugging of preview and module resolution issues across web and mobile platforms, which required detailed platform-specific code splitting and dependency management. Despite these challenges, the AI demonstrated a systematic approach to problem-solving, iterative development, and responsiveness to user feedback, including escalating to support when necessary, while simultaneously advancing feature implementation. The current state reflects a functional core for prayer tracking and Qur'an interaction, with robust calendar and scoring mechanisms.
+</analysis>
+
+<product_requirements>
+The ALSABQON application is a cross-platform (Android & iOS via Flutter, implemented with Expo) prayer tracker and Qur’an study tool. Key features include: Email/Facebook authentication, user profile (gender, age, location, timezone, language), and admin-only account deletion. The Home screen features a drawer navigation, a featured story feed, and interaction capabilities (like, comment, share). The core My Prayers module includes a 7-day progress bar, an expandable Hijri/Gregorian calendar (color-coded by score), and a list of five prayers with a record button. The Record view allows selecting Qur'an verses (full surah or range), searching (Arabic, EN/ES), and answering four questions per rak'ah (understood, du'ā', followed, taught) for scoring (12.5 pts each). Tasks are generated from prayer questions. Other modules include Information (lessons), Messages & Support, and Settings (language, theme, dark mode, Qur'an search language, prayer calculation, backups/sync). The app integrates with a FastAPI backend, MongoDB, local SQLite for Qur'an, and Firebase. Branding uses deep green, warm orange, and white, with Arabic as the default language (RTL).
+</product_requirements>
+
+<key_technical_concepts>
+- **Expo & React Native**: Core mobile development framework.
+- **Expo Router**: File-based routing for navigation.
+- **FastAPI & MongoDB**: Backend for data storage and API services.
+- **Expo-SQLite**: On-device local database for Qur'an content.
+- ** & **: Advanced touch interactions and animations.
+- ****: Used for drawing custom UI components like the .
+- **RTL (Right-to-Left) Support**: Global application layout for Arabic.
+- **Platform-Specific Code**: Splitting logic for web vs. native environments.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a full-stack architecture with an Expo/React Native frontend and a FastAPI/MongoDB backend.
+
+
+
+**Key Files and Directories:**
+
+-   : FastAPI backend application. It handles basic health checks, status logging to MongoDB, and serves initial Qur'an surah/search endpoints (though frontend now uses local DB for search).
+-   : Defines the main drawer navigation, enforces RTL layout, and applies global theme settings.
+-   : The primary My Prayers screen, displaying prayer list, 7-day quick bar, and the expandable monthly calendar. It manages date selection and displays prayer scores.
+-   : The detailed prayer recording screen where users search Qur'an verses, select ranges, answer scoring questions, and add tasks.
+-   : Displays a summary of all five prayers for a specific selected date, with links to record individual prayers.
+-   : Contains application settings, including the toggle for Remember last selected date.
+-   : An administrative screen for importing the full Qur'an JSON into the local SQLite database. It's mobile-only.
+-   : Centralized definition of the application's color palette.
+-   : This directory contains all logic related to Qur'an data and storage.
+    -   , , , , : Implements platform-specific Qur'an search.  uses  for iOS/Android, while  uses an in-memory JSON seed for web preview to avoid  issues.  acts as a facade.
+    -   : Contains the logic for importing the full Qur'an JSON into the local SQLite database, normalizing various input formats.
+-   : Defines the data model for prayer records, scoring logic (4 questions, 12.5 pts each), and task management within AsyncStorage.
+-   : Manages persistent user settings, like remembering the last selected date.
+-   : Provides utility functions for date manipulation, including Hijri and Gregorian date formatting, week calculations, and score-based color mapping.
+-   : A reusable React Native SVG component to render circular progress indicators based on a percentage.
+-   : Renders the expandable monthly calendar grid, incorporating date selection, score-based progress rings, and neon highlights.
+-   : Implements the fixed 7-day week bar with swipe navigation, displaying daily progress rings and selected day highlights.
+</code_architecture>
+
+<pending_tasks>
+- No pending tasks have been explicitly requested by the user that are not yet implemented. The AI's last message provided optional enhancements.
+</pending_tasks>
+
+<current_work>
+Currently, the application has a highly interactive and visually rich calendar and prayer tracking system. The My Prayers screen () features a persistent 7-day week bar at the top, displaying daily prayer performance as partial progress rings (100% score fills the ring completely; partial scores show a corresponding fill in color, with the remainder in gray). This week bar supports swipe gestures for week navigation and highlights the currently selected day with a neon effect. Users can pull down the week bar to expand to a full monthly calendar, which also utilizes the progress rings and neon highlight for the selected date. The calendar displays both Hijri and Gregorian month/year titles in Arabic and includes a Today button that appears when not on the current date, allowing quick navigation back. Tapping a day in either the week bar or monthly calendar updates the displayed prayer list to show all five prayers for that specific date. A date label above the list shows the full Hijri and Gregorian date in Arabic.
+
+The prayer record screen () allows for on-device Qur'an search (after a full Qur'an import via  on mobile), verse range selection with highlighting and saving ranges as removable chips per rak'ah. It includes a Select whole surah button. Users can answer four questions per rak'ah, which contribute to a live score (12.5 points each, totaling 100 per prayer), with autosave. Each question has an Add to task toggle, feeding into the Tasks screen (). Explicit toast messages provide immediate feedback for actions like saving/clearing ranges and toggling tasks. A daily summary screen () displays prayer breakdowns for selected dates. A setting () allows users to persist their last selected date.
+
+The core functionality of the calendar, prayer recording, scoring, and task generation is in place, with strong RTL support and visual cues. The main outstanding issue is related to external preview/tunnel connectivity on both web and mobile, which has been escalated to support, but the application's code is functionally complete for the implemented features.
+</current_work>
+
+<optional_next_step>
+Add smooth animated slide for week transitions (left/right) with  v3.
+</optional_next_step>
