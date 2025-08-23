@@ -18,24 +18,8 @@ const PRAYER_ICONS_BASE64: PrayerIcons = {
 };
 
 export const usePrayerIcons = () => {
-  const [icons, setIcons] = useState<PrayerIcons | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadIcons = async () => {
-      try {
-        // For now, we'll use placeholder icons until we convert the uploaded ones
-        // This will be updated with actual base64 data
-        setIcons(PRAYER_ICONS_BASE64);
-      } catch (error) {
-        console.error('Failed to load prayer icons:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadIcons();
-  }, []);
+  const [icons, setIcons] = useState<PrayerIcons | null>(PRAYER_ICONS_BASE64);
+  const [loading, setLoading] = useState(false);
 
   return { icons, loading };
 };
