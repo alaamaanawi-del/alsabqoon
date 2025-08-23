@@ -7,6 +7,7 @@ import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
 import { getSettings, saveSettings } from "../../../src/storage/settings";
 import WeekBar from "../../../src/components/WeekBar";
+import { usePrayerIcons } from "../../../src/hooks/usePrayerIcons";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
