@@ -297,13 +297,264 @@ export default function TasksScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.dark },
-  header: { color: Colors.light, fontSize: 20, fontWeight: '800', padding: 16 },
-  row: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, backgroundColor: '#1d2a29', marginBottom: 8, borderRadius: 12, padding: 12 },
-  title: { color: Colors.light, fontWeight: '700' },
-  sub: { color: '#A6D3CF', marginTop: 6 },
-  linkBtn: { backgroundColor: Colors.warmOrange, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
-  linkTxt: { color: Colors.dark, fontWeight: '800' },
-  doneBtn: { backgroundColor: '#555', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
-  doneTxt: { color: Colors.light, fontWeight: '800' },
+  container: { 
+    flex: 1, 
+    backgroundColor: Colors.dark 
+  },
+  
+  // Header & Stats
+  headerContainer: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  header: { 
+    color: Colors.light, 
+    fontSize: 24, 
+    fontWeight: '800', 
+    textAlign: 'right',
+    marginBottom: 12,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  statsText: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+    minWidth: 80,
+  },
+  
+  // Category Overview
+  categoryOverview: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  categoryCard: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a2626',
+    borderRadius: 8,
+    padding: 8,
+    gap: 6,
+  },
+  categoryDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  categoryLabel: {
+    flex: 1,
+    color: Colors.light,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  categoryCount: {
+    color: '#A6D3CF',
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  
+  // Grouping Controls
+  groupingControls: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    gap: 8,
+  },
+  groupingBtn: {
+    flex: 1,
+    backgroundColor: '#1a2626',
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  activeGroupingBtn: {
+    backgroundColor: Colors.greenTeal,
+  },
+  groupingBtnText: {
+    color: '#A6D3CF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  activeGroupingText: {
+    color: Colors.light,
+  },
+  
+  // Tasks Container
+  tasksContainer: {
+    flex: 1,
+  },
+  taskGroup: {
+    marginBottom: 20,
+  },
+  groupHeader: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'right',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 138, 88, 0.1)',
+    marginBottom: 8,
+  },
+  
+  // Task Cards
+  taskCard: {
+    flexDirection: 'row',
+    backgroundColor: '#1d2a29',
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  completedTask: {
+    opacity: 0.7,
+    backgroundColor: '#1a2421',
+  },
+  priorityIndicator: {
+    width: 4,
+  },
+  taskContent: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 12,
+    alignItems: 'center',
+    gap: 12,
+  },
+  
+  // Task Icon
+  taskIconContainer: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  taskIcon: {
+    width: 28,
+    height: 28,
+  },
+  placeholderTaskIcon: {
+    width: 28,
+    height: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+  },
+  
+  // Task Details
+  taskDetails: {
+    flex: 1,
+    gap: 4,
+  },
+  taskTitle: {
+    color: Colors.light,
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'right',
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    color: '#A6D3CF',
+  },
+  taskMeta: {
+    color: '#A6D3CF',
+    fontSize: 12,
+    textAlign: 'right',
+  },
+  taskBadges: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 4,
+  },
+  categoryBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  categoryText: {
+    color: Colors.light,
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  
+  // Task Actions
+  taskActions: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+  },
+  openBtn: {
+    backgroundColor: Colors.warmOrange,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  openBtnText: {
+    color: Colors.dark,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  completeBtn: {
+    backgroundColor: '#555',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  completedBtn: {
+    backgroundColor: '#3ddc84',
+  },
+  completeBtnText: {
+    color: Colors.light,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  
+  // Swipe Actions
+  swipeActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  swipeAction: {
+    width: 60,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  swipeActionText: {
+    color: Colors.light,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  
+  // Empty State
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  emptyStateIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  emptyStateTitle: {
+    color: Colors.light,
+    fontSize: 20,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyStateMessage: {
+    color: '#A6D3CF',
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
+  },
 });
