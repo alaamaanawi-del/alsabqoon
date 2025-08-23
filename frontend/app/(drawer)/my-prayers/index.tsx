@@ -167,6 +167,21 @@ export default function MyPrayers() {
           </TouchableOpacity>
         );
       })}
+
+      {/* Daily Progress Summary */}
+      <View style={styles.dailyProgressContainer}>
+        <Text style={styles.dailyProgressTitle}>التقدم اليومي</Text>
+        <TaskProgressBar 
+          score={(() => {
+            const totalScore = PRAYERS.reduce((sum, p) => {
+              const sc = scores[p.key] || { r1: 0, r2: 0 };
+              return sum + Math.max(sc.r1, sc.r2);
+            }, 0);
+            return Math.round(totalScore / PRAYERS.length);
+          })()} 
+          showPercentage={true} 
+        />
+      </View>
     </ScrollView>
   );
 }
