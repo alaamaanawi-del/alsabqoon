@@ -194,11 +194,58 @@ export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: P
 }
 
 const styles = StyleSheet.create({
-  wrap: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  cell: { width: `${100/7 - 1}%`, alignItems: 'center', justifyContent: 'center' },
-  labelWrap: { position: 'absolute', alignItems: 'center' },
-  dayNum: { color: Colors.light, fontWeight: '800' },
-  dayName: { color: '#A6D3CF', fontSize: 12, marginTop: 2 },
-  todayBtn: { position: 'absolute', left: 0, backgroundColor: Colors.greenTeal, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10 },
-  todayTxt: { color: Colors.light, fontWeight: '800' },
+  container: { 
+    position: 'relative',
+    marginBottom: 12,
+    overflow: 'hidden'
+  },
+  wrap: { 
+    flexDirection: 'row-reverse', 
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    position: 'relative'
+  },
+  weekContainer: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
+  nextWeek: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0
+  },
+  cell: { 
+    width: `${100/7 - 1}%`, 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  labelWrap: { 
+    position: 'absolute', 
+    alignItems: 'center' 
+  },
+  dayNum: { 
+    color: Colors.light, 
+    fontWeight: '800' 
+  },
+  dayName: { 
+    color: '#A6D3CF', 
+    fontSize: 12, 
+    marginTop: 2 
+  },
+  todayBtn: { 
+    position: 'absolute', 
+    left: 0, 
+    backgroundColor: Colors.greenTeal, 
+    paddingHorizontal: 10, 
+    paddingVertical: 6, 
+    borderRadius: 10,
+    zIndex: 10
+  },
+  todayTxt: { 
+    color: Colors.light, 
+    fontWeight: '800' 
+  },
 });
