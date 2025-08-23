@@ -8,6 +8,7 @@ import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from 
 import { getSettings, saveSettings } from "../../../src/storage/settings";
 import WeekBar from "../../../src/components/WeekBar";
 import { usePrayerIcons } from "../../../src/hooks/usePrayerIcons";
+import TaskProgressBar from "../../../src/components/TaskProgressBar";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
