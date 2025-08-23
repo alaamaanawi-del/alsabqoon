@@ -1,6 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { View, Text, StyleSheet, I18nManager, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, I18nManager, TouchableOpacity, Dimensions } from 'react-native';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming, 
+  runOnJS,
+  interpolate,
+  Extrapolation
+} from 'react-native-reanimated';
 import { Colors } from '../theme/colors';
 import { addDays, colorForScore, fmtYMD, startOfWeek, weekdayShort } from '../utils/date';
 import { loadPrayerRecord, computeScore } from '../storage/prayer';
