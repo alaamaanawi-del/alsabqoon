@@ -84,15 +84,17 @@ export default function MyPrayers() {
         <TouchableOpacity onPress={() => setShowCal((s) => !s)} style={styles.calBtn}><Text style={styles.calTxt}>التقويم</Text></TouchableOpacity>
       </View>
 
-      {/* Week bar always visible */}
-      <WeekBar 
-        selectedDate={selectedDate} 
-        onSelectDate={onSelectDate} 
-        onExpandMonth={() => setShowCal(true)}
-        onNavigateToSummary={onNavigateToSummary}
-        onNavigateToRecord={onNavigateToRecord}
-        onNavigateToTasks={onNavigateToTasks}
-      />
+      {/* Week bar - visible only in week view, hidden in month view */}
+      {!showCal && (
+        <WeekBar 
+          selectedDate={selectedDate} 
+          onSelectDate={onSelectDate} 
+          onExpandMonth={() => setShowCal(true)}
+          onNavigateToSummary={onNavigateToSummary}
+          onNavigateToRecord={onNavigateToRecord}
+          onNavigateToTasks={onNavigateToTasks}
+        />
+      )}
 
       {/* Selected date label (Hijri + Gregorian) */}
       <View style={styles.dateLabelBox}>
