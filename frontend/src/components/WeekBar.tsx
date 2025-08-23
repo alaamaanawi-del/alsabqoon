@@ -29,6 +29,9 @@ interface Props {
   selectedDate: Date;
   onSelectDate: (d: Date) => void;
   onExpandMonth: () => void;
+  onNavigateToSummary?: (date: Date) => void;
+  onNavigateToRecord?: (date: Date) => void;
+  onNavigateToTasks?: (date: Date) => void;
 }
 
 export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: Props) {
