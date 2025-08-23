@@ -105,6 +105,68 @@ export default function WeekBar({
     animating.value = false;
   };
 
+  // Haptic feedback for day selection
+  const triggerHapticFeedback = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  };
+
+  // Handle day press with haptic feedback
+  const handleDayPress = (date: Date) => {
+    triggerHapticFeedback();
+    onSelectDate(date);
+  };
+
+  // Show action sheet for long press
+  const showActionSheet = (date: Date) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    const formattedDate = date.toLocaleDateString('ar', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          title: `إجراءات سريعة - ${formattedDate}`,
+          options: ['إلغاء', 'عرض الملخص', 'تسجيل صلاة', 'المهام'],
+          cancelButtonIndex: 0,
+        },
+        (buttonIndex) => {
+          switch (buttonIndex) {
+            case 1:
+              onNavigateToSummary?.(date);
+              break;
+            case 2:
+              onNavigateToRecord?.(date);
+              break;
+            case 3:
+              onNavigateToTasks?.(date);
+              break;
+          }
+        }
+      );
+    } else {
+      // Android alert with options
+      Alert.alert(
+        'إجراءات سريعة',
+        formattedDate,
+        [
+          { text: 'إلغاء', style: 'cancel' },
+          { text: 'عرض الملخص', onPress: () => onNavigateToSummary?.(date) },
+          { text: 'تسجيل صلاة', onPress: () => onNavigateToRecord?.(date) },
+          { text: 'المهام', onPress: () => onNavigateToTasks?.(date) },
+        ]
+      );
+    }
+  };
+
   // Horizontal swipe to change week with animation
   const panRef = useRef<any>();
   const onGestureEvent = ({ nativeEvent }: any) => {
