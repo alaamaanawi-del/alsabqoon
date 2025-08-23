@@ -84,17 +84,32 @@ export default function WeekBar({ selectedDate, onSelectDate, onExpandMonth }: P
     animating.value = false;
   };
 
-  // Horizontal swipe to change week
+  // Horizontal swipe to change week with animation
   const panRef = useRef<any>();
   const onGestureEvent = ({ nativeEvent }: any) => {
     if (nativeEvent.state === State.END) {
       const dx = nativeEvent.translationX;
       const dy = nativeEvent.translationY;
       const rtl = I18nManager.isRTL;
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) && !animating.value) {
         const dir = dx > 0 ? 1 : -1; // swipe right (+) or left (-)
         const step = rtl ? -dir : dir; // invert for RTL
-        setWeekStart(addDays(weekStart, step * 7));
+        const newWeekStart = addDays(weekStart, step * 7);
+        
+        // Start animation
+        animating.value = true;
+        setNextWeekStart(newWeekStart);
+        
+        // Animate slide transition
+        const animationDirection = rtl ? -step : step;
+        translateX.value = withTiming(
+          animationDirection * screenWidth, 
+          { duration: 300 },
+          () => {
+            runOnJS(completeTransition)();
+          }
+        );
       } else if (dy > 40) {
         onExpandMonth();
       }
