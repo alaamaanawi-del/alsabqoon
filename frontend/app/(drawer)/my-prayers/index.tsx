@@ -244,9 +244,18 @@ const styles = StyleSheet.create({
   taskIcon: {
     fontSize: 16,
   },
+  unrecordedIndicator: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
   recordBtnText: {
-    color: Colors.dark,
-    fontWeight: "700"
+    color: Colors.light,
+    fontWeight: "600",
+    fontSize: 12
   },
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
