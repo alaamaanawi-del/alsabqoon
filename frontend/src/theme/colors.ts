@@ -4,6 +4,8 @@ export const Colors = {
   warmOrange: "#F4BD24",
   light: "#F2F2F2",
   dark: "#0B0F0E",
+  lightGray: "#E0E0E0",
+  background: "#F5F5F5",
 };
 
 export const AppTheme = {
