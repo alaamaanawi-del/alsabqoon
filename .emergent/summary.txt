@@ -1,31 +1,30 @@
 <analysis>
-The previous AI engineer successfully initiated and extensively developed the ALSABQON mobile application using Expo/React Native for the frontend and FastAPI/MongoDB for the backend. The work progressed systematically through several core features: implementing smooth animated week transitions, adding haptic feedback and a long-press quick action sheet to the  component, and managing its conditional visibility. A significant effort was dedicated to enhancing the My Prayers landing page with prayer icons, task progress bars, and improved prayer row navigation. The Tasks page received a complete overhaul, incorporating advanced features like grouping, swipe actions, and detailed progress indicators. The trajectory also highlights persistent debugging efforts, particularly around UI rendering and icon asset management, demonstrating a methodical problem-solving approach. The current state focuses on setting up the new Lessons page, interrupted by critical bug fixes for prayer icons and verse search.
+The previous AI engineer effectively initiated the ALSABQON mobile app, utilizing Expo/React Native for the frontend and FastAPI/MongoDB for the backend. Initial efforts focused on core features like animated week transitions, haptic feedback, and the  component. Significant work was done on the My Prayers and Tasks pages, adding visual enhancements and complex interactions. The trajectory detailed the systematic development of a new Lessons page, including data structures and navigation.
+
+During this phase, the engineer encountered and resolved critical issues related to Expo Router TypeScript errors and mobile preview problems, leveraging the  and implementing solutions like serving a production build. Following this, new critical bugs were reported by the user, including missing prayer icons, broken Quran search, and UI/logic issues with prayer recording and progress bars. The AI successfully addressed the missing prayer icons by downloading user-provided SVGs, converting them to base64, and integrating them into the app. The trajectory concludes with the AI beginning to investigate the prayer progress bar and recording issues.
 </analysis>
 
 <product_requirements>
-The ALSABQON application is a cross-platform prayer tracker and Qur’an study tool, implemented with Expo/React Native and a FastAPI/MongoDB backend. Initial features include email/Facebook authentication, user profiles, and admin account deletion. The Home screen offers drawer navigation, a story feed, and interaction. The My Prayers module features a 7-day progress bar, an expandable Hijri/Gregorian calendar (color-coded by score), and a list of five prayers with a record button. The Record view allows Qur'an verse selection (full surah/range), searching, and answering four questions per rak'ah for scoring (12.5 pts each), which generate tasks.
+The ALSABQON application is a cross-platform prayer tracker and Qur’an study tool, implemented with Expo/React Native and a FastAPI/MongoDB backend. Initial features include authentication, user profiles, a Home screen with drawer navigation, and a story feed. The My Prayers module features a 7-day progress bar, an expandable Hijri/Gregorian calendar, and a list of five prayers with a record button. The Record view allows Qur'an verse selection (full surah/range), searching, and answering questions per rak'ah for scoring, which generate tasks.
 
-Recent enhancements include:
-- Smooth animated slide transitions for week navigation.
-- Haptic feedback and a long-press quick action sheet on the 7-day .
-- Hiding the 7-day week bar when the full month calendar is expanded, and showing it in week view.
-- My Prayers landing page: Prayer icons before names, task progress bars (replacing R1/R2 badges), and updated record button behavior (checkmark/task icon if recorded, تسجيل if not). The entire prayer row is clickable to access the detailed prayer screen.
-- A Daily Progress bar under the prayers list, showing overall daily completion.
-- Tasks page: Prayer icons, visual hierarchy, progress indicators, empty state, grouping by date/prayer/type, swipe to complete/delete, categories/priorities, and overall completion overview.
-- Lessons page: Main page with categories (Fiqh, Aqeedah, Tafseer), overall knowledge progress bar, expandable categories to list lessons. Lesson page displaying content (text/video), 1-5 star rating, views/ratings count, four engagement questions (Did you understand? Make dua? Practice? Share/teach?), each with a task icon. A progress bar for lesson completion and a comments section. This page will be a comprehensive Islamic Learning Management System.
+Recent enhancements:
+-   Animated week transitions, haptic feedback, and action sheet on .
+-   Conditional visibility of the 7-day week bar.
+-   My Prayers page: Prayer icons, task progress bars, clickable prayer rows, Daily Progress bar.
+-   Tasks page: Prayer icons, progress indicators, grouping by date/prayer/type, swipe actions, categories/priorities.
+-   Lessons page: Islamic Learning Management System with categories (Fiqh, Aqeedah, Tafseer), overall knowledge progress, expandable lessons, lesson content (text/video), 1-5 star rating, engagement questions (understand, dua, practice, share/teach), completion progress bar, comments section.
+-   Settings page: Font size, notifications, theme selection, language preferences, share app, prayer calculation methods (5 specific ones: Muslim World League, ISNA, Egyptian General Authority, Umm Al-Qura, Karachi), Asr calculation (Hanafi, Shafi/Maliki/Hanbali), daily data backup/restore.
 </product_requirements>
 
 <key_technical_concepts>
-- **Expo & React Native**: Core mobile development framework.
-- **Expo Router**: File-based routing for navigation.
-- **FastAPI & MongoDB**: Backend for data storage and API services.
-- **Expo-SQLite**: On-device local database for Qur'an content.
-- ** v3**: Advanced animations for UI transitions.
-- ****: For advanced touch interactions like swiping.
-- ****: For custom UI components like  and .
-- **RTL (Right-to-Left) Support**: Global application layout for Arabic.
-- ****: For haptic feedback on user interactions.
-- ****: Persistent local storage for app data and settings.
+-   **Expo & React Native**: Core mobile development framework.
+-   **Expo Router**: File-based routing for navigation.
+-   **FastAPI & MongoDB**: Backend for data storage and API services.
+-   **Expo-SQLite**: On-device local database for Qur'an content.
+-   ** v3**: Advanced animations.
+-   ****: For vector graphics (icons, progress bars).
+-   **RTL (Right-to-Left) Support**: Global application layout for Arabic.
+-   ****: Persistent local storage.
 </key_technical_concepts>
 
 <code_architecture>
@@ -34,34 +33,36 @@ The application follows a full-stack architecture with an Expo/React Native fron
 
 
 **Key Files and Directories:**
-
--   : FastAPI backend application. Handles basic health checks and status logging to MongoDB.
--   : Defines main drawer navigation, enforces RTL, and applies global theme. It references  which is not yet created.
--   : The core My Prayers screen.
-    -   **Changes:** Implemented conditional visibility of , enhanced prayer list rendering with icons, progress bars, and updated record button behavior. Made entire prayer rows clickable for navigation. Added a Daily Progress bar.
--   : The Tasks screen.
-    -   **Changes:** Completely rebuilt to include prayer icons, overall and category-specific progress bars, an empty state, grouping by date/prayer/type, swipe-to-complete/delete actions, and priority categorization.
--   : Renders the 7-day week bar.
-    -   **Changes:** Implemented smooth animated slide transitions using  v3, haptic feedback with , and a long-press quick action sheet (using  for iOS,  for Android) for navigation.
--    (NEW): A reusable component to render horizontal progress bars, used for prayer-specific tasks and daily progress.
--    (NEW): A custom hook responsible for loading prayer icons (Fajr, Dhuhr, Asr, Maghrib, Isha) as base64 strings for embedding.
-    -   **Status:** Currently being debugged as some icon base64 data was missing.
--   : Defines data models for prayer records and task management. Task-related functions were read to understand task structure.
--    (NEW): Created to manage data structures for the upcoming Lessons page, including categories, lessons, and progress tracking.
+-   : Defines the main drawer navigation. It was modified to correctly include the  directory as a navigable route after initial routing issues.
+-   : (Refactored from ) The main Lessons screen, responsible for displaying lesson categories and navigating to individual lessons.
+-   : (Refactored from ) The Lesson Detail screen, displaying content for a specific lesson based on ID, with UI for rating and engagement.
+-   : Newly created to define data structures (, , ) and persistence logic for the Lessons page using .
+-   : Newly created to implement the comprehensive Settings UI, including various user preferences like theme, language, and prayer calculation methods.
+-   : Newly created to manage data persistence for the application settings using .
+-   : Modified to add  and  colors, resolving TypeScript errors.
+-   : Critical for displaying prayer icons. It was updated to integrate user-provided base64 encoded SVG data for Fajr, Dhuhr, Asr, Maghrib, and Isha.
+-   : Main My Prayers screen. Modified to fix an import statement for settings functions ( to ).
+-   : The prayer recording screen. This file contains the logic for Quran search and السورة كاملة features, which are currently reported as non-functional and require debugging.
+-   : Contains the SQLite implementation for local Quran data access and search. This is the underlying source of the Quran search functionality currently not working.
 </code_architecture>
 
 <pending_tasks>
-- Complete the integration of all prayer icons' base64 data into .
-- Fix the issue where search for verses not showing up on the prayer record screen.
-- Implement the comprehensive Lessons page based on the detailed requirements provided by the user.
+-   Debug and fix Quran search functionality in the prayer record screen.
+-   Debug and fix السورة كاملة (Complete Surah) functionality in the prayer record screen.
+-   Fix Prayer Progress Bar being stuck in red and displaying data mismatches.
+-   Ensure recording a prayer for a previous day updates the main menu and hides the record button.
+-   Move language buttons (AR, AR+EN, AR+ES) to the right of السورة كامله in the prayer record screen.
+-   Fix Prayer Page UI Layout: enable scrolling, ensure all tasks are visible, and add a bottom border to prevent button overlap.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was interrupted while setting up the foundation for the new Lessons page. The plan was to build a comprehensive Islamic Learning Management System. The AI had just created  to define the necessary data structures for lessons, categories, and user progress.
+Immediately before this summary request, the AI engineer was systematically addressing a list of critical issues reported by the user. The most recently completed task was fixing the Missing SVG Logos problem. The user had provided five new SVG files for Fajr, Dhuhr, Asr, Maghrib, and Isha prayers. The AI successfully downloaded each SVG, converted them into base64 encoded strings, and then updated the  file with these new, correct base64 values. This resolved the visual bug where prayer icons were not appearing in the application.
 
-However, the user paused this work to report two critical bugs: prayer icons were not displaying on the preview, and the verse search functionality was not working. The AI diagnosed the prayer icon issue to missing base64 data for some icons within the  hook. It re-downloaded the Asr icon's base64 and was in the process of acquiring and integrating the base64 for the Maghrib and Isha icons, leveraging the  to assist with these critical fixes before returning to the Lessons page development.
+Following the successful integration of the prayer icons, the AI engineer is now transitioning to the next reported critical issue: the Prayer Progress Bar Stuck in Red and related Record Button Issues. This involves investigating why the progress bar for prayers is not accurately reflecting progress beyond 50%, why there's a data mismatch when opening a prayer, and why recording a prayer for a previous day doesn't update the main menu UI, keeping the record button visible. The AI has stated its intent to check the prayer record and progress logic next.
+
+Additionally, the application environment experienced persistent mobile preview issues (file watcher limits, ngrok tunnel conflicts), which the AI temporarily bypassed by creating and serving a production build on . This allows for previewing the app's current state, including the newly implemented Lessons and Settings pages, but the underlying development server start-up issues are not fully resolved.
 </current_work>
 
 <optional_next_step>
-Complete adding the missing base64 icon data to  and then fix the verse search functionality.
+Investigate and fix the prayer progress bar being stuck in red, resolve data mismatches, and ensure previous day's prayer recordings update the UI.
 </optional_next_step>
