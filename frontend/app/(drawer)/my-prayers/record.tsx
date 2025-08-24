@@ -194,13 +194,6 @@ export default function RecordPrayer() {
           <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
         </View>
 
-        {/* Language chips */}
-        <View style={styles.langRow}>
-          <LangChip active={lang === "ar"} label="عربي" onPress={() => setLang("ar")} />
-          <LangChip active={lang === "ar_en"} label="عربي + English" onPress={() => setLang("ar_en")} />
-          <LangChip active={lang === "ar_es"} label="عربي + Español" onPress={() => setLang("ar_es")} />
-        </View>
-
         <TextInput
           placeholder="ابحث في القرآن..."
           placeholderTextColor={"#ccc"}
@@ -213,7 +206,19 @@ export default function RecordPrayer() {
         />
 
         <View style={styles.actionsRow}>
-          <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}><Text style={styles.wholeSurahTxt}>السورة كاملة</Text></TouchableOpacity>
+          <View style={styles.controlsGroup}>
+            <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}>
+              <Text style={styles.wholeSurahTxt}>السورة كاملة</Text>
+            </TouchableOpacity>
+            
+            {/* Language chips positioned to the right */}
+            <View style={styles.langRow}>
+              <LangChip active={lang === "ar"} label="عربي" onPress={() => setLang("ar")} />
+              <LangChip active={lang === "ar_en"} label="عربي + English" onPress={() => setLang("ar_en")} />
+              <LangChip active={lang === "ar_es"} label="عربي + Español" onPress={() => setLang("ar_es")} />
+            </View>
+          </View>
+          
           {(rangeStart || rangeEnd) && (
             <View style={styles.rangeBar}>
               <Text style={styles.rangeText}>
