@@ -384,6 +384,7 @@ const styles = StyleSheet.create({
   input: { backgroundColor: "#1d2a29", color: Colors.light, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 12, margin: 12, textAlign: "right" },
   actionsRow: { paddingHorizontal: 12, gap: 8 },
   controlsGroup: { flexDirection: 'row-reverse', alignItems: 'center', gap: 12 },
+  controlsGroup: { flexDirection: 'row-reverse', alignItems: 'center', gap: 12 },
   wholeSurahBtn: { alignSelf: 'flex-start', backgroundColor: Colors.greenTeal, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
   wholeSurahTxt: { color: Colors.light, fontWeight: '800' },
   rangeBar: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, backgroundColor: '#1d2a29', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
