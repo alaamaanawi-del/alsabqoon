@@ -11,6 +11,14 @@ export default function TaskProgressBar({ score, showPercentage = true }: TaskPr
   const percentage = Math.min(100, Math.max(0, score));
   const isEmpty = percentage === 0;
 
+  // Dynamic color based on progress
+  const getProgressColor = () => {
+    if (percentage >= 75) return '#4CAF50'; // Green for excellent progress
+    if (percentage >= 50) return '#FF9800'; // Orange for good progress  
+    if (percentage >= 25) return '#FFC107'; // Yellow for some progress
+    return '#FF4444'; // Red for minimal progress
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.barContainer}>
@@ -19,7 +27,10 @@ export default function TaskProgressBar({ score, showPercentage = true }: TaskPr
           <View 
             style={[
               styles.fillBar, 
-              { width: `${percentage}%` }
+              { 
+                width: `${percentage}%`,
+                backgroundColor: getProgressColor()
+              }
             ]} 
           />
         )}
