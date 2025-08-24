@@ -369,6 +369,7 @@ function QuestionRow({ label, value, onToggle, taskOn, onTask }: { label: string
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.dark },
+  scrollContent: { flexGrow: 1 },
   header: { color: Colors.light, fontSize: 18, fontWeight: "800", padding: 16 },
   scoreBox: { backgroundColor: '#1d2a29', marginHorizontal: 12, borderRadius: 12, padding: 12, marginBottom: 8 },
   scoreTxt: { color: Colors.light, fontWeight: '800' },
