@@ -30,7 +30,7 @@ export default function DrawerLayout() {
       <Drawer.Screen name="index" options={{ title: "الرئيسية" }} />
       <Drawer.Screen name="my-prayers/index" options={{ title: "صلاتي" }} />
       <Drawer.Screen name="tasks" options={{ title: "المهام" }} />
-      <Drawer.Screen name="lessons" options={{ title: "الدروس" }} />
+      <Drawer.Screen name="lessons/index" options={{ title: "الدروس" }} />
       <Drawer.Screen name="messages" options={{ title: "الرسائل" }} />
       <Drawer.Screen name="information" options={{ title: "المعلومات" }} />
       <Drawer.Screen name="settings" options={{ title: "الإعدادات" }} />
