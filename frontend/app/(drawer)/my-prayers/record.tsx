@@ -332,7 +332,7 @@ export default function RecordPrayer() {
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => router.back()} style={styles.primaryBtn}><Text style={styles.primaryText}>تم</Text></TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
