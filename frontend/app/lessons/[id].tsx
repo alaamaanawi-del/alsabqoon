@@ -26,11 +26,12 @@ import {
 } from "../../src/storage/lessons";
 
 export default function LessonDetailScreen() {
-  const { id, title, categoryId } = useLocalSearchParams<{
+  const { id } = useLocalSearchParams<{
     id: string;
-    title: string;
-    categoryId: string;
   }>();
+  
+  const [title, setTitle] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("");
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [lessonRecord, setLessonRecord] = useState<LessonRecord | null>(null);
