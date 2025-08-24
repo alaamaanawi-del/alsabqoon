@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     height: '100%',
-    backgroundColor: '#FF4444', // Red for completed portion
     borderRadius: 3,
   },
   percentageText: {
