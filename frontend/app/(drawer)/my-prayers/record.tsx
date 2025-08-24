@@ -178,7 +178,7 @@ export default function RecordPrayer() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
         <Text style={styles.header}>تسجيل - {p}</Text>
 
         {/* Score bar */}
