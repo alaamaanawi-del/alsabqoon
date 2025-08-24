@@ -255,9 +255,7 @@ export const PRAYER_CALCULATION_METHODS = {
   isna: 'Islamic Society of North America',
   egypt: 'Egyptian General Authority',
   makkah: 'Umm Al-Qura University, Makkah',
-  karachi: 'University of Islamic Sciences, Karachi',
-  tehran: 'Institute of Geophysics, Tehran',
-  jafari: 'Shia Ithna-Ashari (Jafari)'
+  karachi: 'University of Islamic Sciences, Karachi'
 };
 
 export const ASR_CALCULATION_METHODS = {
