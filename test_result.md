@@ -292,6 +292,17 @@ frontend:
       - working: NA
         agent: "testing"
         comment: "Frontend-only feature using AsyncStorage for data persistence. No backend testing required as this is a client-side implementation. Backend regression testing completed successfully with no impact from this frontend feature."
+  - task: "Settings Page Implementation"
+    implemented: true
+    working: false
+    file: "/app/frontend/app/(drawer)/settings.tsx, /app/frontend/src/storage/settings.ts"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented comprehensive Settings page with Font Size controls (App Interface & Lessons Reading), Notifications toggles (New Lessons & App Updates), Theme selection (Light/Dark/Pink/Blue/Islamic Green), Language preferences (Arabic/English/Spanish), Share App functionality (WhatsApp/Facebook), Prayer Settings (Calculation Methods & Asr Methods), and Data Backup & Restore with automatic 24-hour backup at 2 AM. Created complete settings storage system with AsyncStorage integration."
 metadata:
   created_by: "main_agent"
   version: "1.0"
