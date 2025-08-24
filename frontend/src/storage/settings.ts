@@ -204,7 +204,7 @@ export const restoreFromBackup = async (): Promise<boolean> => {
 
     // Restore backup data
     const { data } = backupData;
-    const keyValuePairs = Object.entries(data).map(([key, value]) => [key, value as string]);
+    const keyValuePairs: [string, string][] = Object.entries(data).map(([key, value]) => [key, value as string]);
     await AsyncStorage.multiSet(keyValuePairs);
 
     return true;
