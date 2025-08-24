@@ -5,7 +5,7 @@ import { Link, useRouter } from "expo-router";
 import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
 import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
-import { getSettings, saveSettings } from "../../../src/storage/settings";
+import { loadSettings, saveSettings } from "../../../src/storage/settings";
 import WeekBar from "../../../src/components/WeekBar";
 import { usePrayerIcons } from "../../../src/hooks/usePrayerIcons";
 import TaskProgressBar from "../../../src/components/TaskProgressBar";
@@ -28,7 +28,7 @@ export default function MyPrayers() {
 
   useEffect(() => {
     (async () => {
-      const s = await getSettings();
+      const s = await loadSettings();
       if (s.rememberSelectedDate && s.lastSelectedDate) {
         setSelectedDate(new Date(s.lastSelectedDate));
         setMonthDate(new Date(s.lastSelectedDate));
@@ -46,7 +46,7 @@ export default function MyPrayers() {
         out[p.key] = { r1: sc.r1, r2: sc.r2 };
       }
       setScores(out);
-      const s = await getSettings();
+      const s = await loadSettings();
       if (s.rememberSelectedDate) {
         await saveSettings({ ...s, lastSelectedDate: date });
       }
