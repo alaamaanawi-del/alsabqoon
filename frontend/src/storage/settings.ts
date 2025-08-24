@@ -314,9 +314,4 @@ export const THEME_COLORS = {
   }
 };
 
-// Font size multipliers
-export const FONT_SIZE_MULTIPLIERS = {
-  small: 0.85,
-  medium: 1.0,
-  large: 1.2
-};
+export const getSettings = loadSettings; // Alias for compatibility
