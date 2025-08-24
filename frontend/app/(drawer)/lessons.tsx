@@ -46,14 +46,7 @@ export default function LessonsScreen() {
   };
 
   const navigateToLesson = (lesson: Lesson) => {
-    router.push({
-      pathname: "/lessons/[id]",
-      params: { 
-        id: lesson.id,
-        title: lesson.title,
-        categoryId: lesson.categoryId
-      }
-    });
+    router.push(`/lessons/${lesson.id}?title=${encodeURIComponent(lesson.title)}&categoryId=${lesson.categoryId}`);
   };
 
   const renderProgressBar = (percentage: number) => (
