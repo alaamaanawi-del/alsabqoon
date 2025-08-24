@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   tabs: { flexDirection: 'row-reverse', gap: 8, paddingHorizontal: 12, marginBottom: 8 },
   tabBtn: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16 },
   tabBtnActive: { backgroundColor: Colors.warmOrange },
-  langRow: { flexDirection: "row-reverse", paddingHorizontal: 16, gap: 8 },
+  langRow: { flexDirection: "row-reverse", gap: 8 },
   langChip: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 },
   langChipActive: { backgroundColor: Colors.warmOrange },
   input: { backgroundColor: "#1d2a29", color: Colors.light, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 12, margin: 12, textAlign: "right" },
