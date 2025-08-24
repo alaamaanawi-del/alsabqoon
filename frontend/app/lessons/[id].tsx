@@ -29,9 +29,6 @@ export default function LessonDetailScreen() {
   const { id } = useLocalSearchParams<{
     id: string;
   }>();
-  
-  const [title, setTitle] = useState<string>("");
-  const [categoryId, setCategoryId] = useState<string>("");
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [lessonRecord, setLessonRecord] = useState<LessonRecord | null>(null);
