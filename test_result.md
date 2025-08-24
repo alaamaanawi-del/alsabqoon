@@ -278,6 +278,17 @@ frontend:
       - working: NA
         agent: "main"
         comment: "Debounced search + bilingual toggles"
+  - task: "Lessons Page Implementation"
+    implemented: true
+    working: false
+    file: "/app/frontend/app/(drawer)/lessons.tsx, /app/frontend/app/lessons/[id].tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented comprehensive Islamic Learning Management System with main lessons page showing categories (Fiqh, Aqeedah, Tafseer), overall knowledge progress bar, expandable categories listing lessons. Created individual lesson pages with content display, 1-5 star rating system, engagement questions, progress tracking, and comments section. Updated drawer navigation to include lessons page."
 metadata:
   created_by: "main_agent"
   version: "1.0"
