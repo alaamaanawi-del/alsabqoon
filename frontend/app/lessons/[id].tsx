@@ -49,6 +49,13 @@ export default function LessonDetailScreen() {
   useEffect(() => {
     loadLessonData();
     incrementViewCount();
+    
+    // Extract URL params
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      setTitle(urlParams.get('title') || '');
+      setCategoryId(urlParams.get('categoryId') || '');
+    }
   }, [id]);
 
   const loadLessonData = async () => {
