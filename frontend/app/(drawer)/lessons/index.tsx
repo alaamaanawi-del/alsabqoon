@@ -46,7 +46,7 @@ export default function LessonsScreen() {
   };
 
   const navigateToLesson = (lesson: Lesson) => {
-    router.push(`/lessons/${lesson.id}`);
+    router.push(`./${lesson.id}`);
   };
 
   const renderProgressBar = (percentage: number) => (
