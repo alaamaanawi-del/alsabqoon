@@ -238,6 +238,42 @@ export default function RecordPrayer() {
             <TouchableOpacity onPress={clearAllRanges} style={styles.clearAll}><Text style={styles.clearAllTxt}>مسح كل نطاقات الركعة</Text></TouchableOpacity>
           </View>
         )}
+        {/* Search Results */}
+        {results.length > 0 && (
+          <FlatList
+            data={results}
+            keyExtractor={(item, idx) => `${item.surahNumber}-${item.ayah}-${idx}`}
+            style={styles.resultsList}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.resultRow,
+                  withinRange(item) && { backgroundColor: Colors.warmOrange }
+                ]}
+                onPress={() => onVerseNumberPress(item)}
+              >
+                <View style={styles.resultHeader}>
+                  <Text style={[styles.verseRef, withinRange(item) && { color: Colors.dark }]}>
+                    {item.nameAr} {item.surahNumber}:{item.ayah}
+                  </Text>
+                </View>
+                <Text style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}>
+                  {item.textAr}
+                </Text>
+                {lang === "ar_en" && item.en && (
+                  <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
+                    {item.en}
+                  </Text>
+                )}
+                {lang === "ar_es" && item.es && (
+                  <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
+                    {item.es}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            )}
+          />
+        )}
 
         {/* Questions + Add to task */}
         {record && (
