@@ -259,8 +259,8 @@ export const PRAYER_CALCULATION_METHODS = {
 };
 
 export const ASR_CALCULATION_METHODS = {
-  hanafi: 'Hanafi (Shadow length = 2x object + Fajr shadow)',
-  shafi: 'Shafi/Maliki/Hanbali (Shadow length = 1x object + Fajr shadow)'
+  hanafi: 'Hanafi',
+  shafi: 'Shafi/Maliki/Hanbali'
 };
 
 // Theme colors
