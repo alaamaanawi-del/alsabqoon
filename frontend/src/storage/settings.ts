@@ -20,7 +20,7 @@ export interface LanguageSettings {
 }
 
 export interface PrayerSettings {
-  calculationMethod: 'mwl' | 'isna' | 'egypt' | 'makkah' | 'karachi' | 'tehran' | 'jafari';
+  calculationMethod: 'mwl' | 'isna' | 'egypt' | 'makkah' | 'karachi';
   asrMethod: 'hanafi' | 'shafi';
 }
 
