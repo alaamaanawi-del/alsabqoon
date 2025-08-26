@@ -15,6 +15,10 @@ interface VerseRange {
   nameEn: string;
   fromAyah: number;
   toAyah: number;
+  verses?: Array<{
+    ayah: number;
+    textAr: string;
+  }>;
 }
 
 interface SelectedVersesDisplayProps {
@@ -24,63 +28,67 @@ interface SelectedVersesDisplayProps {
 
 export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: SelectedVersesDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [animatedHeight] = useState(new Animated.Value(0));
 
   if (ranges.length === 0) {
-    return null;
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>لم يتم اختيار آيات بعد</Text>
+        <Text style={styles.emptySubText}>استخدم البحث أو "السورة كاملة" لاختيار الآيات</Text>
+      </View>
+    );
   }
 
-  const toggleExpanded = () => {
-    const toValue = isExpanded ? 0 : 1;
-    Animated.spring(animatedHeight, {
-      toValue,
-      useNativeDriver: false,
-      tension: 100,
-      friction: 8,
-    }).start();
-    setIsExpanded(!isExpanded);
-  };
-
-  const renderRange = (range: VerseRange) => {
+  const renderRange = (range: VerseRange, index: number) => {
     const rangeText = range.fromAyah === range.toAyah 
       ? `الآية ${range.fromAyah}`
       : `الآيات ${range.fromAyah} - ${range.toAyah}`;
     
-    return `${range.nameAr} (${rangeText})`;
+    return (
+      <View key={index} style={styles.rangeContainer}>
+        <Text style={styles.rangeHeader}>
+          {range.nameAr} ({rangeText})
+        </Text>
+        {range.verses && range.verses.length > 0 ? (
+          range.verses.map((verse, vIndex) => (
+            <Text key={vIndex} style={styles.verseText}>
+              ({verse.ayah}) {verse.textAr}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.placeholderText}>
+            سيتم عرض النص عند الاتصال بقاعدة البيانات
+          </Text>
+        )}
+      </View>
+    );
   };
-
-  const allRangesText = ranges.map(renderRange).join(' • ');
-  const shouldShowToggle = ranges.length > 2; // Show toggle if more than 2 ranges
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>الآيات المختارة</Text>
-        {shouldShowToggle && (
-          <TouchableOpacity onPress={toggleExpanded} style={styles.toggleButton}>
+        <Text style={styles.title}>الآيات المختارة ({ranges.length})</Text>
+        {ranges.length > 1 && (
+          <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={styles.toggleButton}>
             <Text style={styles.toggleText}>
-              {isExpanded ? 'اقل ←' : 'اكثر →'}
+              {isExpanded ? 'طي ↑' : 'توسيع ↓'}
             </Text>
           </TouchableOpacity>
         )}
       </View>
 
-      <View style={[styles.contentContainer, { maxHeight: isExpanded ? 200 : 120 }]}>
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={isExpanded}
-          nestedScrollEnabled={true}
-        >
-          <Text style={styles.versesText} numberOfLines={isExpanded ? undefined : maxLines}>
-            {allRangesText}
-          </Text>
-        </ScrollView>
-      </View>
-
-      {/* Fixed overlay for non-expanded state */}
-      {!isExpanded && ranges.length > 2 && (
-        <View style={styles.fadeOverlay} />
-      )}
+      <ScrollView 
+        style={[
+          styles.scrollContainer, 
+          { 
+            maxHeight: isExpanded ? 300 : 120,
+            minHeight: 60
+          }
+        ]}
+        showsVerticalScrollIndicator={true}
+        nestedScrollEnabled={false}
+      >
+        {ranges.map((range, index) => renderRange(range, index))}
+      </ScrollView>
     </View>
   );
 }
