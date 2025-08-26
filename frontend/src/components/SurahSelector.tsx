@@ -226,13 +226,27 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           />
         </View>
 
-        <FlatList
-          data={filteredSurahs}
-          keyExtractor={(item) => item.number.toString()}
-          renderItem={renderSurahItem}
+        <ScrollView 
           style={styles.list}
-          showsVerticalScrollIndicator={false}
-        />
+          showsVerticalScrollIndicator={true}
+        >
+          {filteredSurahs.map((item) => (
+            <TouchableOpacity 
+              key={item.number.toString()}
+              style={styles.surahItem}
+              onPress={() => handleSelectSurah(item)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.surahContent}>
+                <Text style={styles.surahNumber}>{item.number}</Text>
+                <View style={styles.surahNames}>
+                  <Text style={styles.surahNameAr}>{item.nameAr}</Text>
+                  <Text style={styles.surahNameEn}>{item.nameEn}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </Modal>
   );
