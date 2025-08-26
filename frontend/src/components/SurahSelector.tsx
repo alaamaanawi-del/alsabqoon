@@ -11,9 +11,8 @@ import {
   Alert
 } from 'react-native';
 import { Colors } from '../theme/colors';
-import { searchQuran } from '../db/quran.index';
 
-// All 114 Surahs - we'll expand this later with complete data
+// All 114 Surahs - Complete list
 const ALL_SURAHS = [
   { number: 1, nameAr: "الفاتحة", nameEn: "Al-Fatiha" },
   { number: 2, nameAr: "البقرة", nameEn: "Al-Baqarah" },
@@ -196,7 +195,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>إغلاق</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>اختر السورة</Text>
+          <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
         </View>
 
         <View style={styles.searchContainer}>
@@ -210,22 +209,19 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           />
         </View>
 
-        <ScrollView 
-          style={styles.list}
-          showsVerticalScrollIndicator={true}
-        >
-          {filteredSurahs.map((item) => (
+        <ScrollView style={styles.list} showsVerticalScrollIndicator={true}>
+          {filteredSurahs.map((surah) => (
             <TouchableOpacity 
-              key={item.number.toString()}
+              key={surah.number}
               style={styles.surahItem}
-              onPress={() => handleSelectSurah(item)}
+              onPress={() => handleSelectSurah(surah)}
               activeOpacity={0.7}
             >
               <View style={styles.surahContent}>
-                <Text style={styles.surahNumber}>{item.number}</Text>
+                <Text style={styles.surahNumber}>{surah.number}</Text>
                 <View style={styles.surahNames}>
-                  <Text style={styles.surahNameAr}>{item.nameAr}</Text>
-                  <Text style={styles.surahNameEn}>{item.nameEn}</Text>
+                  <Text style={styles.surahNameAr}>{surah.nameAr}</Text>
+                  <Text style={styles.surahNameEn}>{surah.nameEn}</Text>
                 </View>
               </View>
             </TouchableOpacity>
