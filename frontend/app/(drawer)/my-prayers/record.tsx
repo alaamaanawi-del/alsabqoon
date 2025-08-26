@@ -60,6 +60,20 @@ export default function RecordPrayer() {
   const [record, setRecord] = useState<PrayerRecord | null>(null);
   const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1);
 
+  // Clear range selection when switching rakkas to prevent contamination
+  const handleRakkaSwitch = (newRakka: RakkaIndex) => {
+    if (newRakka !== activeRakka) {
+      // Clear current rakka's range if it's incomplete
+      const currentStart = rangeStart[activeRakka];
+      const currentEnd = rangeEnd[activeRakka];
+      if (currentStart && !currentEnd) {
+        setRangeStart(prev => ({ ...prev, [activeRakka]: null }));
+        showToast('تم مسح التحديد غير المكتمل');
+      }
+      setActiveRakka(newRakka);
+    }
+  };
+
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<"ar" | "ar_tafseer" | "ar_en" | "ar_es">("ar");
   // Make results independent per rakka
