@@ -72,10 +72,19 @@ async function initDb(database: SQLite.SQLiteDatabase) {
 async function seedImport(database: SQLite.SQLiteDatabase) {
   await database.withTransactionAsync(async () => {
     for (const s of (seed as any).surahs) {
-      await database.runAsync(`INSERT INTO surahs(number, nameAr, nameEn) VALUES(?,?,?)`, [s.number, s.nameAr, s.nameEn]);
+      // Handle both old format (nameAr, nameEn) and new format (surah)
+      const nameAr = s.nameAr || s.surah || `Surah ${s.number}`;
+      const nameEn = s.nameEn || `Surah ${s.number}`;
+      
+      await database.runAsync(`INSERT INTO surahs(number, nameAr, nameEn) VALUES(?,?,?)`, [s.number, nameAr, nameEn]);
+      
       for (const a of s.ayahs) {
-        const norm = normalizeArabic(a.textAr);
-        await database.runAsync(`INSERT INTO ayahs(surahNumber, ayah, textAr, textArNorm, en, es) VALUES(?,?,?,?,?,?)`, [s.number, a.ayah, a.textAr, norm, a.en || null, a.es || null]);
+        // Handle both old format (textAr, ayah) and new format (text, ayah_number)
+        const textAr = a.textAr || a.text || '';
+        const ayahNumber = a.ayah || a.ayah_number || 1;
+        const norm = normalizeArabic(textAr);
+        
+        await database.runAsync(`INSERT INTO ayahs(surahNumber, ayah, textAr, textArNorm, en, es) VALUES(?,?,?,?,?,?)`, [s.number, ayahNumber, textAr, norm, a.en || null, a.es || null]);
       }
     }
   });
