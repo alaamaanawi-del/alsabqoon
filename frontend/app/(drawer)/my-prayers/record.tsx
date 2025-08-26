@@ -377,10 +377,10 @@ export default function RecordPrayer() {
           </View>
         )}
         {/* Search Results */}
-        {results.length > 0 && (
+        {results[activeRakka]?.length > 0 && (
           <View style={styles.resultsContainer}>
-            <Text style={styles.resultsTitle}>نتائج البحث ({results.length})</Text>
-            {results.slice(0, 20).map((item, idx) => (
+            <Text style={styles.resultsTitle}>نتائج البحث ({results[activeRakka].length})</Text>
+            {results[activeRakka].slice(0, 20).map((item, idx) => (
               <TouchableOpacity
                 key={`${item.surahNumber}-${item.ayah}-${idx}`}
                 style={[
@@ -414,9 +414,9 @@ export default function RecordPrayer() {
                 )}
               </TouchableOpacity>
             ))}
-            {results.length > 20 && (
+            {results[activeRakka].length > 20 && (
               <Text style={styles.moreResults}>
-                عرض أول 20 نتيجة من {results.length}
+                عرض أول 20 نتيجة من {results[activeRakka].length}
               </Text>
             )}
           </View>
