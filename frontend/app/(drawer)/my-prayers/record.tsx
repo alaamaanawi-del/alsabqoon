@@ -53,7 +53,12 @@ export default function RecordPrayer() {
   const [rangeStart, setRangeStart] = useState<SearchItem | null>(null);
   const [rangeEnd, setRangeEnd] = useState<SearchItem | null>(null);
 
-  const bilingualParam = useMemo(() => (lang === "ar_en" ? "en" : lang === "ar_es" ? "es" : ""), [lang]);
+  const bilingualParam = useMemo(() => (
+    lang === "ar_tafseer" ? "tafseer" : 
+    lang === "ar_en" ? "en" : 
+    lang === "ar_es" ? "es" : 
+    ""
+  ), [lang]);
 
   useEffect(() => {
     (async () => {
