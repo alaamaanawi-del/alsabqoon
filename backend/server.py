@@ -111,6 +111,11 @@ async def quran_search(
                         break
             
             if match_ar or match_tafseer:
+                # Get the first tafseer text for display if requested
+                first_tafseer = ""
+                if bilingual == 'tafseer' and 'tafsir' in a and a['tafsir']:
+                    first_tafseer = a['tafsir'][0].get('text', '') if a['tafsir'] else ""
+                
                 res = SearchResult(
                     surahNumber=s['number'],
                     nameAr=s['surah'],
@@ -119,7 +124,7 @@ async def quran_search(
                     textAr=a['text'],     # Updated field name
                     en=None,  # No English translation in this dataset
                     es=None,  # No Spanish translation in this dataset
-                    tafseer=tafseer_text if bilingual == 'tafseer' and match_tafseer else None,
+                    tafseer=first_tafseer,
                 )
                 results.append(res)
                 # Limit for performance
