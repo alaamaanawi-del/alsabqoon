@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Colors } from "../../../src/theme/colors";
 import { Link, useRouter } from "expo-router";
-import { loadPrayerRecord, computeScore } from "../../../src/storage/prayer";
+import { loadPrayerRecord, computeScore, loadTasks } from "../../../src/storage/prayer";
 import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
 import { loadSettings, saveSettings } from "../../../src/storage/settings";
