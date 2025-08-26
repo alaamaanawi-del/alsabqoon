@@ -550,6 +550,7 @@ const styles = StyleSheet.create({
   clearAll: { backgroundColor: '#5a2e2e', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 },
   clearAllTxt: { color: '#ffd7d7', fontWeight: '800' },
   qRow: { flexDirection: 'row-reverse', alignItems: 'center', backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8, gap: 8 },
+  highlightedQuestion: { backgroundColor: '#2a3d1d', borderColor: Colors.warmOrange, borderWidth: 1 },
   qLabel: { color: Colors.light, fontWeight: '700', textAlign: 'right' },
   taskBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12, borderColor: Colors.warmOrange, borderWidth: 1 },
   countRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8 },
