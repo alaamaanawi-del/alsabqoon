@@ -44,13 +44,20 @@ const highlightSearchTerm = (text: string, searchTerm: string) => {
 };
 
 export default function RecordPrayer() {
-  const { prayer, date } = useLocalSearchParams<{ prayer?: string; date?: string }>();
+  const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
   const router = useRouter();
   const p = (prayer as string) || 'fajr';
   const day = ymdFromParam(date as string | undefined);
 
+  // Parse focus parameter: "1:understood" or "2:dua"
+  const [focusRakka, focusQuestion] = useMemo(() => {
+    if (!focus) return [null, null];
+    const [r, q] = focus.split(':');
+    return [parseInt(r) as RakkaIndex || null, q as QuestionKey || null];
+  }, [focus]);
+
   const [record, setRecord] = useState<PrayerRecord | null>(null);
-  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1);
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1);
 
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<"ar" | "ar_tafseer" | "ar_en" | "ar_es">("ar");
