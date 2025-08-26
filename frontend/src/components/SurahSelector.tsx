@@ -4,7 +4,7 @@ import {
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  FlatList, 
+  ScrollView,
   Modal,
   SafeAreaView,
   TextInput,
