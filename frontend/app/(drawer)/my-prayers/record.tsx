@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
   footer: { position: "absolute", left: 0, right: 0, bottom: 0, padding: 12, backgroundColor: "rgba(0,0,0,0.6)" },
   primaryBtn: { backgroundColor: Colors.warmOrange, paddingVertical: 12, borderRadius: 12, alignItems: "center" },
   primaryText: { color: Colors.dark, fontWeight: "800", fontSize: 16 },
-  resultsList: { maxHeight: 300, marginHorizontal: 12, marginBottom: 8 },
+
   resultRow: { backgroundColor: "#1d2a29", padding: 12, borderRadius: 12, marginBottom: 8 },
   resultHeader: { marginBottom: 4 },
   verseRef: { color: Colors.warmOrange, fontWeight: "700", fontSize: 14 },
