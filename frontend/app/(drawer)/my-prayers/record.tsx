@@ -17,6 +17,7 @@ interface DBItem {
   textAr: string;
   en?: string | null;
   es?: string | null;
+  tafseer?: string | null;
 }
 interface SearchItem extends DBItem {}
 
