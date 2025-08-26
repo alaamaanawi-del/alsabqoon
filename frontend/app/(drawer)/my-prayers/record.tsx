@@ -551,6 +551,7 @@ function QuestionRow({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.dark },
+  headerSection: { flex: 0 },
   scrollContent: { flexGrow: 1 },
   header: { color: Colors.light, fontSize: 18, fontWeight: "800", padding: 16 },
   scoreBox: { backgroundColor: '#1d2a29', marginHorizontal: 12, borderRadius: 12, padding: 12, marginBottom: 8 },
