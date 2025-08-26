@@ -218,8 +218,8 @@ export default function RecordPrayer() {
       ayah: 1,
       textAr: '',
     };
-    setRangeStart(mockItem);
-    setRangeEnd(null);
+    setRangeStart(prev => ({ ...prev, [activeRakka]: mockItem }));
+    setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
     showToast(`تم اختيار ${surah.nameAr} - اختر نطاق الآيات`);
   };
 
@@ -242,8 +242,8 @@ export default function RecordPrayer() {
           ayah: range.toAyah,
           textAr: '',
         };
-        setRangeStart(startItem);
-        setRangeEnd(endItem);
+        setRangeStart(prev => ({ ...prev, [activeRakka]: startItem }));
+        setRangeEnd(prev => ({ ...prev, [activeRakka]: endItem }));
         showToast(`تم اختيار ${surah.nameAr} كاملة`);
       } else {
         // Fallback - just set a mock range
@@ -254,8 +254,8 @@ export default function RecordPrayer() {
           ayah: 1,
           textAr: '',
         };
-        setRangeStart(startItem);
-        setRangeEnd(startItem);
+        setRangeStart(prev => ({ ...prev, [activeRakka]: startItem }));
+        setRangeEnd(prev => ({ ...prev, [activeRakka]: startItem }));
         showToast(`تم اختيار ${surah.nameAr}`);
       }
     } catch (error) {
