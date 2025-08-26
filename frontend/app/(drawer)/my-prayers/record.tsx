@@ -382,8 +382,17 @@ export default function RecordPrayer() {
           <TouchableOpacity onPress={() => router.back()} style={styles.primaryBtn}><Text style={styles.primaryText}>تم</Text></TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* SurahSelector Modal */}
+      <SurahSelector
+        visible={showSurahSelector}
+        onClose={() => setShowSurahSelector(false)}
+        onSelectSurah={handleSelectSurah}
+        onSelectWholeSurah={handleSelectWholeSurah}
+      />
     </KeyboardAvoidingView>
   );
+
 }
 
 function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
