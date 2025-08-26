@@ -278,6 +278,7 @@ export default function RecordPrayer() {
             {/* Language chips positioned to the right */}
             <View style={styles.langRow}>
               <LangChip active={lang === "ar"} label="عربي" onPress={() => setLang("ar")} />
+              <LangChip active={lang === "ar_tafseer"} label="عربي + تفسير" onPress={() => setLang("ar_tafseer")} />
               <LangChip active={lang === "ar_en"} label="عربي + English" onPress={() => setLang("ar_en")} />
               <LangChip active={lang === "ar_es"} label="عربي + Español" onPress={() => setLang("ar_es")} />
             </View>
