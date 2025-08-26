@@ -208,7 +208,7 @@ export default function MyPrayers() {
           score={(() => {
             const totalScore = PRAYERS.reduce((sum, p) => {
               const sc = scores[p.key] || { r1: 0, r2: 0 };
-              return sum + Math.max(sc.r1, sc.r2);
+              return sum + Math.max(sc.r1, sc.r2) * 2; // Convert 0-50 to 0-100
             }, 0);
             return Math.round(totalScore / PRAYERS.length);
           })()} 
