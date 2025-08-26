@@ -144,7 +144,7 @@ export default function MyPrayers() {
         const ymd = fmtYMD(selectedDate);
         const sc = scores[p.key] || { r1: 0, r2: 0 };
         // Fixed: Convert 0-50 range to 0-100 range for proper display
-        const score = Math.max(sc.r1, sc.r2) * 2; // Convert 0-50 to 0-100
+        const score = sc.r1 + sc.r2; // Total score 0-100 (each rakka 0-50)
         const isRecorded = score > 0;
         const prayerIcon = icons?.[p.key as keyof typeof icons];
         
@@ -208,7 +208,7 @@ export default function MyPrayers() {
           score={(() => {
             const totalScore = PRAYERS.reduce((sum, p) => {
               const sc = scores[p.key] || { r1: 0, r2: 0 };
-              return sum + Math.max(sc.r1, sc.r2) * 2; // Convert 0-50 to 0-100
+              return sum + sc.r1 + sc.r2; // Total score 0-100 (each rakka 0-50)
             }, 0);
             return Math.round(totalScore / PRAYERS.length);
           })()} 
