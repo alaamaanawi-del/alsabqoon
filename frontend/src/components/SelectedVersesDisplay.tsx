@@ -98,7 +98,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#1d2a29',
     borderRadius: 12,
     margin: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 138, 88, 0.3)',
     overflow: 'hidden',
+  },
+  emptyContainer: {
+    backgroundColor: '#1d2a29',
+    borderRadius: 12,
+    margin: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  emptyText: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  emptySubText: {
+    color: '#A6D3CF',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.8,
   },
   header: {
     flexDirection: 'row-reverse',
@@ -107,6 +131,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: 'rgba(255, 138, 88, 0.1)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 138, 88, 0.2)',
   },
   title: {
     color: Colors.warmOrange,
@@ -116,33 +142,43 @@ const styles = StyleSheet.create({
   toggleButton: {
     paddingHorizontal: 8,
     paddingVertical: 4,
+    backgroundColor: 'rgba(255, 138, 88, 0.2)',
+    borderRadius: 6,
   },
   toggleText: {
     color: Colors.warmOrange,
     fontSize: 12,
     fontWeight: '600',
   },
-  contentContainer: {
+  scrollContainer: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    position: 'relative',
   },
-  scrollView: {
-    flex: 1,
+  rangeContainer: {
+    marginBottom: 12,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
-  versesText: {
-    color: Colors.light,
+  rangeHeader: {
+    color: Colors.warmOrange,
     fontSize: 14,
-    lineHeight: 22,
+    fontWeight: '700',
+    marginBottom: 6,
     textAlign: 'right',
   },
-  fadeOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 20,
-    backgroundColor: 'rgba(29, 42, 41, 0.8)',
-    pointerEvents: 'none',
+  verseText: {
+    color: Colors.light,
+    fontSize: 16,
+    lineHeight: 28,
+    textAlign: 'right',
+    marginBottom: 4,
+  },
+  placeholderText: {
+    color: '#A6D3CF',
+    fontSize: 14,
+    fontStyle: 'italic',
+    textAlign: 'right',
+    opacity: 0.7,
   },
 });
