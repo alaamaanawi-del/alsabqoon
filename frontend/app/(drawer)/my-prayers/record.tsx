@@ -397,7 +397,7 @@ export default function RecordPrayer() {
                   </Text>
                 </View>
                 <Text style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}>
-                  {highlightSearchTerm(item.textAr, query)}
+                  {item.textAr}
                 </Text>
                 {lang === "ar_tafseer" && item.tafseer && (
                   <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
