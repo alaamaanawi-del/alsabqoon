@@ -354,11 +354,11 @@ export default function RecordPrayer() {
             </View>
           </View>
           
-          {(rangeStart || rangeEnd) && (
+          {(rangeStart[activeRakka] || rangeEnd[activeRakka]) && (
             <View style={styles.rangeBar}>
               <Text style={styles.rangeText}>
-                {rangeStart ? `${rangeStart.nameAr} ${rangeStart.surahNumber}: ${Math.min(rangeStart.ayah, rangeEnd?.ayah ?? rangeStart.ayah)}` : ''}
-                {rangeEnd ? ` → ${Math.max(rangeStart!.ayah, rangeEnd.ayah)}` : ''}
+                {rangeStart[activeRakka] ? `${rangeStart[activeRakka].nameAr} ${rangeStart[activeRakka].surahNumber}: ${Math.min(rangeStart[activeRakka].ayah, rangeEnd[activeRakka]?.ayah ?? rangeStart[activeRakka].ayah)}` : ''}
+                {rangeEnd[activeRakka] ? ` → ${Math.max(rangeStart[activeRakka]!.ayah, rangeEnd[activeRakka].ayah)}` : ''}
               </Text>
               <TouchableOpacity onPress={addCurrentRange} style={styles.saveRangeBtn}><Text style={styles.saveRangeTxt}>حفظ النطاق</Text></TouchableOpacity>
               <TouchableOpacity onPress={clearRange} style={styles.clearBtn}><Text style={styles.clearTxt}>مسح</Text></TouchableOpacity>
