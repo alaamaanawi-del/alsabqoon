@@ -26,7 +26,8 @@ export default function HighlightedText({
   return (
     <Text style={style}>
       {parts.map((part, index) => {
-        const isHighlight = regex.test(part) && part.toLowerCase() === searchTerm.toLowerCase();
+        // Check if this part matches the search term (case insensitive)
+        const isHighlight = regex.test(part);
         return (
           <Text 
             key={index}
