@@ -332,7 +332,7 @@ export default function RecordPrayer() {
           {/* Rakka tabs */}
           <View style={styles.tabs}>
             <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => handleRakkaSwitch(1)} />
-            <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
+            <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => handleRakkaSwitch(2)} />
           </View>
         </View>
 
