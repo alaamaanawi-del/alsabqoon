@@ -184,22 +184,6 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
     );
   };
 
-  const renderSurahItem = ({ item }: { item: typeof ALL_SURAHS[0] }) => (
-    <TouchableOpacity 
-      style={styles.surahItem}
-      onPress={() => handleSelectSurah(item)}
-      activeOpacity={0.7}
-    >
-      <View style={styles.surahContent}>
-        <Text style={styles.surahNumber}>{item.number}</Text>
-        <View style={styles.surahNames}>
-          <Text style={styles.surahNameAr}>{item.nameAr}</Text>
-          <Text style={styles.surahNameEn}>{item.nameEn}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
     <Modal
       visible={visible}
