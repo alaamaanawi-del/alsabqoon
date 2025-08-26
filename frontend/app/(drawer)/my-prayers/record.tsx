@@ -543,7 +543,29 @@ const styles = StyleSheet.create({
   verseRef: { color: Colors.warmOrange, fontWeight: "700", fontSize: 14 },
   arabicText: { color: Colors.light, fontSize: 16, textAlign: "right", marginBottom: 4 },
   translationText: { color: "#A6D3CF", fontSize: 14, textAlign: "right" },
-  resultsContainer: { marginHorizontal: 12, marginBottom: 8 },
-  resultsTitle: { color: Colors.warmOrange, fontWeight: "700", fontSize: 16, marginBottom: 8, textAlign: "right" },
-  moreResults: { color: "#A6D3CF", fontSize: 14, textAlign: "center", marginTop: 8, fontStyle: "italic" },
+  resultsContainer: { 
+    marginHorizontal: 12, 
+    marginBottom: 8,
+    maxHeight: 400,
+    backgroundColor: '#1d2a29',
+    borderRadius: 12,
+    padding: 12
+  },
+  resultsList: {
+    maxHeight: 300,
+  },
+  resultsTitle: { 
+    color: Colors.warmOrange, 
+    fontWeight: "700", 
+    fontSize: 16, 
+    marginBottom: 8, 
+    textAlign: "right" 
+  },
+  moreResults: { 
+    color: "#A6D3CF", 
+    fontSize: 14, 
+    textAlign: "center", 
+    marginTop: 8, 
+    fontStyle: "italic" 
+  },
 });
