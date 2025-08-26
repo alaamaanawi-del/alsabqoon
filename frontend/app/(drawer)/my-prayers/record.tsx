@@ -304,20 +304,22 @@ export default function RecordPrayer() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.header}>تسجيل - {p}</Text>
+      <View style={styles.container}>
+        <View style={styles.headerSection}>
+          <Text style={styles.header}>تسجيل - {p}</Text>
 
-        {/* Score bar */}
-        <View style={styles.scoreBox}>
-          <Text style={styles.scoreTxt}>الدرجة اليوم: {Math.round(sc.total)} / 100</Text>
-          <View style={styles.progressOuter}><View style={[styles.progressInner, { width: `${Math.min(100, sc.total)}%` }]} /></View>
-          <Text style={styles.subScore}>ركعة 1: {Math.round(sc.r1)} • ركعة 2: {Math.round(sc.r2)}</Text>
-        </View>
+          {/* Score bar */}
+          <View style={styles.scoreBox}>
+            <Text style={styles.scoreTxt}>الدرجة اليوم: {Math.round(sc.total)} / 100</Text>
+            <View style={styles.progressOuter}><View style={[styles.progressInner, { width: `${Math.min(100, sc.total)}%` }]} /></View>
+            <Text style={styles.subScore}>ركعة 1: {Math.round(sc.r1)} • ركعة 2: {Math.round(sc.r2)}</Text>
+          </View>
 
-        {/* Rakka tabs */}
-        <View style={styles.tabs}>
-          <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => setActiveRakka(1)} />
-          <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
+          {/* Rakka tabs */}
+          <View style={styles.tabs}>
+            <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => setActiveRakka(1)} />
+            <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
+          </View>
         </View>
 
         {/* Selected Verses Display */}
