@@ -45,7 +45,7 @@ export default function RecordPrayer() {
   const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1);
 
   const [query, setQuery] = useState("");
-  const [lang, setLang] = useState<"ar" | "ar_en" | "ar_es">("ar");
+  const [lang, setLang] = useState<"ar" | "ar_tafseer" | "ar_en" | "ar_es">("ar");
   const [results, setResults] = useState<SearchItem[]>([]);
   const [showSurahSelector, setShowSurahSelector] = useState(false);
 
