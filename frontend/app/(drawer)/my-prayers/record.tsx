@@ -244,6 +244,14 @@ export default function RecordPrayer() {
           <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => setActiveRakka(2)} />
         </View>
 
+        {/* Selected Verses Display */}
+        {record && (
+          <SelectedVersesDisplay 
+            ranges={record.rakka[activeRakka].ranges} 
+            maxLines={8}
+          />
+        )}
+
         <TextInput
           placeholder="ابحث في القرآن..."
           placeholderTextColor={"#ccc"}
