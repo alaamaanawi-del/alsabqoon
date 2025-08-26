@@ -487,16 +487,31 @@ function LangChip({ active, label, onPress }: { active: boolean; label: string; 
   );
 }
 
-function QuestionRow({ label, value, onToggle, taskOn, onTask }: { label: string; value: boolean; onToggle: () => void; taskOn: boolean; onTask: () => void }) {
+// Component for displaying question rows with task highlighting
+function QuestionRow({ 
+  label, 
+  value, 
+  onToggle, 
+  taskOn, 
+  onTask, 
+  isHighlighted = false 
+}: { 
+  label: string; 
+  value: boolean; 
+  onToggle: () => void; 
+  taskOn: boolean; 
+  onTask: () => void;
+  isHighlighted?: boolean;
+}) {
   return (
-    <View style={styles.qRow}>
+    <View style={[styles.qRow, isHighlighted && styles.highlightedQuestion]}>
       <TouchableOpacity onPress={onTask} style={[styles.taskBtn, taskOn && { backgroundColor: Colors.warmOrange }]}>
-        <Text style={{ color: taskOn ? Colors.dark : Colors.light, fontWeight: '800' }}>مهمة</Text>
+        <Text style={{ color: taskOn ? Colors.dark : Colors.light, fontWeight: "800" }}>مهمة</Text>
       </TouchableOpacity>
       <View style={{ flex: 1 }}>
         <Text style={styles.qLabel}>{label}</Text>
       </View>
-      <Switch value={value} onValueChange={onToggle} thumbColor={value ? Colors.warmOrange : '#ccc'} trackColor={{ true: '#705100', false: '#666' }} />
+      <Switch value={value} onValueChange={onToggle} thumbColor={value ? Colors.warmOrange : "#ccc"} trackColor={{ true: "#705100", false: "#666" }} />
     </View>
   );
 }
