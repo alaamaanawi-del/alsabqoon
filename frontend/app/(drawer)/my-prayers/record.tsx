@@ -45,6 +45,7 @@ export default function RecordPrayer() {
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<"ar" | "ar_en" | "ar_es">("ar");
   const [results, setResults] = useState<SearchItem[]>([]);
+  const [showSurahSelector, setShowSurahSelector] = useState(false);
 
   // Range selection state
   const [rangeStart, setRangeStart] = useState<SearchItem | null>(null);
