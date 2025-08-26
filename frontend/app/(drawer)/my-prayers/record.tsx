@@ -322,13 +322,15 @@ export default function RecordPrayer() {
           </View>
         </View>
 
-        {/* Selected Verses Display */}
-        {record && (
-          <SelectedVersesDisplay 
-            ranges={record.rakka[activeRakka].ranges} 
-            maxLines={8}
-          />
-        )}
+        {/* Scrollable Content Area */}
+        <ScrollView style={styles.scrollableContent} showsVerticalScrollIndicator={true}>
+          {/* Selected Verses Display */}
+          {record && (
+            <SelectedVersesDisplay 
+              ranges={record.rakka[activeRakka].ranges} 
+              maxLines={8}
+            />
+          )}
 
         <TextInput
           placeholder="ابحث في القرآن..."
