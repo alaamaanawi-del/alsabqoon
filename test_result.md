@@ -177,6 +177,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: All search scenarios working: Arabic search with diacritics (الْحَمْدُ finds Al-Fatiha 1:2), English bilingual search (merciful&bilingual=en returns 2 results with en field), Spanish bilingual search (Señor&bilingual=es returns 4 results with es field). Note: Arabic search requires exact text matching including diacritical marks."
+      - working: true
+        agent: "testing"
+        comment: "✅ MOBILE REGRESSION TESTED: Arabic search with diacritics (الْحَمْدُ) finds Al-Fatiha 1:2 among 28 total results. NEW TAFSEER FUNCTIONALITY confirmed working - bilingual=tafseer parameter returns Arabic interpretations successfully. Comprehensive search testing (الله, رب, الرحمن) all return 100+ results each. Complete Quran dataset integration successful."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
