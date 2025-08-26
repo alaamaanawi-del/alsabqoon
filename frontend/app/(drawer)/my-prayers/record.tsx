@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard, Switch, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard, Switch, ScrollView, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
 import { searchQuran } from "../../../src/db/quran.index";
-import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex, type QuestionKey } from "../../../src/storage/prayer";
+import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex } from "../../../src/storage/prayer";
 import { showToast } from "../../../src/utils/toast";
 import SurahSelector from "../../../src/components/SurahSelector";
 import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay";
@@ -22,27 +22,59 @@ interface DBItem {
 }
 interface SearchItem extends DBItem {}
 
-const ymdFromParam = (dateParam?: string) => {
-  if (!dateParam) return todayStr();
-  // Expect YYYY-MM-DD
+type QuestionKey = 'understood' | 'dua' | 'followed' | 'taught';
+
+function ymdFromParam(dateParam?: string): string {
+  if (!dateParam) return new Date().toISOString().split('T')[0];
   return dateParam;
-};
+}
 
-const todayStr = () => {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const da = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${da}`;
-};
+// Tab Button Component
+function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.tab, active && styles.activeTab]}
+    >
+      <Text style={[styles.tabText, active && styles.activeTabText]}>{label}</Text>
+    </TouchableOpacity>
+  );
+}
 
-const highlightSearchTerm = (text: string, searchTerm: string) => {
-  if (!searchTerm.trim()) return text;
-  
-  // Simple highlighting - in a real app you might want to use a more sophisticated approach
-  const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
-  return text.replace(regex, "**$1**"); // Using markdown-style highlighting for now
-};
+// Component for displaying question rows with task highlighting
+function QuestionRow({ 
+  label, 
+  value, 
+  onToggle, 
+  taskOn, 
+  onTask, 
+  isHighlighted = false 
+}: { 
+  label: string; 
+  value: boolean; 
+  onToggle: () => void; 
+  taskOn: boolean; 
+  onTask: () => void;
+  isHighlighted?: boolean;
+}) {
+  return (
+    <View style={[styles.questionRow, isHighlighted && styles.highlightedQuestion]}>
+      <View style={styles.questionLeft}>
+        <Text style={styles.questionTxt}>{label}</Text>
+        <TouchableOpacity onPress={onTask} style={[styles.taskToggle, taskOn && styles.taskToggleOn]}>
+          <Text style={styles.taskToggleTxt}>{taskOn ? '📝' : '+'}</Text>
+        </TouchableOpacity>
+      </View>
+      <Switch
+        trackColor={{ false: '#767577', true: Colors.greenTeal }}
+        thumbColor={value ? Colors.warmOrange : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={onToggle}
+        value={value}
+      />
+    </View>
+  );
+}
 
 export default function RecordPrayer() {
   const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
@@ -63,13 +95,6 @@ export default function RecordPrayer() {
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
     if (newRakka !== activeRakka) {
-      // Clear current rakka's range if it's incomplete
-      const currentStart = rangeStart[activeRakka];
-      const currentEnd = rangeEnd[activeRakka];
-      if (currentStart && !currentEnd) {
-        setRangeStart(prev => ({ ...prev, [activeRakka]: null }));
-        showToast('تم مسح التحديد غير المكتمل');
-      }
       setActiveRakka(newRakka);
     }
   };
@@ -90,25 +115,6 @@ export default function RecordPrayer() {
     lang === "ar_es" ? "es" : 
     ""
   ), [lang]);
-
-  useEffect(() => {
-    (async () => {
-      const r = await loadPrayerRecord(p, day);
-      setRecord(r);
-    })();
-  }, [p, day]);
-
-  // Autosave debounce
-  const saveRef = useRef<any>(null);
-  useEffect(() => {
-    if (!record) return;
-    clearTimeout(saveRef.current);
-    saveRef.current = setTimeout(async () => {
-      await savePrayerRecord(record);
-      await syncTasksFromRecord(record);
-    }, 300);
-    return () => clearTimeout(saveRef.current);
-  }, [record]);
 
   const doSearch = async () => {
     if (!query.trim()) { 
@@ -166,40 +172,7 @@ export default function RecordPrayer() {
     setShowSurahSelector(true);
   };
 
-  const addCurrentRange = () => {
-    const start = rangeStart[activeRakka];
-    const end = rangeEnd[activeRakka];
-    if (!record || !start || !end) return;
-    const fromAyah = Math.min(start.ayah, end.ayah);
-    const toAyah = Math.max(start.ayah, end.ayah);
-    const vr: VerseRange = {
-      surahNumber: start.surahNumber,
-      nameAr: start.nameAr,
-      nameEn: start.nameEn,
-      fromAyah,
-      toAyah,
-    };
-    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...record.rakka[activeRakka], ranges: [...record.rakka[activeRakka].ranges, vr] } } };
-    setRecord(next);
-    clearRange();
-    showToast('تم حفظ النطاق');
-  };
-
-  const removeRange = (idx: number) => {
-    if (!record) return;
-    const list = [...record.rakka[activeRakka].ranges];
-    list.splice(idx, 1);
-    setRecord({ ...record, rakka: { ...record.rakka, [activeRakka]: { ...record.rakka[activeRakka], ranges: list } } });
-    showToast('تم حذف النطاق');
-  };
-
-  const clearAllRanges = () => {
-    if (!record) return;
-    setRecord({ ...record, rakka: { ...record.rakka, [activeRakka]: { ...record.rakka[activeRakka], ranges: [] } } });
-    showToast('تم مسح جميع النطاقات');
-  };
-
-  const toggleQuestion = (key: 'understood' | 'dua' | 'followed' | 'taught') => {
+  const toggleQuestion = (key: QuestionKey) => {
     if (!record) return;
     const rk = record.rakka[activeRakka];
     const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, questions: { ...rk.questions, [key]: !rk.questions[key] } } } };
@@ -208,9 +181,9 @@ export default function RecordPrayer() {
 
   const setTaughtCount = (n: string) => {
     if (!record) return;
-    const val = parseInt(n || '0', 10) || 0;
     const rk = record.rakka[activeRakka];
-    setRecord({ ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, taughtCount: val } } });
+    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, taughtCount: parseInt(n) || 0 } } };
+    setRecord(next);
   };
 
   const toggleTask = (key: 'understood' | 'dua' | 'followed' | 'taught') => {
@@ -278,7 +251,23 @@ export default function RecordPrayer() {
     }
   };
 
-  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+  // Load initial data
+  useEffect(() => {
+    (async () => {
+      const rec = await loadPrayerRecord(p, day);
+      setRecord(rec);
+    })();
+  }, [p, day]);
+
+  // Auto-save with debounce
+  useEffect(() => {
+    if (!record) return;
+    const timer = setTimeout(async () => {
+      await savePrayerRecord(record);
+      await syncTasksFromRecord(record, p, day);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [record, p, day]);
 
   const handleCompleteRecording = async () => {
     if (!record) {
@@ -316,143 +305,104 @@ export default function RecordPrayer() {
     }
   };
 
+  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.headerSection}>
-          <Text style={styles.header}>تسجيل - {p}</Text>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      {/* Fixed Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>تسجيل - {p}</Text>
+        <Text style={styles.scoreText}>الدرجة: {Math.round(sc.total)}/100</Text>
+      </View>
 
-          {/* Score bar */}
-          <View style={styles.scoreBox}>
-            <Text style={styles.scoreTxt}>الدرجة اليوم: {Math.round(sc.total)} / 100</Text>
-            <View style={styles.progressOuter}><View style={[styles.progressInner, { width: `${Math.min(100, sc.total)}%` }]} /></View>
-            <Text style={styles.subScore}>ركعة 1: {Math.round(sc.r1)} • ركعة 2: {Math.round(sc.r2)}</Text>
-          </View>
+      {/* Rakka Tabs */}
+      <View style={styles.tabsContainer}>
+        <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => handleRakkaSwitch(1)} />
+        <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => handleRakkaSwitch(2)} />
+      </View>
 
-          {/* Rakka tabs */}
-          <View style={styles.tabs}>
-            <TabBtn label="ركعة 1" active={activeRakka === 1} onPress={() => handleRakkaSwitch(1)} />
-            <TabBtn label="ركعة 2" active={activeRakka === 2} onPress={() => handleRakkaSwitch(2)} />
-          </View>
-        </View>
-
-        {/* Scrollable Content Area */}
-        <ScrollView style={styles.scrollableContent} showsVerticalScrollIndicator={true}>
-          {/* Selected Verses Display */}
-          {record && (
-            <SelectedVersesDisplay 
-              ranges={record.rakka[activeRakka].ranges} 
-              maxLines={8}
-            />
-          )}
-
-        <TextInput
-          placeholder="ابحث في القرآن..."
-          placeholderTextColor={"#ccc"}
-          value={query}
-          onChangeText={setQuery}
-          style={styles.input}
-          returnKeyType="search"
-          onSubmitEditing={() => { Keyboard.dismiss(); doSearch(); }}
-          textAlign="right"
-        />
-
-        <View style={styles.actionsRow}>
-          <View style={styles.controlsGroup}>
-            <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}>
-              <Text style={styles.wholeSurahTxt}>السورة كاملة</Text>
-            </TouchableOpacity>
-            
-            {/* Language chips positioned to the right */}
-            <View style={styles.langRow}>
-              <LangChip active={lang === "ar"} label="عربي" onPress={() => setLang("ar")} />
-              <LangChip active={lang === "ar_tafseer"} label="عربي + تفسير" onPress={() => setLang("ar_tafseer")} />
-              <LangChip active={lang === "ar_en"} label="عربي + English" onPress={() => setLang("ar_en")} />
-              <LangChip active={lang === "ar_es"} label="عربي + Español" onPress={() => setLang("ar_es")} />
-            </View>
-          </View>
-          
-          {(rangeStart[activeRakka] || rangeEnd[activeRakka]) && (
-            <View style={styles.rangeBar}>
-              <Text style={styles.rangeText}>
-                {rangeStart[activeRakka] ? `${rangeStart[activeRakka].nameAr} ${rangeStart[activeRakka].surahNumber}: ${Math.min(rangeStart[activeRakka].ayah, rangeEnd[activeRakka]?.ayah ?? rangeStart[activeRakka].ayah)}` : ''}
-                {rangeEnd[activeRakka] ? ` → ${Math.max(rangeStart[activeRakka]!.ayah, rangeEnd[activeRakka].ayah)}` : ''}
-              </Text>
-              <TouchableOpacity onPress={addCurrentRange} style={styles.saveRangeBtn}><Text style={styles.saveRangeTxt}>حفظ النطاق</Text></TouchableOpacity>
-              <TouchableOpacity onPress={clearRange} style={styles.clearBtn}><Text style={styles.clearTxt}>مسح</Text></TouchableOpacity>
-            </View>
-          )}
-        </View>
-
-        {/* Saved range chips */}
-        {record && record.rakka[activeRakka].ranges.length > 0 && (
-          <View style={styles.chipsWrap}>
-            {record.rakka[activeRakka].ranges.map((r, idx) => (
-              <View key={`${r.surahNumber}-${r.fromAyah}-${r.toAyah}-${idx}`} style={styles.chip}>
-                <Text style={styles.chipTxt}>{r.nameAr} {r.surahNumber}: {r.fromAyah} - {r.toAyah}</Text>
-                <TouchableOpacity onPress={() => removeRange(idx)} style={styles.chipX}><Text style={styles.chipXTxt}>×</Text></TouchableOpacity>
-              </View>
-            ))}
-            <TouchableOpacity onPress={clearAllRanges} style={styles.clearAll}><Text style={styles.clearAllTxt}>مسح كل نطاقات الركعة</Text></TouchableOpacity>
-          </View>
-        )}
-        {/* Search Results */}
-        {results[activeRakka]?.length > 0 && (
-          <View style={styles.resultsContainer}>
-            <Text style={styles.resultsTitle}>نتائج البحث ({results[activeRakka].length})</Text>
-            {results[activeRakka].slice(0, 20).map((item, idx) => (
-              <TouchableOpacity
-                key={`${item.surahNumber}-${item.ayah}-${idx}`}
-                style={[
-                  styles.resultRow,
-                  withinRange(item) && { backgroundColor: Colors.warmOrange }
-                ]}
-                onPress={() => onVerseNumberPress(item)}
-              >
-                <View style={styles.resultHeader}>
-                  <Text style={[styles.verseRef, withinRange(item) && { color: Colors.dark }]}>
-                    {item.nameAr} {item.surahNumber}:{item.ayah}
-                  </Text>
-                </View>
-                <HighlightedText 
-                  text={item.textAr}
-                  searchTerm={query}
-                  style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}
-                />
-                {lang === "ar_tafseer" && item.tafseer && (
-                  <HighlightedText 
-                    text={item.tafseer}
-                    searchTerm={query}
-                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
-                  />
-                )}
-                {lang === "ar_en" && item.en && (
-                  <HighlightedText 
-                    text={item.en}
-                    searchTerm={query}
-                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
-                  />
-                )}
-                {lang === "ar_es" && item.es && (
-                  <HighlightedText 
-                    text={item.es}
-                    searchTerm={query}
-                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
-                  />
-                )}
-              </TouchableOpacity>
-            ))}
-            {results[activeRakka].length > 20 && (
-              <Text style={styles.moreResults}>
-                عرض أول 20 نتيجة من {results[activeRakka].length}
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* Questions + Add to task */}
+      {/* Main Scrollable Content */}
+      <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+        {/* Selected Verses Display */}
         {record && (
-          <View style={{ paddingHorizontal: 12, paddingTop: 8 }}>
+          <SelectedVersesDisplay 
+            ranges={record.rakka[activeRakka].ranges} 
+            maxLines={8}
+          />
+        )}
+
+        {/* Search Section */}
+        <View style={styles.searchSection}>
+          <View style={styles.controlsRow}>
+            <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}>
+              <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
+            </TouchableOpacity>
+
+            <View style={styles.langChipsContainer}>
+              <TouchableOpacity 
+                style={[styles.langChip, lang === "ar" && styles.langChipActive]}
+                onPress={() => setLang("ar")}
+              >
+                <Text style={[styles.langChipText, lang === "ar" && styles.langChipTextActive]}>عربي</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.langChip, lang === "ar_tafseer" && styles.langChipActive]}
+                onPress={() => setLang("ar_tafseer")}
+              >
+                <Text style={[styles.langChipText, lang === "ar_tafseer" && styles.langChipTextActive]}>تفسير</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TextInput
+            placeholder="ابحث في القرآن..."
+            placeholderTextColor="#888"
+            value={query}
+            onChangeText={setQuery}
+            style={styles.searchInput}
+            textAlign="right"
+          />
+
+          {/* Search Results */}
+          {results[activeRakka].length > 0 && (
+            <View style={styles.resultsContainer}>
+              <Text style={styles.resultsTitle}>نتائج البحث ({results[activeRakka].length})</Text>
+              {results[activeRakka].slice(0, 10).map((item, idx) => (
+                <TouchableOpacity
+                  key={`${item.surahNumber}-${item.ayah}-${idx}`}
+                  style={[
+                    styles.resultRow,
+                    withinRange(item) && styles.resultRowSelected
+                  ]}
+                  onPress={() => onVerseNumberPress(item)}
+                >
+                  <View style={styles.resultHeader}>
+                    <Text style={styles.verseRef}>
+                      {item.nameAr} {item.surahNumber}:{item.ayah}
+                    </Text>
+                  </View>
+                  <HighlightedText 
+                    text={item.textAr}
+                    searchTerm={query}
+                    style={styles.arabicText}
+                  />
+                  {lang === "ar_tafseer" && item.tafseer && (
+                    <HighlightedText 
+                      text={item.tafseer}
+                      searchTerm={query}
+                      style={styles.tafseerText}
+                    />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* Questions Section */}
+        {record && (
+          <View style={styles.questionsSection}>
+            <Text style={styles.sectionTitle}>الأسئلة</Text>
             <QuestionRow
               label="فهمت الآيات؟"
               value={record.rakka[activeRakka].questions.understood}
@@ -501,12 +451,13 @@ export default function RecordPrayer() {
             )}
           </View>
         )}
-        </ScrollView>
+      </ScrollView>
 
-        <View style={styles.spacer} />
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={handleCompleteRecording} style={styles.primaryBtn}><Text style={styles.primaryText}>تم</Text></TouchableOpacity>
-        </View>
+      {/* Fixed Footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={handleCompleteRecording} style={styles.doneButton}>
+          <Text style={styles.doneButtonText}>تم</Text>
+        </TouchableOpacity>
       </View>
 
       {/* SurahSelector Modal */}
@@ -518,138 +469,260 @@ export default function RecordPrayer() {
       />
     </KeyboardAvoidingView>
   );
-
-}
-
-function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
-  return (
-    <TouchableOpacity onPress={onPress} style={[styles.tabBtn, active && styles.tabBtnActive]}>
-      <Text style={{ color: active ? Colors.dark : Colors.light, fontWeight: '800' }}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-
-function LangChip({ active, label, onPress }: { active: boolean; label: string; onPress: () => void }) {
-  return (
-    <TouchableOpacity onPress={onPress} style={[styles.langChip, active && styles.langChipActive]}>
-      <Text style={{ color: active ? Colors.dark : Colors.light, fontWeight: "700" }}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-
-// Component for displaying question rows with task highlighting
-function QuestionRow({ 
-  label, 
-  value, 
-  onToggle, 
-  taskOn, 
-  onTask, 
-  isHighlighted = false 
-}: { 
-  label: string; 
-  value: boolean; 
-  onToggle: () => void; 
-  taskOn: boolean; 
-  onTask: () => void;
-  isHighlighted?: boolean;
-}) {
-  return (
-    <View style={[styles.qRow, isHighlighted && styles.highlightedQuestion]}>
-      <TouchableOpacity onPress={onTask} style={[styles.taskBtn, taskOn && { backgroundColor: Colors.warmOrange }]}>
-        <Text style={{ color: taskOn ? Colors.dark : Colors.light, fontWeight: "800" }}>مهمة</Text>
-      </TouchableOpacity>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.qLabel}>{label}</Text>
-      </View>
-      <Switch value={value} onValueChange={onToggle} thumbColor={value ? Colors.warmOrange : "#ccc"} trackColor={{ true: "#705100", false: "#666" }} />
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.dark },
-  headerSection: { flex: 0 },
-  scrollContent: { flexGrow: 1 },
-  scrollableContent: { flex: 1, paddingHorizontal: 12 },
-  header: { color: Colors.light, fontSize: 18, fontWeight: "800", padding: 16 },
-  scoreBox: { backgroundColor: '#1d2a29', marginHorizontal: 12, borderRadius: 12, padding: 12, marginBottom: 8 },
-  scoreTxt: { color: Colors.light, fontWeight: '800' },
-  subScore: { color: '#A6D3CF', marginTop: 6 },
-  progressOuter: { height: 8, backgroundColor: '#263736', borderRadius: 6, marginTop: 8 },
-  progressInner: { height: 8, backgroundColor: Colors.warmOrange, borderRadius: 6 },
-  tabs: { flexDirection: 'row-reverse', gap: 8, paddingHorizontal: 12, marginBottom: 8 },
-  tabBtn: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 16 },
-  tabBtnActive: { backgroundColor: Colors.warmOrange },
-  langRow: { flexDirection: "row-reverse", gap: 8 },
-  langChip: { borderColor: Colors.warmOrange, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 },
-  langChipActive: { backgroundColor: Colors.warmOrange },
-  input: { backgroundColor: "#1d2a29", color: Colors.light, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 12, margin: 12, textAlign: "right" },
-  actionsRow: { paddingHorizontal: 12, gap: 8 },
-  controlsGroup: { flexDirection: 'row-reverse', alignItems: 'center', gap: 12 },
-  wholeSurahBtn: { alignSelf: 'flex-start', backgroundColor: Colors.greenTeal, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
-  wholeSurahTxt: { color: Colors.light, fontWeight: '800' },
-  rangeBar: { flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, backgroundColor: '#1d2a29', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8 },
-  rangeText: { color: Colors.light, fontSize: 14 },
-  saveRangeBtn: { backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6, marginLeft: 8 },
-  saveRangeTxt: { color: Colors.light, fontWeight: '800' },
-  clearBtn: { backgroundColor: Colors.warmOrange, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 6, marginLeft: 8 },
-  clearTxt: { color: Colors.dark, fontWeight: '700' },
-  chipsWrap: { flexDirection: 'row-reverse', flexWrap: 'wrap', gap: 8, paddingHorizontal: 12, paddingVertical: 8 },
-  chip: { flexDirection: 'row-reverse', alignItems: 'center', backgroundColor: '#23403d', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6 },
-  chipTxt: { color: Colors.light },
-  chipX: { marginHorizontal: 6 },
-  chipXTxt: { color: Colors.warmOrange, fontWeight: '800' },
-  clearAll: { backgroundColor: '#5a2e2e', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 },
-  clearAllTxt: { color: '#ffd7d7', fontWeight: '800' },
-  qRow: { flexDirection: 'row-reverse', alignItems: 'center', backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8, gap: 8 },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.dark,
+  },
+  header: {
+    backgroundColor: Colors.dark,
+    paddingTop: 50,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  headerText: {
+    color: Colors.light,
+    fontSize: 20,
+    fontWeight: '800',
+    textAlign: 'right',
+    marginBottom: 4,
+  },
+  scoreText: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  tabsContainer: {
+    flexDirection: 'row-reverse',
+    backgroundColor: Colors.dark,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  tab: {
+    flex: 1,
+    backgroundColor: '#1d2a29',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  activeTab: {
+    backgroundColor: Colors.warmOrange,
+  },
+  tabText: {
+    color: Colors.light,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  activeTabText: {
+    color: Colors.dark,
+    fontWeight: '700',
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 80,
+  },
+  searchSection: {
+    backgroundColor: '#1d2a29',
+    margin: 12,
+    borderRadius: 12,
+    padding: 16,
+  },
+  controlsRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    gap: 12,
+  },
+  wholeSurahBtn: {
+    backgroundColor: Colors.greenTeal,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  wholeSurahBtnText: {
+    color: Colors.dark,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  langChipsContainer: {
+    flexDirection: 'row-reverse',
+    gap: 8,
+  },
+  langChip: {
+    backgroundColor: '#2a3f3e',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  langChipActive: {
+    backgroundColor: Colors.warmOrange,
+    borderColor: Colors.warmOrange,
+  },
+  langChipText: {
+    color: Colors.light,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  langChipTextActive: {
+    color: Colors.dark,
+  },
+  searchInput: {
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    color: Colors.light,
+    fontSize: 16,
+    textAlign: 'right',
+  },
+  resultsContainer: {
+    marginTop: 16,
+    maxHeight: 300,
+  },
+  resultsTitle: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'right',
+  },
+  resultRow: {
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  resultRowSelected: {
+    backgroundColor: Colors.warmOrange,
+  },
+  resultHeader: {
+    marginBottom: 4,
+  },
+  verseRef: {
+    color: Colors.warmOrange,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  arabicText: {
+    color: Colors.light,
+    fontSize: 16,
+    textAlign: 'right',
+    lineHeight: 24,
+  },
+  tafseerText: {
+    color: '#A6D3CF',
+    fontSize: 14,
+    textAlign: 'right',
+    marginTop: 4,
+    lineHeight: 20,
+  },
+  questionsSection: {
+    backgroundColor: '#1d2a29',
+    margin: 12,
+    borderRadius: 12,
+    padding: 16,
+  },
+  sectionTitle: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'right',
+    marginBottom: 12,
+  },
+  questionRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+  },
   highlightedQuestion: {
     backgroundColor: 'rgba(255, 138, 88, 0.2)',
     borderWidth: 2,
     borderColor: Colors.warmOrange,
-    shadowColor: Colors.warmOrange,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
   },
-  qLabel: { color: Colors.light, fontWeight: '700', textAlign: 'right' },
-  taskBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12, borderColor: Colors.warmOrange, borderWidth: 1 },
-  countRow: { flexDirection: 'row-reverse', alignItems: 'center', gap: 8, backgroundColor: '#1d2a29', padding: 12, borderRadius: 12, marginBottom: 8 },
-  countLabel: { color: Colors.light },
-  countInput: { backgroundColor: '#263736', color: Colors.light, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minWidth: 64 },
-  spacer: { height: 80 },
-  footer: { position: "absolute", left: 0, right: 0, bottom: 0, padding: 12, backgroundColor: "rgba(0,0,0,0.6)" },
-  primaryBtn: { backgroundColor: Colors.warmOrange, paddingVertical: 12, borderRadius: 12, alignItems: "center" },
-  primaryText: { color: Colors.dark, fontWeight: "800", fontSize: 16 },
-
-  resultRow: { backgroundColor: "#1d2a29", padding: 12, borderRadius: 12, marginBottom: 8 },
-  resultHeader: { marginBottom: 4 },
-  verseRef: { color: Colors.warmOrange, fontWeight: "700", fontSize: 14 },
-  arabicText: { color: Colors.light, fontSize: 16, textAlign: "right", marginBottom: 4 },
-  translationText: { color: "#A6D3CF", fontSize: 14, textAlign: "right" },
-  resultsContainer: { 
-    marginHorizontal: 12, 
-    marginBottom: 8,
-    maxHeight: 400,
+  questionLeft: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 8,
+  },
+  questionTxt: {
+    color: Colors.light,
+    fontSize: 16,
+  },
+  taskToggle: {
     backgroundColor: '#1d2a29',
-    borderRadius: 12,
-    padding: 12
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  resultsList: {
-    maxHeight: 300,
+  taskToggleOn: {
+    backgroundColor: Colors.warmOrange,
   },
-  resultsTitle: { 
-    color: Colors.warmOrange, 
-    fontWeight: "700", 
-    fontSize: 16, 
-    marginBottom: 8, 
-    textAlign: "right" 
+  taskToggleTxt: {
+    color: Colors.light,
+    fontSize: 16,
+    fontWeight: '700',
   },
-  moreResults: { 
-    color: "#A6D3CF", 
-    fontSize: 14, 
-    textAlign: "center", 
-    marginTop: 8, 
-    fontStyle: "italic" 
+  countRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#2a3f3e',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  countLabel: {
+    color: Colors.light,
+    fontSize: 16,
+  },
+  countInput: {
+    backgroundColor: '#1d2a29',
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    color: Colors.light,
+    fontSize: 16,
+    minWidth: 60,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.dark,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  doneButton: {
+    backgroundColor: Colors.warmOrange,
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  doneButtonText: {
+    color: Colors.dark,
+    fontSize: 18,
+    fontWeight: '700',
   },
 });
