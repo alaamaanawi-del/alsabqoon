@@ -47,6 +47,11 @@ export default function MyPrayers() {
         out[p.key] = { r1: sc.r1, r2: sc.r2 };
       }
       setScores(out);
+      
+      // Load tasks to check task icons
+      const allTasks = await loadTasks();
+      setTasks(allTasks);
+      
       const s = await loadSettings();
       if (s.rememberSelectedDate) {
         await saveSettings({ ...s, lastSelectedDate: date });
