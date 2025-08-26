@@ -110,16 +110,7 @@ export default function RecordPrayer() {
   };
 
   const selectWholeSurah = async () => {
-    const base = rangeStart || results[0];
-    if (!base) return;
-    try {
-      const mod = Platform.OS === 'web' ? await import("../../../src/db/quran.web") : await import("../../../src/db/quran.native");
-      const range = await mod.getSurahRange(base.surahNumber);
-      if (range) {
-        setRangeStart({ ...base, ayah: range.fromAyah });
-        setRangeEnd({ ...base, ayah: range.toAyah });
-      }
-    } catch {}
+    setShowSurahSelector(true);
   };
 
   const addCurrentRange = () => {
