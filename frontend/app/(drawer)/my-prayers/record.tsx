@@ -62,12 +62,13 @@ export default function RecordPrayer() {
 
   const [query, setQuery] = useState("");
   const [lang, setLang] = useState<"ar" | "ar_tafseer" | "ar_en" | "ar_es">("ar");
-  const [results, setResults] = useState<SearchItem[]>([]);
+  // Make results independent per rakka
+  const [results, setResults] = useState<Record<RakkaIndex, SearchItem[]>>({ 1: [], 2: [] });
   const [showSurahSelector, setShowSurahSelector] = useState(false);
 
-  // Range selection state
-  const [rangeStart, setRangeStart] = useState<SearchItem | null>(null);
-  const [rangeEnd, setRangeEnd] = useState<SearchItem | null>(null);
+  // Range selection state - per rakka
+  const [rangeStart, setRangeStart] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
+  const [rangeEnd, setRangeEnd] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
 
   const bilingualParam = useMemo(() => (
     lang === "ar_tafseer" ? "tafseer" : 
