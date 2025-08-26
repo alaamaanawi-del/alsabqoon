@@ -414,6 +414,7 @@ export default function RecordPrayer() {
               onToggle={() => toggleQuestion('understood')}
               taskOn={record.rakka[activeRakka].addToTask.understood}
               onTask={() => toggleTask('understood')}
+              isHighlighted={focusQuestion === 'understood' && activeRakka === focusRakka}
             />
             <QuestionRow
               label="هل دعوت؟"
@@ -421,6 +422,7 @@ export default function RecordPrayer() {
               onToggle={() => toggleQuestion('dua')}
               taskOn={record.rakka[activeRakka].addToTask.dua}
               onTask={() => toggleTask('dua')}
+              isHighlighted={focusQuestion === 'dua' && activeRakka === focusRakka}
             />
             <QuestionRow
               label="هل اتبعت الآيات؟"
@@ -428,6 +430,7 @@ export default function RecordPrayer() {
               onToggle={() => toggleQuestion('followed')}
               taskOn={record.rakka[activeRakka].addToTask.followed}
               onTask={() => toggleTask('followed')}
+              isHighlighted={focusQuestion === 'followed' && activeRakka === focusRakka}
             />
             <QuestionRow
               label="هل علّمت الآيات؟"
@@ -435,6 +438,7 @@ export default function RecordPrayer() {
               onToggle={() => toggleQuestion('taught')}
               taskOn={record.rakka[activeRakka].addToTask.taught}
               onTask={() => toggleTask('taught')}
+              isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
             {record.rakka[activeRakka].questions.taught && (
               <View style={styles.countRow}>
@@ -449,6 +453,9 @@ export default function RecordPrayer() {
                   textAlign="center"
                 />
               </View>
+            )}
+          </View>
+        )}
             )}
           </View>
         )}
