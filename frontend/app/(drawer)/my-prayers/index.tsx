@@ -143,7 +143,7 @@ export default function MyPrayers() {
 {PRAYERS.map((p) => {
         const ymd = fmtYMD(selectedDate);
         const sc = scores[p.key] || { r1: 0, r2: 0 };
-        // Fixed: Convert 0-50 range to 0-100 range for proper display
+        // FIXED: Use actual total score, not max of rakkas
         const score = sc.r1 + sc.r2; // Total score 0-100 (each rakka 0-50)
         const isRecorded = score > 0;
         const prayerIcon = icons?.[p.key as keyof typeof icons];
