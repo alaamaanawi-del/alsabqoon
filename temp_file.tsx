@@ -43,3 +43,18 @@ const highlightSearchTerm = (text: string, searchTerm: string) => {
   return text.replace(regex, "**$1**"); // Using markdown-style highlighting for now
 };
 
+export default function RecordPrayer() {
+  const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
+  const router = useRouter();
+  const p = (prayer as string) || 'fajr';
+  const day = ymdFromParam(date as string | undefined);
+
+  // Parse focus parameter: "1:understood" or "2:dua"
+  const [focusRakka, focusQuestion] = useMemo(() => {
+    if (!focus) return [null, null];
+    const [r, q] = focus.split(':');
+    return [parseInt(r) as RakkaIndex || null, q as QuestionKey || null];
+  }, [focus]);
+
+  const [record, setRecord] = useState<PrayerRecord | null>(null);
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1);
