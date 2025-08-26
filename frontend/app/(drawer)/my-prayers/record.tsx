@@ -453,10 +453,6 @@ export default function RecordPrayer() {
                   textAlign="center"
                 />
               </View>
-            )}
-          </View>
-        )}
-            )}
           </View>
         )}
 
