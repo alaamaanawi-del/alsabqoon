@@ -5,6 +5,7 @@ import { Colors } from "../../../src/theme/colors";
 import { searchQuran } from "../../../src/db/quran.index";
 import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex } from "../../../src/storage/prayer";
 import { showToast } from "../../../src/utils/toast";
+import SurahSelector from "../../../src/components/SurahSelector";
 
 // Types for search rows
 interface DBItem {
