@@ -331,6 +331,8 @@ agent_communication:
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE: All 5 backend tasks tested successfully. Health endpoint, status endpoints (POST/GET), Qur'an surahs list, and Qur'an search (Arabic/English/Spanish) all working correctly via ingress path /api. MongoDB integration confirmed. Created comprehensive backend_test.py for future testing. Note: Arabic search requires exact text matching including diacritical marks (الْحَمْدُ vs الحمد)."
   - agent: "main"
+    message: "STARTING CRITICAL ISSUES FIXES: Working on prayer registration + progress bar fixes (core functionality). Issues identified: 1) Prayer registration doesn't update main UI, 2) Progress bar color scheme needs updating (Red 0-30%, Orange 31-60%, Green 61-100%), 3) Task icon shows colored when no tasks selected, 4) Progress bar may be stuck at 50% due to scoring logic. Beginning systematic fixes."
+  - agent: "main"
     message: "Implemented smooth animated week transitions in WeekBar component using react-native-reanimated v3. Added slide animations with 300ms duration, opacity interpolation, and proper RTL support. Need backend testing first, then frontend testing for the new animation functionality."
   - agent: "testing"
     message: "✅ REGRESSION TESTING COMPLETE: Ran comprehensive backend tests after WeekBar animation implementation. All 6 test scenarios passed (Health endpoint, Status POST/GET, Qur'an surahs, Arabic search, English bilingual search, Spanish bilingual search). No regression issues detected. Backend service running stable on supervisor. MongoDB connectivity confirmed. WeekBar frontend changes did not impact backend functionality."
