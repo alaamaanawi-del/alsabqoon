@@ -20,6 +20,7 @@ const PRAYERS = [
 
 export default function MyPrayers() {
   const [scores, setScores] = useState<Record<string, { r1: number; r2: number }>>({});
+  const [tasks, setTasks] = useState<any[]>([]);
   const [showCal, setShowCal] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
