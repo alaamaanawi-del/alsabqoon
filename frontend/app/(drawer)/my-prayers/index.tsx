@@ -27,6 +27,29 @@ export default function MyPrayers() {
   const router = useRouter();
   const { icons } = usePrayerIcons();
 
+  // Refresh function to reload scores and tasks
+  const refreshData = async () => {
+    const date = fmtYMD(selectedDate);
+    const out: Record<string, { r1: number; r2: number }> = {};
+    for (const p of PRAYERS) {
+      const rec = await loadPrayerRecord(p.key, date);
+      const sc = computeScore(rec);
+      out[p.key] = { r1: sc.r1, r2: sc.r2 };
+    }
+    setScores(out);
+    
+    // Load tasks to check task icons
+    const allTasks = await loadTasks();
+    setTasks(allTasks);
+  };
+
+  // Refresh data when screen comes into focus (returning from record screen)
+  useFocusEffect(
+    React.useCallback(() => {
+      refreshData();
+    }, [selectedDate])
+  );
+
   useEffect(() => {
     (async () => {
       const s = await loadSettings();
