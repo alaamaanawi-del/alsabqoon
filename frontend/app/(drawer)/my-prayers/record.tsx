@@ -35,6 +35,14 @@ const todayStr = () => {
   return `${y}-${m}-${da}`;
 };
 
+const highlightSearchTerm = (text: string, searchTerm: string) => {
+  if (!searchTerm.trim()) return text;
+  
+  // Simple highlighting - in a real app you might want to use a more sophisticated approach
+  const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+  return text.replace(regex, "**$1**"); // Using markdown-style highlighting for now
+};
+
 export default function RecordPrayer() {
   const { prayer, date } = useLocalSearchParams<{ prayer?: string; date?: string }>();
   const router = useRouter();
