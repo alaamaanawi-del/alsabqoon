@@ -354,12 +354,11 @@ export default function RecordPrayer() {
         )}
         {/* Search Results */}
         {results.length > 0 && (
-          <FlatList
-            data={results}
-            keyExtractor={(item, idx) => `${item.surahNumber}-${item.ayah}-${idx}`}
-            style={styles.resultsList}
-            renderItem={({ item }) => (
+          <View style={styles.resultsContainer}>
+            <Text style={styles.resultsTitle}>نتائج البحث ({results.length})</Text>
+            {results.slice(0, 20).map((item, idx) => (
               <TouchableOpacity
+                key={`${item.surahNumber}-${item.ayah}-${idx}`}
                 style={[
                   styles.resultRow,
                   withinRange(item) && { backgroundColor: Colors.warmOrange }
@@ -372,26 +371,31 @@ export default function RecordPrayer() {
                   </Text>
                 </View>
                 <Text style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}>
-                  {item.textAr}
+                  {highlightSearchTerm(item.textAr, query)}
                 </Text>
                 {lang === "ar_tafseer" && item.tafseer && (
                   <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {item.tafseer}
+                    {highlightSearchTerm(item.tafseer, query)}
                   </Text>
                 )}
                 {lang === "ar_en" && item.en && (
                   <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {item.en}
+                    {highlightSearchTerm(item.en, query)}
                   </Text>
                 )}
                 {lang === "ar_es" && item.es && (
                   <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {item.es}
+                    {highlightSearchTerm(item.es, query)}
                   </Text>
                 )}
               </TouchableOpacity>
+            ))}
+            {results.length > 20 && (
+              <Text style={styles.moreResults}>
+                عرض أول 20 نتيجة من {results.length}
+              </Text>
             )}
-          />
+          </View>
         )}
 
         {/* Questions + Add to task */}
