@@ -143,7 +143,8 @@ export default function MyPrayers() {
 {PRAYERS.map((p) => {
         const ymd = fmtYMD(selectedDate);
         const sc = scores[p.key] || { r1: 0, r2: 0 };
-        const score = Math.max(sc.r1, sc.r2); // Use the higher of the two scores
+        // Fixed: Convert 0-50 range to 0-100 range for proper display
+        const score = Math.max(sc.r1, sc.r2) * 2; // Convert 0-50 to 0-100
         const isRecorded = score > 0;
         const prayerIcon = icons?.[p.key as keyof typeof icons];
         
