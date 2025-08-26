@@ -52,6 +52,7 @@ class SearchResult(BaseModel):
     textAr: str
     en: Optional[str] = None
     es: Optional[str] = None
+    tafseer: Optional[str] = None
 
 # Health/basic routes
 @api_router.get("/")
@@ -70,11 +71,11 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
-# Qur'an endpoints
+# Quran endpoints
 @api_router.get('/quran/surahs', response_model=List[SurahMeta])
 async def list_surahs():
     metas: List[SurahMeta] = [
-        SurahMeta(number=s['number'], nameAr=s['nameAr'], nameEn=s['nameEn'])
+        SurahMeta(number=s['number'], nameAr=s['surah'], nameEn=s.get('nameEn', f"Surah {s['number']}"))
         for s in QURAN_DATA['surahs']
     ]
     return metas
@@ -82,7 +83,7 @@ async def list_surahs():
 @api_router.get('/quran/search')
 async def quran_search(
     query: str = Query(..., description="Search term in Arabic or translations"),
-    bilingual: Optional[str] = Query(None, description="en or es to include translation snippet")
+    bilingual: Optional[str] = Query(None, description="en, es, or tafseer to include interpretation snippet")
 ):
     q = query.strip()
     if not q:
@@ -94,25 +95,34 @@ async def quran_search(
     results: List[SearchResult] = []
     for s in QURAN_DATA['surahs']:
         for a in s['ayahs']:
-            hay_ar = a['textAr']
-            hay_en = a.get('en', '')
-            hay_es = a.get('es', '')
-
+            hay_ar = a['text']  # Updated field name
+            
+            # Search in Arabic text
             match_ar = all(tok in hay_ar for tok in tokens)
-            match_en = tokens and all(tok.lower() in hay_en.lower() for tok in tokens)
-            match_es = tokens and all(tok.lower() in hay_es.lower() for tok in tokens)
-            if match_ar or match_en or match_es:
+            
+            # Search in tafseer if available
+            match_tafseer = False
+            tafseer_text = ""
+            if 'tafsir' in a and a['tafsir']:
+                for tafsir_item in a['tafsir']:
+                    tafsir_text = tafsir_item.get('text', '')
+                    if tafsir_text and all(tok in tafsir_text for tok in tokens):
+                        match_tafseer = True
+                        break
+            
+            if match_ar or match_tafseer:
                 res = SearchResult(
                     surahNumber=s['number'],
-                    nameAr=s['nameAr'],
-                    nameEn=s['nameEn'],
-                    ayah=a['ayah'],
-                    textAr=a['textAr'],
-                    en=a.get('en') if bilingual == 'en' else None,
-                    es=a.get('es') if bilingual == 'es' else None,
+                    nameAr=s['surah'],
+                    nameEn=s.get('nameEn', f"Surah {s['number']}"),
+                    ayah=a['ayah_number'], # Updated field name
+                    textAr=a['text'],     # Updated field name
+                    en=None,  # No English translation in this dataset
+                    es=None,  # No Spanish translation in this dataset
+                    tafseer=tafseer_text if bilingual == 'tafseer' and match_tafseer else None,
                 )
                 results.append(res)
-                # Limit for MVP
+                # Limit for performance
                 if len(results) >= 100:
                     break
         if len(results) >= 100:
