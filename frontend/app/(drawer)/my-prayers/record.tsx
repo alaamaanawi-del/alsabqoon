@@ -396,23 +396,31 @@ export default function RecordPrayer() {
                     {item.nameAr} {item.surahNumber}:{item.ayah}
                   </Text>
                 </View>
-                <Text style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}>
-                  {item.textAr}
-                </Text>
+                <HighlightedText 
+                  text={item.textAr}
+                  searchTerm={query}
+                  style={[styles.arabicText, withinRange(item) && { color: Colors.dark }]}
+                />
                 {lang === "ar_tafseer" && item.tafseer && (
-                  <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {highlightSearchTerm(item.tafseer, query)}
-                  </Text>
+                  <HighlightedText 
+                    text={item.tafseer}
+                    searchTerm={query}
+                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
+                  />
                 )}
                 {lang === "ar_en" && item.en && (
-                  <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {highlightSearchTerm(item.en, query)}
-                  </Text>
+                  <HighlightedText 
+                    text={item.en}
+                    searchTerm={query}
+                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
+                  />
                 )}
                 {lang === "ar_es" && item.es && (
-                  <Text style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}>
-                    {highlightSearchTerm(item.es, query)}
-                  </Text>
+                  <HighlightedText 
+                    text={item.es}
+                    searchTerm={query}
+                    style={[styles.translationText, withinRange(item) && { color: Colors.dark }]}
+                  />
                 )}
               </TouchableOpacity>
             ))}
