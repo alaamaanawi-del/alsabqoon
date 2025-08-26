@@ -153,13 +153,15 @@ export default function RecordPrayer() {
   };
 
   const addCurrentRange = () => {
-    if (!record || !rangeStart || !rangeEnd) return;
-    const fromAyah = Math.min(rangeStart.ayah, rangeEnd.ayah);
-    const toAyah = Math.max(rangeStart.ayah, rangeEnd.ayah);
+    const start = rangeStart[activeRakka];
+    const end = rangeEnd[activeRakka];
+    if (!record || !start || !end) return;
+    const fromAyah = Math.min(start.ayah, end.ayah);
+    const toAyah = Math.max(start.ayah, end.ayah);
     const vr: VerseRange = {
-      surahNumber: rangeStart.surahNumber,
-      nameAr: rangeStart.nameAr,
-      nameEn: rangeStart.nameEn,
+      surahNumber: start.surahNumber,
+      nameAr: start.nameAr,
+      nameEn: start.nameEn,
       fromAyah,
       toAyah,
     };
