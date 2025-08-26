@@ -490,7 +490,7 @@ export default function RecordPrayer() {
         <View style={styles.footer}>
           <TouchableOpacity onPress={handleCompleteRecording} style={styles.primaryBtn}><Text style={styles.primaryText}>تم</Text></TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
 
       {/* SurahSelector Modal */}
       <SurahSelector
