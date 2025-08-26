@@ -160,6 +160,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: GET /api/quran/surahs returns 5 surahs including Al-Fatiha with correct structure (number, nameAr, nameEn). JSON data loading working."
+      - working: true
+        agent: "testing"
+        comment: "✅ MOBILE REGRESSION TESTED: GET /api/quran/surahs now returns 103 surahs (complete Quran) including Al-Fatiha with correct structure. Major upgrade from 5 to 103 surahs confirmed working after mobile fixes."
   - task: "Qur’an search API (/api/quran/search)"
     implemented: true
     working: true
