@@ -167,6 +167,62 @@ export default function RecordPrayer() {
     showToast(now ? 'أُضيفت للمَهَام' : 'أُزيلت من المهام');
   };
 
+  // SurahSelector handlers
+  const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+    // Set up for range selection mode - user will select verses manually
+    const mockItem: SearchItem = {
+      surahNumber: surah.number,
+      nameAr: surah.nameAr,
+      nameEn: surah.nameEn,
+      ayah: 1,
+      textAr: '',
+    };
+    setRangeStart(mockItem);
+    setRangeEnd(null);
+    showToast(`تم اختيار ${surah.nameAr} - اختر نطاق الآيات`);
+  };
+
+  const handleSelectWholeSurah = async (surah: { number: number; nameAr: string; nameEn: string }) => {
+    try {
+      const mod = Platform.OS === 'web' ? await import("../../../src/db/quran.web") : await import("../../../src/db/quran.native");
+      const range = await mod.getSurahRange(surah.number);
+      if (range) {
+        const startItem: SearchItem = {
+          surahNumber: surah.number,
+          nameAr: surah.nameAr,
+          nameEn: surah.nameEn,
+          ayah: range.fromAyah,
+          textAr: '',
+        };
+        const endItem: SearchItem = {
+          surahNumber: surah.number,
+          nameAr: surah.nameAr,
+          nameEn: surah.nameEn,
+          ayah: range.toAyah,
+          textAr: '',
+        };
+        setRangeStart(startItem);
+        setRangeEnd(endItem);
+        showToast(`تم اختيار ${surah.nameAr} كاملة`);
+      } else {
+        // Fallback - just set a mock range
+        const startItem: SearchItem = {
+          surahNumber: surah.number,
+          nameAr: surah.nameAr,
+          nameEn: surah.nameEn,
+          ayah: 1,
+          textAr: '',
+        };
+        setRangeStart(startItem);
+        setRangeEnd(startItem);
+        showToast(`تم اختيار ${surah.nameAr}`);
+      }
+    } catch (error) {
+      console.warn('Error getting surah range:', error);
+      showToast(`خطأ في تحديد نطاق ${surah.nameAr}`);
+    }
+  };
+
   const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
 
   return (
