@@ -291,6 +291,12 @@ const styles = StyleSheet.create({
   taskIcon: {
     fontSize: 16,
   },
+  taskIconGray: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  taskIconGrayText: {
+    opacity: 0.3,
+  },
   unrecordedIndicator: {
     paddingHorizontal: 12,
     paddingVertical: 8,
