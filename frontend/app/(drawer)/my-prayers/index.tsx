@@ -140,12 +140,15 @@ export default function MyPrayers() {
         <MonthCalendar monthDate={monthDate} selectedDate={selectedDate} onChangeMonth={setMonthDate} onSelectDate={onSelectDateFromMonth} />
       )}
 
-      {PRAYERS.map((p) => {
+{PRAYERS.map((p) => {
         const ymd = fmtYMD(selectedDate);
         const sc = scores[p.key] || { r1: 0, r2: 0 };
         const score = Math.max(sc.r1, sc.r2); // Use the higher of the two scores
         const isRecorded = score > 0;
         const prayerIcon = icons?.[p.key as keyof typeof icons];
+        
+        // Check if there are any tasks for this prayer and date
+        const hasTasks = tasks.some(task => task.prayer === p.key && task.date === ymd);
         
         return (
           <TouchableOpacity 
@@ -183,8 +186,8 @@ export default function MyPrayers() {
                   <View style={styles.checkmarkContainer}>
                     <Text style={styles.checkmark}>✓</Text>
                   </View>
-                  <View style={styles.taskIconContainer}>
-                    <Text style={styles.taskIcon}>📝</Text>
+                  <View style={[styles.taskIconContainer, !hasTasks && styles.taskIconGray]}>
+                    <Text style={[styles.taskIcon, !hasTasks && styles.taskIconGrayText]}>📝</Text>
                   </View>
                 </View>
               ) : (
