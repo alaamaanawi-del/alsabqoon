@@ -232,6 +232,42 @@ export default function RecordPrayer() {
 
   const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
 
+  const handleCompleteRecording = async () => {
+    if (!record) {
+      router.back();
+      return;
+    }
+
+    // Check if any tasks were added across both rakkas
+    const hasTasks = Object.values(record.rakka).some(rakka => 
+      Object.values(rakka.addToTask).some(taskAdded => taskAdded === true)
+    );
+
+    if (hasTasks) {
+      // Show confirmation dialog for navigation
+      Alert.alert(
+        'تم التسجيل',
+        'تم حفظ الصلاة وإضافة المهام. هل تريد الانتقال إلى صفحة المهام؟',
+        [
+          {
+            text: 'البقاء هنا',
+            style: 'cancel',
+            onPress: () => router.back()
+          },
+          {
+            text: 'المهام',
+            onPress: () => {
+              router.replace('/(drawer)/tasks');
+            }
+          }
+        ]
+      );
+    } else {
+      // No tasks added, just go back
+      router.back();
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
