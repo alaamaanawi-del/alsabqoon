@@ -62,9 +62,17 @@ async function initDb(database: SQLite.SQLiteDatabase) {
   if (!row || row.c === 0) {
     await seedImport(database);
   } else {
-    const needs = await database.getFirstAsync<{ c: number }>(`SELECT COUNT(1) as c FROM ayahs WHERE textArNorm IS NULL;`);
-    if (needs && needs.c > 0) {
-      await normalizeAll(database);
+    // Check if we have the new complete Quran data (103+ surahs)
+    const surahCount = await database.getFirstAsync<{ c: number }>(`SELECT COUNT(1) as c FROM surahs;`);
+    if (!surahCount || surahCount.c < 100) {
+      // We have old limited data, need to re-import
+      await database.execAsync(`DELETE FROM ayahs; DELETE FROM surahs;`);
+      await seedImport(database);
+    } else {
+      const needs = await database.getFirstAsync<{ c: number }>(`SELECT COUNT(1) as c FROM ayahs WHERE textArNorm IS NULL;`);
+      if (needs && needs.c > 0) {
+        await normalizeAll(database);
+      }
     }
   }
 }
