@@ -487,6 +487,7 @@ export default function RecordPrayer() {
             )}
           </View>
         )}
+        </ScrollView>
 
         <View style={styles.spacer} />
         <View style={styles.footer}>
