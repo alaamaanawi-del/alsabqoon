@@ -97,40 +97,55 @@ export default function RecordPrayer() {
   }, [record]);
 
   const doSearch = async () => {
-    if (!query.trim()) { setResults([]); return; }
+    if (!query.trim()) { 
+      setResults(prev => ({ ...prev, [activeRakka]: [] })); 
+      return; 
+    }
     try {
       const rows = await searchQuran(query, (bilingualParam as any) || '');
-      setResults(rows as SearchItem[]);
+      setResults(prev => ({ ...prev, [activeRakka]: rows as SearchItem[] }));
     } catch (e) {
       console.warn("search error", e);
     }
   };
-  useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam]);
+  useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam, activeRakka]);
 
   const clearRange = () => {
-    setRangeStart(null); setRangeEnd(null);
+    setRangeStart(prev => ({ ...prev, [activeRakka]: null }));
+    setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
     showToast('تم إلغاء التحديد');
   };
 
   const withinRange = (it: SearchItem) => {
-    if (!rangeStart || !rangeEnd) return false;
-    if (rangeStart.surahNumber !== rangeEnd.surahNumber) return false;
-    if (it.surahNumber !== rangeStart.surahNumber) return false;
-    const min = Math.min(rangeStart.ayah, rangeEnd.ayah);
-    const max = Math.max(rangeStart.ayah, rangeEnd.ayah);
+    const start = rangeStart[activeRakka];
+    const end = rangeEnd[activeRakka];
+    if (!start || !end) return false;
+    if (start.surahNumber !== end.surahNumber) return false;
+    if (it.surahNumber !== start.surahNumber) return false;
+    const min = Math.min(start.ayah, end.ayah);
+    const max = Math.max(start.ayah, end.ayah);
     return it.ayah >= min && it.ayah <= max;
   };
 
   const onVerseNumberPress = (item: SearchItem) => {
-    if (!rangeStart) { setRangeStart(item); return; }
-    if (rangeStart && !rangeEnd) {
-      if (item.surahNumber !== rangeStart.surahNumber) {
-        setRangeStart(item); setRangeEnd(null); return;
+    const start = rangeStart[activeRakka];
+    const end = rangeEnd[activeRakka];
+    
+    if (!start) { 
+      setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
+      return; 
+    }
+    if (start && !end) {
+      if (item.surahNumber !== start.surahNumber) {
+        setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
+        setRangeEnd(prev => ({ ...prev, [activeRakka]: null })); 
+        return;
       }
-      setRangeEnd(item);
+      setRangeEnd(prev => ({ ...prev, [activeRakka]: item }));
       return;
     }
-    setRangeStart(item); setRangeEnd(null);
+    setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
+    setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
   };
 
   const selectWholeSurah = async () => {
