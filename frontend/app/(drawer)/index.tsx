@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 16 }}>
       <View style={styles.hero}>
-        <Image source={{ uri: `data:image/png;base64,${logoBase64}` }} style={styles.heroLogo} />
+        {/* <Image source={{ uri: `data:image/png;base64,${logoBase64}` }} style={styles.heroLogo} /> */}
         <Text style={styles.title}>السابقون</Text>
         <Text style={styles.subtitle}>مرحبا بك! تتبّع صلاتك وابحث في القرآن</Text>
       </View>
