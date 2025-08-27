@@ -382,6 +382,20 @@ frontend:
       - working: NA
         agent: "testing"
         comment: "✅ SETTINGS PAGE BACKEND REGRESSION TEST COMPLETE: Executed comprehensive backend regression testing after Settings page implementation. All 6 backend test scenarios passed successfully: 1) Health endpoint (GET /api) returns 200 with 'Hello World', 2) Status endpoints - POST creates new record with UUID/timestamp (7 total records now), GET returns all existing records, 3) Qur'an surahs endpoint returns 5 surahs including Al-Fatiha with correct Arabic/English names, 4) Arabic search with diacritics (الْحَمْدُ) finds Al-Fatiha 1:2 with exact text matching, 5) English bilingual search (merciful&bilingual=en) returns 2 results with English translations, 6) Spanish bilingual search (Señor&bilingual=es) returns 4 results with Spanish translations. Backend service running stable on supervisor (pid 133649, uptime 0:01:10). MongoDB connectivity confirmed. No regression detected - frontend-only Settings page implementation using AsyncStorage did not impact backend functionality. All API endpoints working correctly as expected."
+  - task: "My Azkar frontend implementation"
+    implemented: true
+    working: false
+    file: "/app/frontend/app/(drawer)/my-azkar/index.tsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented comprehensive My Azkar frontend with main page (calendar, filters, azkar list, progress chart) and individual zikr details page with API integration"
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL FRONTEND FAILURE: My Azkar page does not render properly. When navigating to /my-azkar URL, shows home page instead of azkar content. Fixed routing configuration (drawer layout) but core component rendering issue persists. Backend APIs confirmed working perfectly. REQUIRES IMMEDIATE FRONTEND DEBUGGING - component not displaying despite implementation being present in codebase."
 metadata:
   created_by: "main_agent"
   version: "1.0"
