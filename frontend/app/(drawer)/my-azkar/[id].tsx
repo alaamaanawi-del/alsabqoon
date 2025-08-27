@@ -14,6 +14,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../../src/theme/colors';
 import { router, useLocalSearchParams } from 'expo-router';
+import { 
+  createZikrEntry,
+  getZikrHistory,
+  getZikrStats,
+  ZikrEntry,
+  ZikrStats
+} from '../../../src/api/client';
 
 const AZKAR_DETAILS = {
   1: {
