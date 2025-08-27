@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
-import { Colors } from "../../src/theme/colors";
+import { Colors } from "../../../src/theme/colors";
 import { Link, useRouter, useFocusEffect } from "expo-router";
-import { loadPrayerRecord, computeScore, loadTasks } from "../../src/storage/prayer";
-import MonthCalendar from "../../src/components/MonthCalendar";
-import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../src/utils/date";
-import { loadSettings, saveSettings } from "../../src/storage/settings";
-import WeekBar from "../../src/components/WeekBar";
-import { usePrayerIcons } from "../../src/hooks/usePrayerIcons";
-import TaskProgressBar from "../../src/components/TaskProgressBar";
+import { loadPrayerRecord, computeScore, loadTasks } from "../../../src/storage/prayer";
+import MonthCalendar from "../../../src/components/MonthCalendar";
+import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
+import { loadSettings, saveSettings } from "../../../src/storage/settings";
+import WeekBar from "../../../src/components/WeekBar";
+import { usePrayerIcons } from "../../../src/hooks/usePrayerIcons";
+import TaskProgressBar from "../../../src/components/TaskProgressBar";
 
 const PRAYERS = [
   { key: "fajr", label: "الفجر" },
