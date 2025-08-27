@@ -237,6 +237,11 @@ async def get_daily_azkar(date: str):
         {"date": date, "user_id": "default"}
     ).to_list(100)
     
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
     # Group by zikr_id and calculate totals
     daily_summary = {}
     total_daily = 0
