@@ -135,6 +135,134 @@ async def quran_search(
 
     return {"results": [r.dict() for r in results]}
 
+# Azkar Models
+class ZikrEntry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str = "default"  # For now, use default user
+    zikr_id: int
+    count: int
+    date: str  # ISO date string (YYYY-MM-DD)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class ZikrEntryCreate(BaseModel):
+    zikr_id: int
+    count: int
+    date: str
+
+class ZikrStats(BaseModel):
+    zikr_id: int
+    total_count: int
+    total_sessions: int
+    last_entry: Optional[datetime] = None
+
+# Azkar data - this would typically come from a database
+AZKAR_LIST = [
+    {"id": 1, "nameAr": "سبحان الله وبحمده", "nameEn": "Subhan Allah wa Bi Hamdih", "color": "#FF6B6B"},
+    {"id": 2, "nameAr": "سبحان الله العظيم وبحمده", "nameEn": "Subhan Allah al-Azeem wa Bi Hamdih", "color": "#4ECDC4"},
+    {"id": 3, "nameAr": "سبحان الله وبحمده + استغفر الله وأتوب إليه", "nameEn": "Subhan Allah wa Bi Hamdih, Astaghfir Allah wa Atubu ilayh", "color": "#45B7D1"},
+    {"id": 4, "nameAr": "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شئ قدير", "nameEn": "La ilaha illa Allah wahdahu la sharika lahu", "color": "#96CEB4"},
+    {"id": 5, "nameAr": "لا حول ولا قوة إلا بالله", "nameEn": "La hawla wala quwwata illa billah", "color": "#FFEAA7"},
+    {"id": 6, "nameAr": "سبحان الله", "nameEn": "Subhan Allah", "color": "#DDA0DD"},
+    {"id": 7, "nameAr": "سبحان الله وبحمده سبحان الله العظيم", "nameEn": "Subhan Allah wa Bi Hamdih + Subhan Allah al-Azeem", "color": "#98D8C8"},
+    {"id": 8, "nameAr": "سبحان الله والحمد لله ولا إله إلا الله والله أكبر", "nameEn": "Subhan Allah wa al-Hamdulillah wa la ilaha illa Allah, wa Allahu Akbar", "color": "#F7DC6F"},
+    {"id": 9, "nameAr": "لا إله إلا أنت سبحانك إني كنت من الظالمين", "nameEn": "La ilaha illa anta subhanak inni kuntu min al-zalimeen", "color": "#BB8FCE"},
+    {"id": 10, "nameAr": "الصلاة على النبي", "nameEn": "Salat Ala al-Nabi", "color": "#85C1E9"},
+    {"id": 11, "nameAr": "استغفر الله وأتوب إليه", "nameEn": "Astaghfir Allah wa Atubu ilayh", "color": "#F8C471"},
+    {"id": 12, "nameAr": "آيات قرأتها", "nameEn": "Verses I read of the Quran", "color": "#82E0AA"},
+]
+
+# Azkar endpoints
+@api_router.get("/azkar")
+async def get_azkar_list():
+    """Get the list of available azkar"""
+    return {"azkar": AZKAR_LIST}
+
+@api_router.post("/azkar/entry", response_model=ZikrEntry)
+async def create_zikr_entry(entry: ZikrEntryCreate):
+    """Record a zikr entry"""
+    zikr_dict = entry.dict()
+    zikr_obj = ZikrEntry(**zikr_dict)
+    await db.zikr_entries.insert_one(zikr_obj.dict())
+    return zikr_obj
+
+@api_router.get("/azkar/{zikr_id}/history")
+async def get_zikr_history(zikr_id: int, days: Optional[int] = Query(30, description="Number of days to retrieve")):
+    """Get history for a specific zikr"""
+    entries = await db.zikr_entries.find(
+        {"zikr_id": zikr_id, "user_id": "default"}
+    ).sort("timestamp", -1).limit(days).to_list(days)
+    
+    return {"entries": entries}
+
+@api_router.get("/azkar/{zikr_id}/stats", response_model=ZikrStats)
+async def get_zikr_stats(zikr_id: int):
+    """Get statistics for a specific zikr"""
+    pipeline = [
+        {"$match": {"zikr_id": zikr_id, "user_id": "default"}},
+        {"$group": {
+            "_id": None,
+            "total_count": {"$sum": "$count"},
+            "total_sessions": {"$sum": 1},
+            "last_entry": {"$max": "$timestamp"}
+        }}
+    ]
+    
+    result = await db.zikr_entries.aggregate(pipeline).to_list(1)
+    
+    if result:
+        stats_data = result[0]
+        return ZikrStats(
+            zikr_id=zikr_id,
+            total_count=stats_data.get("total_count", 0),
+            total_sessions=stats_data.get("total_sessions", 0),
+            last_entry=stats_data.get("last_entry")
+        )
+    else:
+        return ZikrStats(
+            zikr_id=zikr_id,
+            total_count=0,
+            total_sessions=0,
+            last_entry=None
+        )
+
+@api_router.get("/azkar/daily/{date}")
+async def get_daily_azkar(date: str):
+    """Get all azkar entries for a specific date"""
+    entries = await db.zikr_entries.find(
+        {"date": date, "user_id": "default"}
+    ).to_list(100)
+    
+    # Group by zikr_id and calculate totals
+    daily_summary = {}
+    total_daily = 0
+    
+    for entry in entries:
+        zikr_id = entry["zikr_id"]
+        count = entry["count"]
+        
+        if zikr_id not in daily_summary:
+            daily_summary[zikr_id] = {"count": 0, "sessions": 0}
+        
+        daily_summary[zikr_id]["count"] += count
+        daily_summary[zikr_id]["sessions"] += 1
+        total_daily += count
+    
+    # Calculate percentages
+    for zikr_id in daily_summary:
+        if total_daily > 0:
+            daily_summary[zikr_id]["percentage"] = round(
+                (daily_summary[zikr_id]["count"] / total_daily) * 100, 1
+            )
+        else:
+            daily_summary[zikr_id]["percentage"] = 0
+    
+    return {
+        "date": date,
+        "total_daily": total_daily,
+        "azkar_summary": daily_summary,
+        "entries": entries
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
