@@ -88,7 +88,7 @@ interface BroadcastFilters {
 }
 
 export default function MessagesSupport() {
-  // Admin broadcast state
+  // Admin broadcast state - CHECK USER ROLE FROM BACKEND
   const [isAdmin] = useState(false); // Set to false by default - should be determined by user role from backend
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [broadcastFilters, setBroadcastFilters] = useState<BroadcastFilters>({
