@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../../src/theme/colors';
+import { Colors } from '../../../../src/theme/colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { 
   createZikrEntry,
@@ -20,7 +20,7 @@ import {
   getZikrStats,
   ZikrEntry,
   ZikrStats
-} from '../../../src/api/client';
+} from '../../../../src/api/client';
 
 const AZKAR_DETAILS = {
   1: {

@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
-import { Colors } from "../../../src/theme/colors";
+import { Colors } from "../../../../src/theme/colors";
 import { 
   LESSON_CATEGORIES, 
   Lesson, 
@@ -23,7 +23,7 @@ import {
   calculateLessonScore,
   loadLessonComments,
   saveLessonComment
-} from "../../../src/storage/lessons";
+} from "../../../../src/storage/lessons";
 
 export default function LessonDetailScreen() {
   const { id } = useLocalSearchParams<{
