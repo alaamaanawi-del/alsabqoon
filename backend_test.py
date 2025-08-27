@@ -227,6 +227,270 @@ def test_quran_search_comprehensive():
     
     return all_passed
 
+def test_azkar_list():
+    """Test GET /api/azkar returns list of 12 azkar"""
+    print("\n🔍 Testing Azkar List Endpoint (GET /api/azkar)...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            azkar_list = data.get("azkar", [])
+            print(f"   Response: Found {len(azkar_list)} azkar")
+            
+            # Verify we have 12 azkar
+            if len(azkar_list) == 12:
+                print("   ✅ PASS: Found all 12 azkar types")
+                
+                # Check structure of first azkar
+                first_azkar = azkar_list[0]
+                required_fields = ["id", "nameAr", "nameEn", "color"]
+                if all(field in first_azkar for field in required_fields):
+                    print(f"   ✅ PASS: Azkar structure correct - {first_azkar['nameAr']}")
+                    return True
+                else:
+                    print(f"   ❌ FAIL: Missing required fields in azkar structure: {first_azkar}")
+                    return False
+            else:
+                print(f"   ❌ FAIL: Expected 12 azkar, got {len(azkar_list)}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR: {str(e)}")
+        return False
+
+def test_azkar_entry_creation():
+    """Test POST /api/azkar/entry creates zikr entries"""
+    print("\n🔍 Testing Azkar Entry Creation (POST /api/azkar/entry)...")
+    
+    # Test data for different azkar
+    test_entries = [
+        {"zikr_id": 1, "count": 33, "date": "2024-01-15"},
+        {"zikr_id": 6, "count": 100, "date": "2024-01-15"},
+        {"zikr_id": 11, "count": 50, "date": "2024-01-16"}
+    ]
+    
+    all_passed = True
+    created_entries = []
+    
+    for entry_data in test_entries:
+        print(f"   Creating entry: zikr_id={entry_data['zikr_id']}, count={entry_data['count']}")
+        try:
+            response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data)
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["id", "user_id", "zikr_id", "count", "date", "timestamp"]
+                if all(field in data for field in required_fields):
+                    print(f"   ✅ PASS: Entry created with ID {data['id']}")
+                    created_entries.append(data)
+                else:
+                    print(f"   ❌ FAIL: Missing required fields in response: {data}")
+                    all_passed = False
+            else:
+                print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+                all_passed = False
+        except Exception as e:
+            print(f"   ❌ ERROR: {str(e)}")
+            all_passed = False
+    
+    print(f"   Created {len(created_entries)} entries successfully")
+    return all_passed
+
+def test_azkar_history():
+    """Test GET /api/azkar/{zikr_id}/history returns entry history"""
+    print("\n🔍 Testing Azkar History (GET /api/azkar/{zikr_id}/history)...")
+    
+    # Test history for different zikr_ids
+    test_zikr_ids = [1, 6, 11]
+    all_passed = True
+    
+    for zikr_id in test_zikr_ids:
+        print(f"   Testing history for zikr_id={zikr_id}")
+        try:
+            response = requests.get(f"{BASE_URL}/azkar/{zikr_id}/history")
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                entries = data.get("entries", [])
+                print(f"   Found {len(entries)} history entries for zikr_id={zikr_id}")
+                
+                # Verify structure if entries exist
+                if len(entries) > 0:
+                    first_entry = entries[0]
+                    required_fields = ["id", "user_id", "zikr_id", "count", "date"]
+                    if all(field in first_entry for field in required_fields):
+                        print(f"   ✅ PASS: History structure correct for zikr_id={zikr_id}")
+                    else:
+                        print(f"   ❌ FAIL: Missing fields in history entry: {first_entry}")
+                        all_passed = False
+                else:
+                    print(f"   ✅ PASS: No history entries for zikr_id={zikr_id} (expected for new data)")
+            else:
+                print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+                all_passed = False
+        except Exception as e:
+            print(f"   ❌ ERROR: {str(e)}")
+            all_passed = False
+    
+    return all_passed
+
+def test_azkar_stats():
+    """Test GET /api/azkar/{zikr_id}/stats returns statistics"""
+    print("\n🔍 Testing Azkar Statistics (GET /api/azkar/{zikr_id}/stats)...")
+    
+    # Test stats for different zikr_ids
+    test_zikr_ids = [1, 6, 11]
+    all_passed = True
+    
+    for zikr_id in test_zikr_ids:
+        print(f"   Testing stats for zikr_id={zikr_id}")
+        try:
+            response = requests.get(f"{BASE_URL}/azkar/{zikr_id}/stats")
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["zikr_id", "total_count", "total_sessions", "last_entry"]
+                if all(field in data for field in required_fields):
+                    print(f"   ✅ PASS: Stats for zikr_id={zikr_id} - Total: {data['total_count']}, Sessions: {data['total_sessions']}")
+                else:
+                    print(f"   ❌ FAIL: Missing fields in stats response: {data}")
+                    all_passed = False
+            else:
+                print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+                all_passed = False
+        except Exception as e:
+            print(f"   ❌ ERROR: {str(e)}")
+            all_passed = False
+    
+    return all_passed
+
+def test_azkar_daily_summary():
+    """Test GET /api/azkar/daily/{date} returns daily summary with percentages"""
+    print("\n🔍 Testing Azkar Daily Summary (GET /api/azkar/daily/{date})...")
+    
+    # Test different dates
+    test_dates = ["2024-01-15", "2024-01-16"]
+    all_passed = True
+    
+    for date in test_dates:
+        print(f"   Testing daily summary for date={date}")
+        try:
+            response = requests.get(f"{BASE_URL}/azkar/daily/{date}")
+            print(f"   Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["date", "total_daily", "azkar_summary", "entries"]
+                if all(field in data for field in required_fields):
+                    total_daily = data["total_daily"]
+                    azkar_summary = data["azkar_summary"]
+                    entries = data["entries"]
+                    
+                    print(f"   ✅ PASS: Daily summary for {date} - Total: {total_daily}, Azkar types: {len(azkar_summary)}, Entries: {len(entries)}")
+                    
+                    # Verify percentage calculations if there are entries
+                    if total_daily > 0:
+                        total_percentage = sum(summary.get("percentage", 0) for summary in azkar_summary.values())
+                        if abs(total_percentage - 100.0) < 0.1:  # Allow small rounding differences
+                            print(f"   ✅ PASS: Percentages sum to {total_percentage}% (correct)")
+                        else:
+                            print(f"   ❌ FAIL: Percentages sum to {total_percentage}% (should be 100%)")
+                            all_passed = False
+                else:
+                    print(f"   ❌ FAIL: Missing fields in daily summary: {data}")
+                    all_passed = False
+            else:
+                print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+                all_passed = False
+        except Exception as e:
+            print(f"   ❌ ERROR: {str(e)}")
+            all_passed = False
+    
+    return all_passed
+
+def test_azkar_complete_flow():
+    """Test complete azkar workflow: list -> create entries -> check stats/history -> daily summary"""
+    print("\n🔍 Testing Complete Azkar Workflow...")
+    
+    # Step 1: Get azkar list
+    print("   Step 1: Getting azkar list...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar")
+        if response.status_code != 200:
+            print("   ❌ FAIL: Could not get azkar list")
+            return False
+        azkar_list = response.json().get("azkar", [])
+        print(f"   ✅ Got {len(azkar_list)} azkar types")
+    except Exception as e:
+        print(f"   ❌ ERROR getting azkar list: {str(e)}")
+        return False
+    
+    # Step 2: Create multiple entries for today
+    today = datetime.now().strftime("%Y-%m-%d")
+    print(f"   Step 2: Creating entries for {today}...")
+    
+    test_entries = [
+        {"zikr_id": 1, "count": 33, "date": today},  # Subhan Allah wa Bi Hamdih
+        {"zikr_id": 1, "count": 67, "date": today},  # Another session
+        {"zikr_id": 6, "count": 100, "date": today}, # Subhan Allah
+        {"zikr_id": 11, "count": 50, "date": today}  # Astaghfir Allah
+    ]
+    
+    created_count = 0
+    for entry_data in test_entries:
+        try:
+            response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data)
+            if response.status_code == 200:
+                created_count += 1
+        except Exception as e:
+            print(f"   ❌ ERROR creating entry: {str(e)}")
+    
+    print(f"   ✅ Created {created_count}/{len(test_entries)} entries")
+    
+    # Step 3: Check stats for zikr_id=1 (should have 2 sessions, 100 total count)
+    print("   Step 3: Checking stats for zikr_id=1...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/1/stats")
+        if response.status_code == 200:
+            stats = response.json()
+            if stats["total_count"] >= 100 and stats["total_sessions"] >= 2:
+                print(f"   ✅ Stats correct: {stats['total_count']} total, {stats['total_sessions']} sessions")
+            else:
+                print(f"   ❌ Stats incorrect: {stats}")
+                return False
+        else:
+            print("   ❌ FAIL: Could not get stats")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR getting stats: {str(e)}")
+        return False
+    
+    # Step 4: Check daily summary
+    print(f"   Step 4: Checking daily summary for {today}...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/daily/{today}")
+        if response.status_code == 200:
+            daily = response.json()
+            if daily["total_daily"] >= 250:  # 33+67+100+50 = 250
+                print(f"   ✅ Daily summary correct: {daily['total_daily']} total dhikr")
+                return True
+            else:
+                print(f"   ❌ Daily summary incorrect: {daily}")
+                return False
+        else:
+            print("   ❌ FAIL: Could not get daily summary")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR getting daily summary: {str(e)}")
+        return False
+
 def main():
     """Run all backend tests for mobile regression testing"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
