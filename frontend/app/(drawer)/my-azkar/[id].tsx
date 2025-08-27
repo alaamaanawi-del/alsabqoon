@@ -46,17 +46,20 @@ export default function ZikrDetailsScreen() {
   const { id } = useLocalSearchParams();
   const [count, setCount] = useState('');
   const [zikrDetails, setZikrDetails] = useState(null);
-  const [history, setHistory] = useState([]);
-  const [totalAllTime, setTotalAllTime] = useState(0);
+  const [history, setHistory] = useState<ZikrEntry[]>([]);
+  const [stats, setStats] = useState<ZikrStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadZikrDetails();
     loadZikrHistory();
+    loadZikrStats();
   }, [id]);
 
   const loadZikrDetails = () => {
-    const details = AZKAR_DETAILS[id] || {
-      id: parseInt(id),
+    const zikrId = parseInt(id as string);
+    const details = AZKAR_DETAILS[zikrId] || {
+      id: zikrId,
       nameAr: 'ذكر غير محدد',
       nameEn: 'Unknown Zikr',
       color: '#666666',
@@ -66,45 +69,63 @@ export default function ZikrDetailsScreen() {
     setZikrDetails(details);
   };
 
-  const loadZikrHistory = () => {
-    // Mock history data - replace with actual data loading
-    const mockHistory = [
-      { date: new Date().toISOString(), count: 100, time: '14:30' },
-      { date: new Date(Date.now() - 86400000).toISOString(), count: 250, time: '09:15' },
-      { date: new Date(Date.now() - 172800000).toISOString(), count: 180, time: '16:45' },
-    ];
-    setHistory(mockHistory);
-    
-    const total = mockHistory.reduce((sum, entry) => sum + entry.count, 0);
-    setTotalAllTime(total);
+  const loadZikrHistory = async () => {
+    try {
+      const zikrId = parseInt(id as string);
+      const response = await getZikrHistory(zikrId, 30);
+      setHistory(response.entries);
+    } catch (error) {
+      console.error('Error loading zikr history:', error);
+      setHistory([]);
+    }
   };
 
-  const handleSubmit = () => {
+  const loadZikrStats = async () => {
+    try {
+      const zikrId = parseInt(id as string);
+      const statsData = await getZikrStats(zikrId);
+      setStats(statsData);
+    } catch (error) {
+      console.error('Error loading zikr stats:', error);
+      setStats({
+        zikr_id: parseInt(id as string),
+        total_count: 0,
+        total_sessions: 0,
+        last_entry: undefined
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
     const countValue = parseInt(count);
     if (!countValue || countValue <= 0) {
       Alert.alert('خطأ', 'يرجى إدخال عدد صحيح');
       return;
     }
 
-    // Add new entry to history
-    const newEntry = {
-      date: new Date().toISOString(),
-      count: countValue,
-      time: new Date().toLocaleTimeString('ar', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }),
-    };
-
-    setHistory(prev => [newEntry, ...prev]);
-    setTotalAllTime(prev => prev + countValue);
-    setCount('');
-
-    Alert.alert(
-      'تم الحفظ',
-      `تم إضافة ${countValue} من الذكر بنجاح`,
-      [{ text: 'موافق' }]
-    );
+    try {
+      const zikrId = parseInt(id as string);
+      const dateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      
+      await createZikrEntry(zikrId, countValue, dateStr);
+      
+      // Refresh data
+      await loadZikrHistory();
+      await loadZikrStats();
+      
+      setCount('');
+      
+      Alert.alert(
+        'تم الحفظ',
+        `تم إضافة ${countValue} من الذكر بنجاح`,
+        [{ text: 'موافق' }]
+      );
+    } catch (error) {
+      console.error('Error creating zikr entry:', error);
+      Alert.alert('خطأ', 'فشل في حفظ الذكر. يرجى المحاولة مرة أخرى.');
+    }
   };
 
   const formatDate = (dateString) => {
