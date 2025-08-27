@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams, Link } from 'expo-router';
-import { Colors } from '../../../src/theme/colors';
-import { computeScore, loadPrayerRecord } from '../../../src/storage/prayer';
-import { fmtYMD, gregFullString, hijriFullString } from '../../../src/utils/date';
+import { Colors } from '../../src/theme/colors';
+import { computeScore, loadPrayerRecord } from '../../src/storage/prayer';
+import { fmtYMD, gregFullString, hijriFullString } from '../../src/utils/date';
 
 const PRAYERS = [
   { key: 'fajr', label: 'الفجر' },
