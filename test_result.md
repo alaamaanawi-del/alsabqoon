@@ -180,6 +180,61 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ MOBILE REGRESSION TESTED: Arabic search with diacritics (الْحَمْدُ) finds Al-Fatiha 1:2 among 28 total results. NEW TAFSEER FUNCTIONALITY confirmed working - bilingual=tafseer parameter returns Arabic interpretations successfully. Comprehensive search testing (الله, رب, الرحمن) all return 100+ results each. Complete Quran dataset integration successful."
+  - task: "Azkar list API (/api/azkar)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/azkar endpoint returning 12 azkar with Arabic/English names and colors"
+  - task: "Azkar entry creation API (/api/azkar/entry)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented POST /api/azkar/entry for recording zikr counts with date tracking"
+  - task: "Azkar history API (/api/azkar/{zikr_id}/history)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/azkar/{zikr_id}/history for retrieving zikr entry history"
+  - task: "Azkar statistics API (/api/azkar/{zikr_id}/stats)"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/azkar/{zikr_id}/stats for zikr statistics (total count, sessions, last entry)"
+  - task: "Daily azkar summary API (/api/azkar/daily/{date})"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/azkar/daily/{date} for daily progress tracking with percentages"
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
