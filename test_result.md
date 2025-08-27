@@ -391,7 +391,7 @@ metadata:
 test_plan:
   current_focus:
     - "Azkar list API (/api/azkar)"
-    - "Qur’an Surah list API (/api/quran/surahs)"
+    - "Azkar entry creation API (/api/azkar/entry)"
     - "Qur’an search API (/api/quran/search)"
     - "Smooth animated week transitions in WeekBar"
     - "Haptic feedback on day select (mobile)"
