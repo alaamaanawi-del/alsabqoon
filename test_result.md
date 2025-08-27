@@ -407,9 +407,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "My Azkar frontend implementation"
-  stuck_tasks:
-    - "My Azkar frontend implementation"
+    - "Individual zikr details routing fix"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
