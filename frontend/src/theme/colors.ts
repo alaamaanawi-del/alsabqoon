@@ -6,6 +6,10 @@ export const Colors = {
   dark: "#0B0F0E",
   lightGray: "#E0E0E0",
   background: "#F5F5F5",
+  accent: "#FF6B6B",
+  success: "#4CAF50",
+  mediumGray: "#757575",
+  darkGray: "#424242",
 };
 
 export const AppTheme = {
