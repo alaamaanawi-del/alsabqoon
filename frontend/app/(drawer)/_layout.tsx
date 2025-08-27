@@ -32,7 +32,6 @@ export default function DrawerLayout() {
       <Drawer.Screen name="tasks" options={{ title: "المهام" }} />
       <Drawer.Screen name="lessons/index" options={{ title: "الدروس" }} />
       <Drawer.Screen name="messages-support" options={{ title: "الرسائل والدعم" }} />
-      <Drawer.Screen name="information" options={{ title: "المعلومات" }} />
       <Drawer.Screen name="settings" options={{ title: "الإعدادات" }} />
     </Drawer>
   );
