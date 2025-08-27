@@ -45,28 +45,57 @@ export default function MyAzkarScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('today');
   const [isHijri, setIsHijri] = useState(false);
-  const [azkarData, setAzkarData] = useState({});
+  const [azkarList, setAzkarList] = useState<Zikr[]>([]);
+  const [dailySummary, setDailySummary] = useState<DailyAzkarSummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for demonstration - replace with actual data loading
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
   useEffect(() => {
     loadAzkarData();
-  }, [selectedFilter]);
+  }, [selectedFilter, selectedDate]);
 
-  const loadAzkarData = () => {
-    // Mock data loading - replace with actual implementation
-    const mockData = {};
-    AZKAR_LIST.forEach(zikr => {
-      mockData[zikr.id] = {
-        count: Math.floor(Math.random() * 2000),
-        percentage: Math.floor(Math.random() * 100),
-      };
-    });
-    setAzkarData(mockData);
+  const loadInitialData = async () => {
+    try {
+      setLoading(true);
+      const azkarResponse = await getAzkarList();
+      setAzkarList(azkarResponse.azkar);
+    } catch (error) {
+      console.error('Error loading azkar list:', error);
+      Alert.alert('خطأ', 'فشل في تحميل قائمة الأذكار');
+      // Fallback to local data
+      setAzkarList(AZKAR_LIST);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAzkarData = async () => {
+    try {
+      const dateStr = formatDateForAPI(selectedDate);
+      const summary = await getDailyAzkar(dateStr);
+      setDailySummary(summary);
+    } catch (error) {
+      console.error('Error loading daily azkar:', error);
+      // Set empty summary on error
+      setDailySummary({
+        date: formatDateForAPI(selectedDate),
+        total_daily: 0,
+        azkar_summary: {},
+        entries: []
+      });
+    }
+  };
+
+  const formatDateForAPI = (date: Date): string => {
+    return date.toISOString().split('T')[0]; // YYYY-MM-DD format
   };
 
   const getTotalDaily = () => {
-    return Object.values(azkarData).reduce((sum, data) => sum + (data.count || 0), 0);
+    return dailySummary?.total_daily || 0;
   };
 
   const getDailyColorCode = (total) => {
@@ -105,8 +134,9 @@ export default function MyAzkarScreen() {
 
   const renderAzkarList = () => (
     <View style={styles.azkarListContainer}>
-      {AZKAR_LIST.map((zikr, index) => {
-        const data = azkarData[zikr.id] || { count: 0, percentage: 0 };
+      {(azkarList.length > 0 ? azkarList : AZKAR_LIST).map((zikr, index) => {
+        const azkarSummary = dailySummary?.azkar_summary || {};
+        const data = azkarSummary[zikr.id] || { count: 0, percentage: 0 };
         return (
           <TouchableOpacity
             key={zikr.id}
@@ -125,7 +155,7 @@ export default function MyAzkarScreen() {
               </View>
               <Ionicons name="chevron-forward" size={20} color={Colors.mediumGray} />
             </View>
-            {index < AZKAR_LIST.length - 1 && <View style={styles.separator} />}
+            {index < (azkarList.length > 0 ? azkarList : AZKAR_LIST).length - 1 && <View style={styles.separator} />}
           </TouchableOpacity>
         );
       })}
