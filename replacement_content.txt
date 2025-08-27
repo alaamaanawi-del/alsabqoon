@@ -1,0 +1,86 @@
+  const handleSendInAppMessage = () => {
+    if (!userMessage.trim() && attachedFiles.length === 0) {
+      Alert.alert('تنبيه', 'يرجى كتابة رسالتك أو إرفاق ملف');
+      return;
+    }
+
+    // Here you would send the message and files to your backend
+    Alert.alert(
+      'تم إرسال الرسالة',
+      `شكراً لك! سنرد عليك في أقرب وقت ممكن.\n${attachedFiles.length > 0 ? `تم إرفاق ${attachedFiles.length} ملف(ات)` : ''}`,
+      [
+        {
+          text: 'موافق',
+          onPress: () => {
+            setUserMessage('');
+            setAttachedFiles([]);
+          },
+        },
+      ]
+    );
+  };
+
+  const handleAttachFile = () => {
+    Alert.alert(
+      'إرفاق ملف',
+      'اختر نوع الملف المراد إرفاقه',
+      [
+        { text: 'إلغاء', style: 'cancel' },
+        { text: '📷 صورة', onPress: handlePickImage },
+        { text: '📄 مستند', onPress: handlePickDocument },
+      ]
+    );
+  };
+
+  const handlePickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const file: AttachedFile = {
+          uri: result.assets[0].uri,
+          name: `صورة_${Date.now()}.jpg`,
+          type: 'image/jpeg',
+          size: result.assets[0].fileSize,
+        };
+        setAttachedFiles(prev => [...prev, file]);
+      }
+    } catch (error) {
+      Alert.alert('خطأ', 'لا يمكن اختيار الصورة');
+    }
+  };
+
+  const handlePickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        const file: AttachedFile = {
+          uri: result.assets[0].uri,
+          name: result.assets[0].name,
+          type: result.assets[0].mimeType || 'application/octet-stream',
+          size: result.assets[0].size,
+        };
+        setAttachedFiles(prev => [...prev, file]);
+      }
+    } catch (error) {
+      Alert.alert('خطأ', 'لا يمكن اختيار الملف');
+    }
+  };
+
+  const removeAttachedFile = (index: number) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const addEmoticon = (emoticon: string) => {
+    setUserMessage(prev => prev + emoticon);
+    setShowEmoticons(false);
+  };
