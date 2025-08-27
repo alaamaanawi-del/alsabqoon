@@ -192,6 +192,11 @@ async def get_zikr_history(zikr_id: int, days: Optional[int] = Query(30, descrip
         {"zikr_id": zikr_id, "user_id": "default"}
     ).sort("timestamp", -1).limit(days).to_list(days)
     
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
     return {"entries": entries}
 
 @api_router.get("/azkar/{zikr_id}/stats", response_model=ZikrStats)
