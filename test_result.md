@@ -404,12 +404,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Azkar list API (/api/azkar)"
-    - "Azkar entry creation API (/api/azkar/entry)"
-    - "Azkar history API (/api/azkar/{zikr_id}/history)"
-    - "Azkar statistics API (/api/azkar/{zikr_id}/stats)"
-    - "Daily azkar summary API (/api/azkar/daily/{date})"
-  stuck_tasks: []
+    - "My Azkar frontend implementation"
+  stuck_tasks:
+    - "My Azkar frontend implementation"
   test_all: false
   test_priority: "high_first"
 
