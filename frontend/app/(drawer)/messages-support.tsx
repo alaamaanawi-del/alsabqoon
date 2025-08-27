@@ -725,6 +725,124 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  // Message controls styles
+  messageControls: {
+    flexDirection: 'row-reverse',
+    gap: 12,
+    marginBottom: 12,
+  },
+  attachBtn: {
+    flex: 1,
+    backgroundColor: 'rgba(166, 211, 207, 0.1)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#A6D3CF',
+  },
+  attachBtnText: {
+    color: '#A6D3CF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  emoticonBtn: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 138, 88, 0.1)',
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.warmOrange,
+  },
+  emoticonBtnText: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // Emoticons panel styles
+  emoticonsPanel: {
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+  emoticonsTitle: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'right',
+    marginBottom: 8,
+  },
+  emoticonsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  emoticonItem: {
+    backgroundColor: '#1d2a29',
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emoticonText: {
+    fontSize: 20,
+  },
+
+  // Attached files styles
+  attachedFilesContainer: {
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
+  },
+  attachedFilesTitle: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'right',
+    marginBottom: 8,
+  },
+  attachedFile: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    backgroundColor: '#1d2a29',
+    borderRadius: 6,
+    padding: 8,
+    marginBottom: 6,
+  },
+  fileInfo: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  fileName: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'right',
+  },
+  fileSize: {
+    color: '#A6D3CF',
+    fontSize: 12,
+    textAlign: 'right',
+  },
+  removeFileBtn: {
+    backgroundColor: '#ff4444',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
+  },
+  removeFileBtnText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+
   // Donations styles
   donationToggle: {
     backgroundColor: 'rgba(255, 138, 88, 0.1)',
