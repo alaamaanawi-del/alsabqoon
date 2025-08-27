@@ -9,8 +9,11 @@ import {
   Alert,
   Linking,
   Switch,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../../src/theme/colors';
 
 // Sample data - would come from backend in real app
