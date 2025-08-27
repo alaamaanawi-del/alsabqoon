@@ -8,13 +8,13 @@ import {
   SafeAreaView,
   Animated,
 } from "react-native";
-import { Colors } from "../../src/theme/colors";
+import { Colors } from "../../../src/theme/colors";
 import { 
   LESSON_CATEGORIES, 
   LessonCategory, 
   Lesson, 
   calculateKnowledgeScore 
-} from "../../src/storage/lessons";
+} from "../../../src/storage/lessons";
 import { router } from "expo-router";
 
 export default function LessonsScreen() {
