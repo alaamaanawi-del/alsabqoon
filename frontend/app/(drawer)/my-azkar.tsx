@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../../src/theme/colors';
+import { Colors } from '../../src/theme/colors';
 import { router } from 'expo-router';
 import { 
   getAzkarList, 
