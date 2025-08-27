@@ -137,7 +137,15 @@ export default function ZikrDetailsScreen() {
     });
   };
 
-  if (!zikrDetails) {
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('ar', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  if (!zikrDetails || loading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
@@ -203,11 +211,11 @@ export default function ZikrDetailsScreen() {
             <Text style={styles.sectionTitle}>الإحصائيات:</Text>
             <View style={styles.statsRow}>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{totalAllTime.toLocaleString()}</Text>
+                <Text style={styles.statNumber}>{stats?.total_count?.toLocaleString() || '0'}</Text>
                 <Text style={styles.statLabel}>إجمالي الأذكار</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{history.length}</Text>
+                <Text style={styles.statNumber}>{stats?.total_sessions?.toLocaleString() || '0'}</Text>
                 <Text style={styles.statLabel}>عدد الجلسات</Text>
               </View>
             </View>
@@ -220,8 +228,8 @@ export default function ZikrDetailsScreen() {
               history.map((entry, index) => (
                 <View key={index} style={styles.historyItem}>
                   <View style={styles.historyInfo}>
-                    <Text style={styles.historyDate}>{formatDate(entry.date)}</Text>
-                    <Text style={styles.historyTime}>{entry.time}</Text>
+                    <Text style={styles.historyDate}>{formatDate(entry.created_at || entry.date)}</Text>
+                    <Text style={styles.historyTime}>{formatTime(entry.created_at || entry.date)}</Text>
                   </View>
                   <Text style={styles.historyCount}>{entry.count.toLocaleString()}</Text>
                 </View>
