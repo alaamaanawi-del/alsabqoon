@@ -392,7 +392,7 @@ test_plan:
   current_focus:
     - "Azkar list API (/api/azkar)"
     - "Azkar entry creation API (/api/azkar/entry)"
-    - "Qur’an search API (/api/quran/search)"
+    - "Azkar history API (/api/azkar/{zikr_id}/history)"
     - "Smooth animated week transitions in WeekBar"
     - "Haptic feedback on day select (mobile)"
     - "Long-press quick action sheet for days"
