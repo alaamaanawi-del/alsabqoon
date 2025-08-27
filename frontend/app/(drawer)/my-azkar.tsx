@@ -105,7 +105,7 @@ export default function MyAzkarScreen() {
   };
 
   const handleZikrPress = (zikr) => {
-    router.push(`/my-azkar/${zikr.id}`);
+    router.push(`/azkar/${zikr.id}`);
   };
 
   const renderFilterButtons = () => (
