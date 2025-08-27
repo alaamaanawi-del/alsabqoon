@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   Animated,
 } from "react-native";
-import { Colors } from "../../src/theme/colors";
+import { Colors } from "../../../src/theme/colors";
 import { 
   LESSON_CATEGORIES, 
   LessonCategory, 
