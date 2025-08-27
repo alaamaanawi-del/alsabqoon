@@ -395,8 +395,6 @@ test_plan:
     - "Azkar history API (/api/azkar/{zikr_id}/history)"
     - "Azkar statistics API (/api/azkar/{zikr_id}/stats)"
     - "Daily azkar summary API (/api/azkar/daily/{date})"
-    - "Long-press quick action sheet for days"
-    - "Hide week bar in month calendar view"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
