@@ -492,15 +492,16 @@ def test_azkar_complete_flow():
         return False
 
 def main():
-    """Run all backend tests for mobile regression testing"""
+    """Run all backend tests including new azkar functionality"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
-    print("📱 Mobile Regression Testing After Fixes")
+    print("🕌 Testing New Azkar (My Azkar) Functionality")
     print(f"🌐 Testing against: {BASE_URL}")
     print("=" * 70)
     
     test_results = []
     
-    # Run all tests as specified in the review request
+    # Existing tests (regression testing)
+    print("📋 REGRESSION TESTS - Existing Functionality")
     test_results.append(("Health Endpoint", test_health_endpoint()))
     test_results.append(("Status Endpoints", test_status_endpoints()))
     test_results.append(("Qur'an Surahs (103 Complete)", test_quran_surahs()))
@@ -508,9 +509,21 @@ def main():
     test_results.append(("Qur'an Search Tafseer", test_quran_search_tafseer()))
     test_results.append(("Comprehensive Search", test_quran_search_comprehensive()))
     
+    print("\n" + "=" * 70)
+    print("🕌 NEW AZKAR FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # New azkar tests as specified in the review request
+    test_results.append(("Azkar List API", test_azkar_list()))
+    test_results.append(("Azkar Entry Creation", test_azkar_entry_creation()))
+    test_results.append(("Azkar History API", test_azkar_history()))
+    test_results.append(("Azkar Statistics API", test_azkar_stats()))
+    test_results.append(("Azkar Daily Summary", test_azkar_daily_summary()))
+    test_results.append(("Complete Azkar Workflow", test_azkar_complete_flow()))
+    
     # Summary
     print("\n" + "=" * 70)
-    print("📊 MOBILE REGRESSION TEST SUMMARY")
+    print("📊 COMPREHENSIVE TEST SUMMARY")
     print("=" * 70)
     
     passed = 0
@@ -527,8 +540,9 @@ def main():
     print(f"\n📈 Results: {passed} passed, {failed} failed")
     
     if failed == 0:
-        print("🎉 All mobile regression tests passed!")
-        print("✅ Backend APIs are stable after mobile fixes")
+        print("🎉 All tests passed!")
+        print("✅ Backend APIs are working correctly")
+        print("✅ New Azkar functionality is fully operational")
         return 0
     else:
         print("⚠️  Some tests failed - requires investigation")
