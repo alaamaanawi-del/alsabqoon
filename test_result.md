@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build ALSABQON – Prayer Tracker & Qur’an Study with Arabic default, drawer nav, My Prayers, and MVP Qur’an search (AR default, optional AR+EN/AR+ES)."
+user_problem_statement: "Add comprehensive 'My Azkar' feature to ALSABQON app with calendar functionality, progress tracking, zikr recording, and detailed analytics"
 backend:
   - task: "Root health endpoint"
     implemented: true
