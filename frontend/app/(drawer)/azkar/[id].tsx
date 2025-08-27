@@ -20,7 +20,7 @@ import {
   getZikrStats,
   ZikrEntry,
   ZikrStats
-} from '../../src/api/client';
+} from '../../../src/api/client';
 
 const AZKAR_DETAILS = {
   1: {
