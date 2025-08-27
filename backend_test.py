@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 
 # Use the production URL from frontend/.env
-BASE_URL = "https://quranic-companion.preview.emergentagent.com/api"
+BASE_URL = "https://prayer-tracker-14.preview.emergentagent.com/api"
 
 def test_health_endpoint():
     """Test GET /api should return {"message":"Hello World"}"""
