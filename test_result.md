@@ -390,7 +390,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Root health endpoint"
+    - "Azkar list API (/api/azkar)"
     - "Qur’an Surah list API (/api/quran/surahs)"
     - "Qur’an search API (/api/quran/search)"
     - "Smooth animated week transitions in WeekBar"
