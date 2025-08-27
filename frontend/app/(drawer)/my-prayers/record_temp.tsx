@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Keyboard
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../src/theme/colors";
 import { searchQuran } from "../../src/db/quran.index";
-import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex, type QuestionKey } from "../../src/storage/prayer";
+import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex, type QuestionKey } from "../../../src/storage/prayer";
 import { showToast } from "../../src/utils/toast";
 import SurahSelector from "../../../src/components/SurahSelector";
 import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay";
