@@ -11,7 +11,7 @@ import {
   Share,
   Linking,
 } from "react-native";
-import { Colors } from "../../src/theme/colors";
+import { Colors } from "../../../src/theme/colors";
 import {
   AppSettings,
   loadSettings,
@@ -27,7 +27,7 @@ import {
   ASR_CALCULATION_METHODS,
   THEME_COLORS,
   FONT_SIZE_MULTIPLIERS
-} from "../../src/storage/settings";
+} from "../../../src/storage/settings";
 
 export default function SettingsScreen() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
