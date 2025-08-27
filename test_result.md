@@ -394,7 +394,7 @@ test_plan:
     - "Azkar entry creation API (/api/azkar/entry)"
     - "Azkar history API (/api/azkar/{zikr_id}/history)"
     - "Azkar statistics API (/api/azkar/{zikr_id}/stats)"
-    - "Haptic feedback on day select (mobile)"
+    - "Daily azkar summary API (/api/azkar/daily/{date})"
     - "Long-press quick action sheet for days"
     - "Hide week bar in month calendar view"
   stuck_tasks: []
