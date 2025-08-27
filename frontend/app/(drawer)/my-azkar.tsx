@@ -17,7 +17,7 @@ import {
   getDailyAzkar, 
   Zikr, 
   DailyAzkarSummary 
-} from '../../../src/api/client';
+} from '../../src/api/client';
 
 const AZKAR_LIST = [
   { id: 1, nameAr: 'سبحان الله وبحمده', nameEn: 'Subhan Allah wa Bi Hamdih', color: '#FF6B6B' },
