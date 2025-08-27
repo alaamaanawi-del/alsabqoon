@@ -2,7 +2,7 @@ import React from "react";
 import { Drawer } from "expo-router/drawer";
 import { Colors } from "../../src/theme/colors";
 import { Image, View, Text } from "react-native";
-// import { useLogoBase64 } from "../../../src/hooks/useLogoBase64";
+// import { useLogoBase64 } from "../../src/hooks/useLogoBase64";
 
 export default function DrawerLayout() {
   // const b64 = useLogoBase64();
