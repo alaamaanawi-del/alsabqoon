@@ -393,7 +393,7 @@ test_plan:
     - "Azkar list API (/api/azkar)"
     - "Azkar entry creation API (/api/azkar/entry)"
     - "Azkar history API (/api/azkar/{zikr_id}/history)"
-    - "Smooth animated week transitions in WeekBar"
+    - "Azkar statistics API (/api/azkar/{zikr_id}/stats)"
     - "Haptic feedback on day select (mobile)"
     - "Long-press quick action sheet for days"
     - "Hide week bar in month calendar view"
