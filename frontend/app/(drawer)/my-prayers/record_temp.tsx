@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Keyboard, Switch, ScrollView, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "../../../src/theme/colors";
-import { searchQuran } from "../../src/db/quran.index";
+import { searchQuran } from "../../../src/db/quran.index";
 import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex, type QuestionKey } from "../../../src/storage/prayer";
 import { showToast } from "../../src/utils/toast";
 import SurahSelector from "../../../src/components/SurahSelector";
@@ -225,7 +225,7 @@ export default function RecordPrayer() {
 
   const handleSelectWholeSurah = async (surah: { number: number; nameAr: string; nameEn: string }) => {
     try {
-      const mod = Platform.OS === 'web' ? await import("../../src/db/quran.web") : await import("../../src/db/quran.native");
+      const mod = Platform.OS === 'web' ? await import("../../../src/db/quran.web") : await import("../../../src/db/quran.native");
       const range = await mod.getSurahRange(surah.number);
       if (range) {
         const startItem: SearchItem = {
