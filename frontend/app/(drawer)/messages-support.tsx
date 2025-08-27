@@ -412,6 +412,61 @@ export default function MessagesSupport() {
             textAlign="right"
           />
 
+          {/* Attachment and Emoticon Controls */}
+          <View style={styles.messageControls}>
+            <TouchableOpacity style={styles.attachBtn} onPress={handleAttachFile}>
+              <Text style={styles.attachBtnText}>📎 إرفاق ملف</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.emoticonBtn} 
+              onPress={() => setShowEmoticons(!showEmoticons)}
+            >
+              <Text style={styles.emoticonBtnText}>😊 رموز تعبيرية</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Emoticons Panel */}
+          {showEmoticons && (
+            <View style={styles.emoticonsPanel}>
+              <Text style={styles.emoticonsTitle}>اختر رمز تعبيري:</Text>
+              <View style={styles.emoticonsGrid}>
+                {EMOTICONS.map((emoticon, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.emoticonItem}
+                    onPress={() => addEmoticon(emoticon)}
+                  >
+                    <Text style={styles.emoticonText}>{emoticon}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Attached Files Display */}
+          {attachedFiles.length > 0 && (
+            <View style={styles.attachedFilesContainer}>
+              <Text style={styles.attachedFilesTitle}>الملفات المرفقة ({attachedFiles.length}):</Text>
+              {attachedFiles.map((file, index) => (
+                <View key={index} style={styles.attachedFile}>
+                  <View style={styles.fileInfo}>
+                    <Text style={styles.fileName}>{file.name}</Text>
+                    <Text style={styles.fileSize}>
+                      {file.size ? `${Math.round(file.size / 1024)} كيلوبايت` : 'غير محدد'}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.removeFileBtn}
+                    onPress={() => removeAttachedFile(index)}
+                  >
+                    <Text style={styles.removeFileBtnText}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+
           <View style={styles.messageButtons}>
             <TouchableOpacity style={styles.inAppBtn} onPress={handleSendInAppMessage}>
               <Text style={styles.inAppBtnText}>📧 إرسال رسالة داخلية</Text>
