@@ -9,14 +9,14 @@ import {
   LayoutAnimation 
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors } from '../../../src/theme/colors';
+import { Colors } from '../../src/theme/colors';
 import { 
   LESSON_CATEGORIES, 
   LessonCategory, 
   calculateKnowledgeScore,
   getAllLessonRecords 
-} from '../../../src/storage/lessons';
-import TaskProgressBar from '../../../src/components/TaskProgressBar';
+} from '../../src/storage/lessons';
+import TaskProgressBar from '../../src/components/TaskProgressBar';
 
 export default function InformationScreen() {
   const router = useRouter();

@@ -10,14 +10,14 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../../src/theme/colors';
+import { Colors } from '../../src/theme/colors';
 import { router } from 'expo-router';
 import { 
   getAzkarList, 
   getDailyAzkar, 
   Zikr, 
   DailyAzkarSummary 
-} from '../../../src/api/client';
+} from '../../src/api/client';
 
 const AZKAR_LIST = [
   { id: 1, nameAr: 'سبحان الله وبحمده', nameEn: 'Subhan Allah wa Bi Hamdih', color: '#FF6B6B' },

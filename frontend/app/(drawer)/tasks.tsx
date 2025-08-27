@@ -10,11 +10,11 @@ import {
   Alert,
   Dimensions 
 } from 'react-native';
-import { Colors } from '../../../src/theme/colors';
-import { loadTasks, saveTasks, TaskItem } from '../../../src/storage/prayer';
+import { Colors } from '../../src/theme/colors';
+import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
 import { Link } from 'expo-router';
-import { usePrayerIcons } from '../../../src/hooks/usePrayerIcons';
-import TaskProgressBar from '../../../src/components/TaskProgressBar';
+import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
+import TaskProgressBar from '../../src/components/TaskProgressBar';
 import { Swipeable } from 'react-native-gesture-handler';
 
 type GroupingType = 'date' | 'prayer' | 'type';
