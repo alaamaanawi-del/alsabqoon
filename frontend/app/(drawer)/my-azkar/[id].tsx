@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../../src/theme/colors';
+import { Colors } from '../../src/theme/colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { 
   createZikrEntry,
