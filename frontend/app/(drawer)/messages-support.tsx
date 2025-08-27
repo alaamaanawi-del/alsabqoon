@@ -100,6 +100,8 @@ export default function MessagesSupport() {
 
   // User messaging state
   const [userMessage, setUserMessage] = useState('');
+  const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+  const [showEmoticons, setShowEmoticons] = useState(false);
 
   // Donations state
   const [showDonationReasons, setShowDonationReasons] = useState(false);
