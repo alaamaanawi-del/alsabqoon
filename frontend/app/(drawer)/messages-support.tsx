@@ -65,6 +65,22 @@ const DONATION_REASONS = [
   },
 ];
 
+// Emoticons for message decoration
+const EMOTICONS = [
+  '😊', '😍', '🤗', '😘', '🥰', '😇', '🤲', '🕌',
+  '📿', '☪️', '✨', '💫', '🌙', '⭐', '🌟', '💖',
+  '❤️', '💚', '💙', '💜', '🤍', '🖤', '💛', '🧡',
+  '👍', '👌', '✌️', '🤝', '🙏', '💪', '🤲', '🤗',
+];
+
+interface AttachedFile {
+  uri: string;
+  name: string;
+  type: string;
+  size?: number;
+}
+
+
 interface BroadcastFilters {
   gender: 'all' | 'male' | 'female';
   countries: string[];
