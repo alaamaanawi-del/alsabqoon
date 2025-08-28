@@ -208,31 +208,34 @@ export default function MyAzkarScreen() {
               <Ionicons name="chevron-forward" size={20} color={Colors.mediumGray} />
             </View>
             {index < (azkarList.length > 0 ? azkarList : AZKAR_LIST).length - 1 && <View style={styles.separator} />}
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-
-  const renderProgressChart = () => {
-    // Mock data for 7 days
-    const chartData = Array.from({ length: 7 }, (_, i) => ({
-      day: i + 1,
-      count: Math.floor(Math.random() * 4000),
-    }));
-
-    return (
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>التقدم اليومي</Text>
-        <View style={styles.chart}>
-          {chartData.map((data, index) => (
-            <View key={index} style={styles.chartBar}>
-              <View
-                style={[
-                  styles.bar,
-                  {
-                    height: Math.max(20, (data.count / 4000) * 100),
-                    backgroundColor: getDailyColorCode(data.count),
+        {/* Calendar Toggle */}
+        {showCalendar && (
+          <View style={styles.calendarContainer}>
+            <TouchableOpacity
+              style={styles.calendarTypeButton}
+              onPress={() => setIsHijri(!isHijri)}
+            >
+              <Text style={styles.calendarTypeText}>
+                {isHijri ? 'التقويم الهجري' : 'التقويم الميلادي'}
+              </Text>
+            </TouchableOpacity>
+            
+            {/* Actual Calendar Implementation */}
+            <View style={styles.calendarGrid}>
+              {/* Calendar Header - Day Names */}
+              <View style={styles.calendarHeader}>
+                {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                  <Text key={index} style={styles.dayHeader}>{day}</Text>
+                ))}
+              </View>
+              
+              {/* Calendar Days */}
+              <View style={styles.daysGrid}>
+                {renderCalendarDays()}
+              </View>
+            </View>
+          </View>
+        )}
                   },
                 ]}
               />
