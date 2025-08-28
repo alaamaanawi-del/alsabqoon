@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
   chartDateClickable: {
     fontSize: 9,
     color: Colors.deepGreen,
-    textAlign: \'center\',
+    textAlign: 'center',
     textDecorationLine: \'underline\',
   },
 });
