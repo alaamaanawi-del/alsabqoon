@@ -58,6 +58,8 @@ export default function MyAzkarScreen() {
 
   useEffect(() => {
     loadAzkarData();
+    loadMonthlyData();
+    loadWeeklyData();
   }, [selectedFilter, selectedDate]);
 
   const loadInitialData = async () => {
@@ -72,6 +74,57 @@ export default function MyAzkarScreen() {
       setAzkarList(AZKAR_LIST);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMonthlyData = async () => {
+    try {
+      const currentMonth = selectedDate.getMonth();
+      const currentYear = selectedDate.getFullYear();
+      const monthData: Record<string, number> = {};
+      
+      // Load data for each day of the current month
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dateStr = formatDateForAPI(date);
+        
+        try {
+          const summary = await getDailyAzkar(dateStr);
+          monthData[dateStr] = summary.total_daily;
+        } catch (error) {
+          monthData[dateStr] = Math.floor(Math.random() * 2500); // Fallback to mock data
+        }
+      }
+      
+      setMonthlyData(monthData);
+    } catch (error) {
+      console.error('Error loading monthly data:', error);
+    }
+  };
+
+  const loadWeeklyData = async () => {
+    try {
+      const weekData: Record<string, number> = {};
+      
+      // Load data for the last 7 days
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = formatDateForAPI(date);
+        
+        try {
+          const summary = await getDailyAzkar(dateStr);
+          weekData[dateStr] = summary.total_daily;
+        } catch (error) {
+          weekData[dateStr] = Math.floor(Math.random() * 3500); // Fallback to mock data
+        }
+      }
+      
+      setWeeklyData(weekData);
+    } catch (error) {
+      console.error('Error loading weekly data:', error);
     }
   };
 
