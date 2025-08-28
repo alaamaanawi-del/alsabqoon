@@ -136,6 +136,9 @@ export default function MyAzkarScreen() {
       const isToday = dayDate.toDateString() === today.toDateString();
       const isSelected = dayDate.toDateString() === selectedDate.toDateString();
       
+      // Get zikr count for this day (you can replace this with actual API call)
+      const dayZikrCount = Math.floor(Math.random() * 3000); // Mock data - replace with actual count
+      
       days.push(
         <TouchableOpacity
           key={day}
@@ -152,6 +155,14 @@ export default function MyAzkarScreen() {
             isSelected && styles.selectedText,
           ]}>
             {day}
+          </Text>
+          {/* Zikr count under each day */}
+          <Text style={[
+            styles.zikrCountText,
+            isToday && styles.todayText,
+            isSelected && styles.selectedText,
+          ]}>
+            {dayZikrCount > 0 ? dayZikrCount.toLocaleString() : ''}
           </Text>
         </TouchableOpacity>
       );
