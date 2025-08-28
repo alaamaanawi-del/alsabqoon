@@ -373,6 +373,56 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
   },
+  calendarGrid: {
+    backgroundColor: Colors.light,
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+  },
+  dayHeader: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.deepGreen,
+    textAlign: 'center',
+    flex: 1,
+  },
+  daysGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  calendarDay: {
+    width: '14.28%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  todayDay: {
+    backgroundColor: Colors.accent,
+  },
+  selectedDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  dayText: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    textAlign: 'center',
+  },
+  todayText: {
+    color: Colors.light,
+    fontWeight: 'bold',
+  },
+  selectedText: {
+    color: Colors.light,
+    fontWeight: 'bold',
+  },
   scrollContainer: {
     flex: 1,
   },
