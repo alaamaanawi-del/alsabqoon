@@ -382,7 +382,12 @@ export default function MyAzkarScreen() {
         )}
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollContainer} 
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Filter Buttons */}
         {renderFilterButtons()}
 
