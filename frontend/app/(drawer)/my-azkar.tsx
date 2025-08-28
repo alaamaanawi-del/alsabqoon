@@ -188,8 +188,20 @@ export default function MyAzkarScreen() {
 
   const renderCalendarDays = () => {
     const today = new Date();
-    const currentMonth = selectedDate.getMonth();
-    const currentYear = selectedDate.getFullYear();
+    let currentMonth, currentYear, monthName;
+    
+    if (isHijri) {
+      const hijriDate = gregorianToHijri(selectedDate);
+      currentMonth = hijriDate.month;
+      currentYear = hijriDate.year;
+      monthName = getHijriMonthName(currentMonth);
+    } else {
+      currentMonth = selectedDate.getMonth();
+      currentYear = selectedDate.getFullYear();
+      const gregorianMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                             'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      monthName = gregorianMonths[currentMonth];
+    }
     
     // Get first day of the month and number of days
     const firstDay = new Date(currentYear, currentMonth, 1);
@@ -198,6 +210,15 @@ export default function MyAzkarScreen() {
     const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
     
     const days = [];
+    
+    // Add month/year header
+    days.push(
+      <View key="month-header" style={styles.monthHeader}>
+        <Text style={styles.monthHeaderText}>
+          {monthName} {currentYear}
+        </Text>
+      </View>
+    );
     
     // Add empty cells for days before the first day of the month
     for (let i = 0; i < startingDayOfWeek; i++) {
@@ -218,6 +239,12 @@ export default function MyAzkarScreen() {
       const dateStr = formatDateForAPI(dayDate);
       const dayZikrCount = monthlyData[dateStr] || 0;
       
+      let displayDay = day;
+      if (isHijri) {
+        // For Hijri calendar, you might want to adjust day display
+        displayDay = day;
+      }
+      
       days.push(
         <TouchableOpacity
           key={day}
@@ -233,7 +260,7 @@ export default function MyAzkarScreen() {
             isToday && styles.todayText,
             isSelected && styles.selectedText,
           ]}>
-            {day}
+            {displayDay}
           </Text>
           {/* Zikr count under each day */}
           <Text style={[
