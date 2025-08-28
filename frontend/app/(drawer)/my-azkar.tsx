@@ -387,8 +387,10 @@ export default function MyAzkarScreen() {
               <Text style={styles.chartCount}>{data.count.toLocaleString()}</Text>
               {/* Day name */}
               <Text style={styles.chartDayName}>{data.dayName}</Text>
-              {/* Date */}
-              <Text style={styles.chartDate}>{data.date}</Text>
+              {/* Clickable Date */}
+              <TouchableOpacity onPress={() => handleDateClick(data.fullDate)}>
+                <Text style={styles.chartDateClickable}>{data.date}</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
