@@ -49,6 +49,8 @@ export default function MyAzkarScreen() {
   const [dailySummary, setDailySummary] = useState<DailyAzkarSummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
+  const [weeklyData, setWeeklyData] = useState<Record<string, number>>({});
 
   useEffect(() => {
     loadInitialData();
