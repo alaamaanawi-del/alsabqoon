@@ -189,6 +189,18 @@ export default function MyAzkarScreen() {
     // router.push(`/azkar/statistics/${formatDateForAPI(date)}`);
   };
 
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(selectedDate);
+    if (direction === 'prev') {
+      newDate.setMonth(selectedDate.getMonth() - 1);
+    } else {
+      newDate.setMonth(selectedDate.getMonth() + 1);
+    }
+    setSelectedDate(newDate);
+    // Reload data for the new month
+    loadMonthlyData();
+  };
+
   const handleZikrPress = (zikr: any) => {
     router.push(`/azkar/${zikr.id}`);
   };
