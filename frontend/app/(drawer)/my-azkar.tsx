@@ -228,11 +228,31 @@ export default function MyAzkarScreen() {
   );
 
   const renderProgressChart = () => {
-    // Mock data for 7 days
-    const chartData = Array.from({ length: 7 }, (_, i) => ({
-      day: i + 1,
-      count: Math.floor(Math.random() * 4000),
-    }));
+    // Generate data for the last 7 days
+    const chartData = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      
+      // Get day name in Arabic
+      const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      const dayName = dayNames[date.getDay()];
+      
+      // Format date
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}`;
+      
+      // Mock zikr count - replace with actual API data
+      const count = Math.floor(Math.random() * 4000);
+      
+      chartData.push({
+        date: formattedDate,
+        dayName: dayName,
+        count: count,
+        fullDate: date
+      });
+    }
 
     return (
       <View style={styles.chartContainer}>
@@ -249,16 +269,18 @@ export default function MyAzkarScreen() {
                   },
                 ]}
               />
-              <Text style={styles.chartCount}>{data.count}</Text>
-              <Text style={styles.chartDay}>{data.day}</Text>
+              {/* Zikr count */}
+              <Text style={styles.chartCount}>{data.count.toLocaleString()}</Text>
+              {/* Day name */}
+              <Text style={styles.chartDayName}>{data.dayName}</Text>
+              {/* Date */}
+              <Text style={styles.chartDate}>{data.date}</Text>
             </View>
           ))}
         </View>
       </View>
     );
-  };
-
-  return (
+  };  return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
