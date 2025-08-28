@@ -52,6 +52,29 @@ export default function MyAzkarScreen() {
   const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
   const [weeklyData, setWeeklyData] = useState<Record<string, number>>({});
 
+  // Hijri calendar conversion functions
+  const gregorianToHijri = (gregorianDate: Date) => {
+    // Simple approximation for Hijri conversion (you can use a library like moment-hijri for accuracy)
+    const gregorianYear = gregorianDate.getFullYear();
+    const hijriYear = Math.floor((gregorianYear - 622) * 1.030684);
+    const hijriMonth = (gregorianDate.getMonth() + Math.floor(Math.random() * 2)) % 12; // Simplified
+    const hijriDay = gregorianDate.getDate();
+    
+    return {
+      year: hijriYear + 1,
+      month: hijriMonth,
+      day: hijriDay
+    };
+  };
+
+  const getHijriMonthName = (month: number) => {
+    const hijriMonths = [
+      'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الثانية',
+      'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+    ];
+    return hijriMonths[month] || 'محرم';
+  };
+
   useEffect(() => {
     loadInitialData();
   }, []);
