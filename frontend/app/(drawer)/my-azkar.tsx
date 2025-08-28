@@ -230,12 +230,24 @@ export default function MyAzkarScreen() {
     
     const days = [];
     
-    // Add month/year header
+    // Add month/year header with navigation
     days.push(
       <View key="month-header" style={styles.monthHeader}>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('prev')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-back" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
         <Text style={styles.monthHeaderText}>
           {monthName} {currentYear}
         </Text>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('next')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-forward" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
       </View>
     );
     
