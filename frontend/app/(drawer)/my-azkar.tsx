@@ -728,4 +728,10 @@ const styles = StyleSheet.create({
     color: Colors.mediumGray,
     textAlign: 'center',
   },
+  chartDateClickable: {
+    fontSize: 9,
+    color: Colors.deepGreen,
+    textAlign: \'center\',
+    textDecorationLine: \'underline\',
+  },
 });
