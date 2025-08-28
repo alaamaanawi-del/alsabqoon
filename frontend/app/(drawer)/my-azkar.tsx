@@ -610,15 +610,25 @@ const styles = StyleSheet.create({
   monthHeader: {
     width: '100%',
     paddingVertical: 12,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: Colors.lightGray,
     marginBottom: 8,
     borderRadius: 8,
+    paddingHorizontal: 16,
+  },
+  monthNavButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   monthHeaderText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.deepGreen,
+    flex: 1,
+    textAlign: 'center',
   },
 
   scrollContainer: {
