@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Link } from "expo-router";
 import { Colors } from "../../src/theme/colors";
-// import { logoBase64 } from "../../../src/assets/logo";
+// import { logoBase64 } from "../../src/assets/logo";
 
 export default function Home() {
   return (
