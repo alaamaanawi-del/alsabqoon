@@ -189,6 +189,10 @@ export default function MyAzkarScreen() {
     // router.push(`/azkar/statistics/${formatDateForAPI(date)}`);
   };
 
+  const handleZikrPress = (zikr: any) => {
+    router.push(`/azkar/${zikr.id}`);
+  };
+
   const renderCalendarDays = () => {
     const today = new Date();
     let currentMonth, currentYear, monthName;
