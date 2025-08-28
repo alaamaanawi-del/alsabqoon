@@ -182,8 +182,11 @@ export default function MyAzkarScreen() {
     return Colors.success; // Green
   };
 
-  const handleZikrPress = (zikr: any) => {
-    router.push(`/azkar/${zikr.id}`);
+  const handleDateClick = (date: Date) => {
+    setSelectedDate(date);
+    setShowCalendar(true);
+    // Optionally navigate to a detailed statistics view
+    // router.push(`/azkar/statistics/${formatDateForAPI(date)}`);
   };
 
   const renderCalendarDays = () => {
