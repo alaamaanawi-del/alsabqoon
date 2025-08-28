@@ -108,6 +108,60 @@ export default function MyAzkarScreen() {
     router.push(`/azkar/${zikr.id}`);
   };
 
+  const renderCalendarDays = () => {
+    const today = new Date();
+    const currentMonth = selectedDate.getMonth();
+    const currentYear = selectedDate.getFullYear();
+    
+    // Get first day of the month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    const days = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(
+        <View key={`empty-${i}`} style={styles.calendarDay}>
+          <Text style={styles.dayText}></Text>
+        </View>
+      );
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(currentYear, currentMonth, day);
+      const isToday = dayDate.toDateString() === today.toDateString();
+      const isSelected = dayDate.toDateString() === selectedDate.toDateString();
+      
+      days.push(
+        <TouchableOpacity
+          key={day}
+          style={[
+            styles.calendarDay,
+            isToday && styles.todayDay,
+            isSelected && styles.selectedDay,
+          ]}
+          onPress={() => setSelectedDate(dayDate)}
+        >
+          <Text style={[
+            styles.dayText,
+            isToday && styles.todayText,
+            isSelected && styles.selectedText,
+          ]}>
+            {day}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    
+    return days;
+  };
+
+
+
   const renderFilterButtons = () => (
     <View style={styles.filterContainer}>
       {FILTER_BUTTONS.map((button) => (
@@ -219,19 +273,20 @@ export default function MyAzkarScreen() {
                 {isHijri ? 'التقويم الهجري' : 'التقويم الميلادي'}
               </Text>
             </TouchableOpacity>
-            <View style={styles.calendarPlaceholder}>
-              <Text style={styles.calendarPlaceholderText}>
-                عرض التقويم - سيتم التطوير لاحقاً
-              </Text>
-              <Text style={styles.totalDisplay}>
-                إجمالي اليوم: {getTotalDaily().toLocaleString()}
-              </Text>
-              <View
-                style={[
-                  styles.totalIndicator,
-                  { backgroundColor: getDailyColorCode(getTotalDaily()) },
-                ]}
-              />
+            
+            {/* Actual Calendar Implementation */}
+            <View style={styles.calendarGrid}>
+              {/* Calendar Header - Day Names */}
+              <View style={styles.calendarHeader}>
+                {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                  <Text key={index} style={styles.dayHeader}>{day}</Text>
+                ))}
+              </View>
+              
+              {/* Calendar Days */}
+              <View style={styles.daysGrid}>
+                {renderCalendarDays()}
+              </View>
             </View>
           </View>
         )}
@@ -318,6 +373,57 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
   },
+  calendarGrid: {
+    backgroundColor: Colors.light,
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+  },
+  dayHeader: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.deepGreen,
+    textAlign: 'center',
+    flex: 1,
+  },
+  daysGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  calendarDay: {
+    width: '14.28%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  todayDay: {
+    backgroundColor: Colors.accent,
+  },
+  selectedDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  dayText: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    textAlign: 'center',
+  },
+  todayText: {
+    color: Colors.light,
+    fontWeight: 'bold',
+  },
+  selectedText: {
+    color: Colors.light,
+    fontWeight: 'bold',
+  },
+
   scrollContainer: {
     flex: 1,
   },
