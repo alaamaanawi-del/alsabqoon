@@ -1,0 +1,90 @@
+  const renderCalendarDays = () => {
+    const today = new Date();
+    let currentMonth, currentYear, monthName;
+    
+    if (isHijri) {
+      const hijriDate = gregorianToHijri(selectedDate);
+      currentMonth = hijriDate.month;
+      currentYear = hijriDate.year;
+      monthName = getHijriMonthName(currentMonth);
+    } else {
+      currentMonth = selectedDate.getMonth();
+      currentYear = selectedDate.getFullYear();
+      const gregorianMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                             'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      monthName = gregorianMonths[currentMonth];
+    }
+    
+    // Get first day of the month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    const days = [];
+    
+    // Add month/year header
+    days.push(
+      <View key="month-header" style={styles.monthHeader}>
+        <Text style={styles.monthHeaderText}>
+          {monthName} {currentYear}
+        </Text>
+      </View>
+    );
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(
+        <View key={`empty-${i}`} style={styles.calendarDay}>
+          <Text style={styles.dayText}></Text>
+        </View>
+      );
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(currentYear, currentMonth, day);
+      const isToday = dayDate.toDateString() === today.toDateString();
+      const isSelected = dayDate.toDateString() === selectedDate.toDateString();
+      
+      // Get zikr count for this day from monthlyData
+      const dateStr = formatDateForAPI(dayDate);
+      const dayZikrCount = monthlyData[dateStr] || 0;
+      
+      let displayDay = day;
+      if (isHijri) {
+        // For Hijri calendar, you might want to adjust day display
+        displayDay = day;
+      }
+      
+      days.push(
+        <TouchableOpacity
+          key={day}
+          style={[
+            styles.calendarDay,
+            isToday && styles.todayDay,
+            isSelected && styles.selectedDay,
+          ]}
+          onPress={() => setSelectedDate(dayDate)}
+        >
+          <Text style={[
+            styles.dayText,
+            isToday && styles.todayText,
+            isSelected && styles.selectedText,
+          ]}>
+            {displayDay}
+          </Text>
+          {/* Zikr count under each day */}
+          <Text style={[
+            styles.zikrCountText,
+            isToday && styles.todayText,
+            isSelected && styles.selectedText,
+          ]}>
+            {dayZikrCount > 0 ? dayZikrCount.toLocaleString() : ''}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    
+    return days;
+  };
