@@ -191,8 +191,9 @@ export default function MyAzkarScreen() {
       const isToday = dayDate.toDateString() === today.toDateString();
       const isSelected = dayDate.toDateString() === selectedDate.toDateString();
       
-      // Get zikr count for this day (you can replace this with actual API call)
-      const dayZikrCount = Math.floor(Math.random() * 3000); // Mock data - replace with actual count
+      // Get zikr count for this day from monthlyData
+      const dateStr = formatDateForAPI(dayDate);
+      const dayZikrCount = monthlyData[dateStr] || 0;
       
       days.push(
         <TouchableOpacity
