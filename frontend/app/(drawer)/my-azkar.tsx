@@ -583,4 +583,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.mediumGray,
   },
+  chartDayName: {
+    fontSize: 10,
+    color: Colors.darkGray,
+    marginBottom: 2,
+    textAlign: 'center',
+  },
+  chartDate: {
+    fontSize: 9,
+    color: Colors.mediumGray,
+    textAlign: 'center',
+  },
 });
