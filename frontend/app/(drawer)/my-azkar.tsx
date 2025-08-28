@@ -300,7 +300,8 @@ export default function MyAzkarScreen() {
       const formattedDate = `${date.getDate()}/${date.getMonth() + 1}`;
       
       // Get real zikr count from weeklyData
-      const count = Math.floor(Math.random() * 4000);
+      const dateStr = formatDateForAPI(date);
+      const count = weeklyData[dateStr] || 0;
       
       chartData.push({
         date: formattedDate,
