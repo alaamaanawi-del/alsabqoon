@@ -574,6 +574,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 2,
   },
+  monthHeader: {
+    width: '100%',
+    paddingVertical: 12,
+    alignItems: 'center',
+    backgroundColor: Colors.lightGray,
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  monthHeaderText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+  },
 
   scrollContainer: {
     flex: 1,
