@@ -434,6 +434,12 @@ const styles = StyleSheet.create({
     color: Colors.light,
     fontWeight: 'bold',
   },
+  zikrCountText: {
+    fontSize: 10,
+    color: Colors.mediumGray,
+    textAlign: 'center',
+    marginTop: 2,
+  },
 
   scrollContainer: {
     flex: 1,
