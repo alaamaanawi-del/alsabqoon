@@ -732,6 +732,6 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: Colors.deepGreen,
     textAlign: 'center',
-    textDecorationLine: \'underline\',
+    textDecorationLine: 'underline',
   },
 });
