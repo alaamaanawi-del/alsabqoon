@@ -98,13 +98,13 @@ export default function MyAzkarScreen() {
     return dailySummary?.total_daily || 0;
   };
 
-  const getDailyColorCode = (total) => {
+  const getDailyColorCode = (total: number) => {
     if (total < 1000) return Colors.accent; // Red
     if (total <= 3000) return '#FF8C00'; // Orange
     return Colors.success; // Green
   };
 
-  const handleZikrPress = (zikr) => {
+  const handleZikrPress = (zikr: any) => {
     router.push(`/azkar/${zikr.id}`);
   };
 
