@@ -286,7 +286,12 @@ export default function MyAzkarScreen() {
             isToday && styles.todayDay,
             isSelected && styles.selectedDay,
           ]}
-          onPress={() => setSelectedDate(dayDate)}
+          onPress={() => {
+            setSelectedDate(dayDate);
+            if (showCalendar) {
+              setShowCalendar(false); // Close calendar after selection
+            }
+          }}
         >
           <Text style={[
             styles.dayText,
