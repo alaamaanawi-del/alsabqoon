@@ -415,6 +415,139 @@ def test_azkar_daily_summary():
     
     return all_passed
 
+def test_azkar_update_functionality():
+    """Test NEW azkar update functionality - PUT /api/azkar/entry/{entry_id}"""
+    print("\n🔍 Testing NEW Azkar Update Functionality (PUT /api/azkar/entry/{entry_id})...")
+    
+    # Step 1: Create a test entry first
+    print("   Step 1: Creating test zikr entry...")
+    test_date = "2025-08-29"
+    create_data = {"zikr_id": 1, "count": 100, "date": test_date}
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=create_data)
+        if response.status_code != 200:
+            print(f"   ❌ FAIL: Could not create test entry - Status: {response.status_code}")
+            return False
+        
+        created_entry = response.json()
+        entry_id = created_entry["id"]
+        print(f"   ✅ Created test entry with ID: {entry_id}")
+        print(f"   Original count: {created_entry['count']}")
+    except Exception as e:
+        print(f"   ❌ ERROR creating test entry: {str(e)}")
+        return False
+    
+    # Step 2: Update the entry with new count and edit note
+    print("   Step 2: Updating entry with new count and edit note...")
+    update_data = {
+        "count": 150,
+        "edit_note": "تعديل: تم تغيير العدد من 100 إلى 150"
+    }
+    
+    try:
+        response = requests.put(f"{BASE_URL}/azkar/entry/{entry_id}", json=update_data)
+        print(f"   Update Status Code: {response.status_code}")
+        print(f"   Update Response: {response.json()}")
+        
+        if response.status_code == 200:
+            update_result = response.json()
+            if update_result.get("success") and "entry" in update_result:
+                updated_entry = update_result["entry"]
+                
+                # Verify the count was updated
+                if updated_entry["count"] == 150:
+                    print("   ✅ PASS: Count updated correctly (100 → 150)")
+                else:
+                    print(f"   ❌ FAIL: Count not updated correctly. Expected 150, got {updated_entry['count']}")
+                    return False
+                
+                # Verify edit notes were added
+                if "edit_notes" in updated_entry and len(updated_entry["edit_notes"]) > 0:
+                    edit_note = updated_entry["edit_notes"][-1]  # Get the latest edit note
+                    if "تعديل: تم تغيير العدد من 100 إلى 150" in edit_note:
+                        print("   ✅ PASS: Edit note added correctly with Arabic text")
+                    else:
+                        print(f"   ❌ FAIL: Edit note incorrect: {edit_note}")
+                        return False
+                else:
+                    print("   ❌ FAIL: Edit notes not found in updated entry")
+                    return False
+                    
+            else:
+                print(f"   ❌ FAIL: Invalid update response structure: {update_result}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Update failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR updating entry: {str(e)}")
+        return False
+    
+    # Step 3: Verify history endpoint shows edit notes
+    print("   Step 3: Verifying edit notes in history...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/1/history")
+        if response.status_code == 200:
+            history_data = response.json()
+            entries = history_data.get("entries", [])
+            
+            # Find our updated entry
+            updated_found = False
+            for entry in entries:
+                if entry["id"] == entry_id:
+                    if "edit_notes" in entry and len(entry["edit_notes"]) > 0:
+                        print("   ✅ PASS: Edit notes preserved in history")
+                        updated_found = True
+                        break
+            
+            if not updated_found:
+                print("   ❌ FAIL: Updated entry with edit notes not found in history")
+                return False
+        else:
+            print(f"   ❌ FAIL: Could not get history - Status: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR getting history: {str(e)}")
+        return False
+    
+    # Step 4: Test error handling for non-existent entry
+    print("   Step 4: Testing error handling for non-existent entry...")
+    try:
+        fake_id = "non-existent-id-12345"
+        response = requests.put(f"{BASE_URL}/azkar/entry/{fake_id}", json={"count": 200})
+        
+        if response.status_code == 404:
+            print("   ✅ PASS: Correctly returns 404 for non-existent entry")
+        else:
+            print(f"   ❌ FAIL: Expected 404 for non-existent entry, got {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing non-existent entry: {str(e)}")
+        return False
+    
+    # Step 5: Test update without edit note
+    print("   Step 5: Testing update without edit note...")
+    try:
+        response = requests.put(f"{BASE_URL}/azkar/entry/{entry_id}", json={"count": 175})
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("success"):
+                print("   ✅ PASS: Update without edit note works correctly")
+            else:
+                print(f"   ❌ FAIL: Update without edit note failed: {result}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Update without edit note failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing update without edit note: {str(e)}")
+        return False
+    
+    print("   🎉 ALL AZKAR UPDATE TESTS PASSED!")
+    return True
+
 def test_azkar_complete_flow():
     """Test complete azkar workflow: list -> create entries -> check stats/history -> daily summary"""
     print("\n🔍 Testing Complete Azkar Workflow...")
