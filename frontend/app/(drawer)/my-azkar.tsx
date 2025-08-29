@@ -581,7 +581,7 @@ export default function MyAzkarScreen() {
               <View style={styles.calendarGrid}>
                 {/* Calendar Header - Day Names */}
                 <View style={styles.calendarHeader}>
-                  {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                  {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
@@ -704,7 +704,7 @@ export default function MyAzkarScreen() {
               <View style={styles.calendarGrid}>
                 {/* Calendar Header - Day Names */}
                 <View style={styles.calendarHeader}>
-                  {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                  {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
