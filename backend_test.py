@@ -998,17 +998,30 @@ def main():
     test_results.append(("Comprehensive Search", test_quran_search_comprehensive()))
     
     print("\n" + "=" * 70)
-    print("🕌 NEW AZKAR FUNCTIONALITY TESTS")
+    print("🕌 AZKAR FUNCTIONALITY REGRESSION TESTS")
     print("=" * 70)
     
-    # New azkar tests as specified in the review request
+    # Azkar regression tests
     test_results.append(("Azkar List API", test_azkar_list()))
     test_results.append(("Azkar Entry Creation", test_azkar_entry_creation()))
-    test_results.append(("NEW: Azkar Update Functionality", test_azkar_update_functionality()))
+    test_results.append(("Azkar Update Functionality", test_azkar_update_functionality()))
     test_results.append(("Azkar History API", test_azkar_history()))
     test_results.append(("Azkar Statistics API", test_azkar_stats()))
     test_results.append(("Azkar Daily Summary", test_azkar_daily_summary()))
     test_results.append(("Complete Azkar Workflow", test_azkar_complete_flow()))
+    
+    print("\n" + "=" * 70)
+    print("💰 NEW CHARITY FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # New charity tests as specified in the review request
+    test_results.append(("Charity List API (32 Categories)", test_charity_list()))
+    test_results.append(("Charity Entry Creation", test_charity_entry_creation()))
+    test_results.append(("Charity Entry Update", test_charity_entry_update()))
+    test_results.append(("Charity History API", test_charity_history()))
+    test_results.append(("Charity Statistics API", test_charity_stats()))
+    test_results.append(("Charity Daily Summary", test_charity_daily_summary()))
+    test_results.append(("Complete Charity Workflow", test_charity_complete_workflow()))
     
     # Summary
     print("\n" + "=" * 70)
