@@ -794,4 +794,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
+  currentDateContainer: {
+    backgroundColor: Colors.light,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  currentDateText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    textAlign: 'center',
+  },
 });
