@@ -399,6 +399,20 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ MY AZKAR FEATURE TESTING SUCCESSFUL: Fixed critical import path issues in nested directories (azkar/[id].tsx and lessons/my-prayers subdirectories) that were causing 500 errors. CORE FUNCTIONALITY WORKING: 1) Navigation - My Azkar accessible via drawer menu ✅, 2) Main Page - Header 'أذكاري' displays correctly ✅, 3) Filter Buttons - All 4 buttons (اليوم, أسبوع, شهر, اختر) functional ✅, 4) Azkar List - 12 azkar display with Arabic text, English translations, counts (100, 0, etc.), colored circles, and percentages ✅, 5) Progress Chart - 'التقدم اليومي' title visible ✅, 6) Backend Integration - API calls to /api/azkar and /api/azkar/daily/{date} working perfectly ✅, 7) Mobile UX - Proper mobile viewport (390x844), RTL layout, touch targets ✅. Minor Issue: Individual zikr details routing (/azkar/[id]) shows home page instead of details - needs route configuration fix. Backend APIs (azkar list, stats, history) confirmed working via direct testing. Main My Azkar feature is fully functional and ready for production use."
+  - task: "Azkar entry update API (/api/azkar/entry/{entry_id})"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented PUT /api/azkar/entry/{entry_id} for updating zikr entries with edit notes tracking"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: NEW azkar update functionality working perfectly. PUT /api/azkar/entry/{entry_id} successfully updates zikr entries with new count and optional edit notes. COMPREHENSIVE TESTING COMPLETED: 1) Created test entry (zikr_id=1, count=100, date=2025-08-29), 2) Updated entry (count=150, Arabic edit note: 'تعديل: تم تغيير العدد من 100 إلى 150'), 3) Verified count updated correctly (100→150), 4) Confirmed edit notes added with timestamp, 5) Verified edit notes preserved in history endpoint, 6) Tested error handling for non-existent entries (returns 'Entry not found'), 7) Tested update without edit note works correctly. Edit notes functionality maintains complete audit trail with timestamps. All edge cases tested successfully. New azkar update feature is production-ready."
 metadata:
   created_by: "main_agent"
   version: "1.0"
