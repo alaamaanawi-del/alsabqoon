@@ -485,6 +485,18 @@ export default function MyAzkarScreen() {
         {/* Filter Buttons */}
         {renderFilterButtons()}
 
+        {/* Current Date Display */}
+        <View style={styles.currentDateContainer}>
+          <Text style={styles.currentDateText}>
+            {selectedDate.toLocaleDateString('ar', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </Text>
+        </View>
+
         {/* Azkar List */}
         {renderAzkarList()}
 
