@@ -198,6 +198,47 @@ export default function ZikrDetailsScreen() {
     });
   };
 
+  const getDayName = (dateString) => {
+    const date = new Date(dateString);
+    const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    return dayNames[date.getDay()];
+  };
+
+  const getDayColor = (dayIndex) => {
+    const colors = [
+      '#E8F5E8', // Sunday - Light Green
+      '#E8F0FF', // Monday - Light Blue
+      '#F0E8FF', // Tuesday - Light Purple
+      '#FFF0E8', // Wednesday - Light Orange
+      '#E8FFE8', // Thursday - Very Light Green
+      '#F0F8FF', // Friday - Alice Blue
+      '#FFF8E8', // Saturday - Light Yellow
+    ];
+    return colors[dayIndex % 7];
+  };
+
+  const groupHistoryByDay = () => {
+    const grouped = {};
+    
+    history.forEach(entry => {
+      const date = new Date(entry.created_at || entry.date);
+      const dateKey = date.toDateString();
+      
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = {
+          date: date,
+          dayName: getDayName(entry.created_at || entry.date),
+          dayIndex: date.getDay(),
+          entries: []
+        };
+      }
+      
+      grouped[dateKey].entries.push(entry);
+    });
+
+    return Object.values(grouped).sort((a, b) => b.date - a.date);
+  };
+
   if (!zikrDetails || loading) {
     return (
       <SafeAreaView style={styles.container}>
