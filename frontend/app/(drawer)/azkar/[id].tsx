@@ -49,6 +49,8 @@ export default function ZikrDetailsScreen() {
   const [history, setHistory] = useState<ZikrEntry[]>([]);
   const [stats, setStats] = useState<ZikrStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingEntry, setEditingEntry] = useState<string | null>(null);
+  const [editCount, setEditCount] = useState<string>('');
 
   useEffect(() => {
     loadZikrDetails();
