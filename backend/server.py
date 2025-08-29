@@ -190,6 +190,41 @@ async def create_zikr_entry(entry: ZikrEntryCreate):
     await db.zikr_entries.insert_one(zikr_obj.dict())
     return zikr_obj
 
+@api_router.put("/azkar/entry/{entry_id}")
+async def update_zikr_entry(entry_id: str, update_data: ZikrEntryUpdate):
+    """Update a zikr entry"""
+    try:
+        # Get the existing entry
+        existing_entry = await db.zikr_entries.find_one({"id": entry_id, "user_id": "default"})
+        if not existing_entry:
+            raise HTTPException(status_code=404, detail="Entry not found")
+        
+        # Prepare update data
+        update_dict = {"count": update_data.count}
+        
+        # Add edit note if provided
+        if update_data.edit_note:
+            edit_notes = existing_entry.get("edit_notes", [])
+            timestamp = datetime.utcnow().isoformat()
+            edit_note = f"{timestamp}: {update_data.edit_note}"
+            edit_notes.append(edit_note)
+            update_dict["edit_notes"] = edit_notes
+        
+        # Update the entry
+        await db.zikr_entries.update_one(
+            {"id": entry_id, "user_id": "default"}, 
+            {"$set": update_dict}
+        )
+        
+        # Return updated entry
+        updated_entry = await db.zikr_entries.find_one({"id": entry_id, "user_id": "default"})
+        if "_id" in updated_entry:
+            updated_entry["_id"] = str(updated_entry["_id"])
+            
+        return {"success": True, "entry": updated_entry}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/azkar/{zikr_id}/history")
 async def get_zikr_history(zikr_id: int, days: Optional[int] = Query(30, description="Number of days to retrieve")):
     """Get history for a specific zikr"""
