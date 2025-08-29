@@ -143,11 +143,16 @@ class ZikrEntry(BaseModel):
     count: int
     date: str  # ISO date string (YYYY-MM-DD)
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+    edit_notes: Optional[List[str]] = []  # Track edit history
 
 class ZikrEntryCreate(BaseModel):
     zikr_id: int
     count: int
     date: str
+
+class ZikrEntryUpdate(BaseModel):
+    count: int
+    edit_note: Optional[str] = None
 
 class ZikrStats(BaseModel):
     zikr_id: int
