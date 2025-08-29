@@ -18,6 +18,7 @@ import {
   createZikrEntry,
   getZikrHistory,
   getZikrStats,
+  updateZikrEntry,
   ZikrEntry,
   ZikrStats
 } from '../../../src/api/client';
