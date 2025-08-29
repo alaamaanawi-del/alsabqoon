@@ -181,6 +181,14 @@ export default function ZikrDetailsScreen() {
     setEditCount('');
   };
 
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('ar', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   if (!zikrDetails || loading) {
     return (
       <SafeAreaView style={styles.container}>
