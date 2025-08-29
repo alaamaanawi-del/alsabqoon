@@ -71,6 +71,23 @@ export async function createZikrEntry(
   });
 }
 
+export async function updateZikrEntry(
+  entryId: string,
+  count: number,
+  editNote?: string
+): Promise<{ success: boolean; entry: ZikrEntry }> {
+  const res = await fetch(api(`/azkar/entry/${entryId}`), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      count: count,
+      edit_note: editNote,
+    }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as { success: boolean; entry: ZikrEntry };
+}
+
 export async function getZikrHistory(
   zikrId: number,
   days: number = 30
