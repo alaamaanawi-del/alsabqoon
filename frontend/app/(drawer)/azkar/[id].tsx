@@ -177,6 +177,25 @@ export default function ZikrDetailsScreen() {
             <View style={[styles.colorIndicator, { backgroundColor: zikrDetails.color }]} />
             <Text style={styles.zikrNameAr}>{zikrDetails.nameAr}</Text>
             <Text style={styles.zikrNameEn}>{zikrDetails.nameEn}</Text>
+            
+            {/* Current Date and Time Display */}
+            <View style={styles.dateTimeContainer}>
+              <Text style={styles.dateTimeText}>
+                {new Date().toLocaleDateString('ar', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </Text>
+              <Text style={styles.timeText}>
+                {new Date().toLocaleTimeString('ar', { 
+                  hour: '2-digit', 
+                  minute: '2-digit',
+                  hour12: true 
+                })}
+              </Text>
+            </View>
           </View>
 
           {/* Count Input */}
