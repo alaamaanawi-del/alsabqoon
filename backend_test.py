@@ -1044,7 +1044,8 @@ def main():
     if failed == 0:
         print("🎉 All tests passed!")
         print("✅ Backend APIs are working correctly")
-        print("✅ New Azkar functionality is fully operational")
+        print("✅ Azkar functionality is fully operational")
+        print("✅ NEW: Charity functionality is fully operational")
         return 0
     else:
         print("⚠️  Some tests failed - requires investigation")
