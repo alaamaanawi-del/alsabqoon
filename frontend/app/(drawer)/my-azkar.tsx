@@ -478,62 +478,7 @@ export default function MyAzkarScreen() {
               </View>
             </ScrollView>
 
-      {/* Date Picker Modal for Select Filter */}
-      {showDatePicker && (
-        <View style={styles.datePickerOverlay}>
-          <View style={styles.datePickerModal}>
-            <Text style={styles.datePickerTitle}>اختر نطاق التاريخ</Text>
-            
-            <TouchableOpacity 
-              style={styles.datePickerButton}
-              onPress={() => {
-                const today = new Date();
-                setSelectedDate(today);
-                setShowDatePicker(false);
-                setSelectedFilter('today');
-              }}
-            >
-              <Text style={styles.datePickerButtonText}>اليوم</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.datePickerButton}
-              onPress={() => {
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                setSelectedDate(weekAgo);
-                setShowDatePicker(false);
-                setSelectedFilter('week');
-              }}
-            >
-              <Text style={styles.datePickerButtonText}>آخر 7 أيام</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.datePickerButton}
-              onPress={() => {
-                const monthAgo = new Date();
-                monthAgo.setDate(monthAgo.getDate() - 30);
-                setSelectedDate(monthAgo);
-                setShowDatePicker(false);
-                setSelectedFilter('month');
-              }}
-            >
-              <Text style={styles.datePickerButtonText}>آخر 30 يوم</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.datePickerButton, styles.cancelButton]}
-              onPress={() => setShowDatePicker(false)}
-            >
-              <Text style={[styles.datePickerButtonText, styles.cancelButtonText]}>إلغاء</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-          </View>
-        )}
-      </View>
 
       <ScrollView 
         style={styles.scrollContainer} 
