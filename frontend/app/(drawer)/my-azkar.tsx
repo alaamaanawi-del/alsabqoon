@@ -580,6 +580,73 @@ export default function MyAzkarScreen() {
           </View>
         </View>
       )}
+
+      {/* Custom Date Range Picker Modal */}
+      {showDateRangePicker && (
+        <View style={styles.datePickerOverlay}>
+          <View style={styles.dateRangeModal}>
+            <Text style={styles.datePickerTitle}>
+              {dateRangeStep === 'start' ? 'اختر تاريخ البداية' : 'اختر تاريخ النهاية'}
+            </Text>
+            
+            {/* Mini Calendar for Date Range Selection */}
+            <ScrollView style={styles.rangeDatePickerCalendar} nestedScrollEnabled={true}>
+              <View style={styles.calendarGrid}>
+                {/* Calendar Header - Day Names */}
+                <View style={styles.calendarHeader}>
+                  {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                    <Text key={index} style={styles.dayHeader}>{day}</Text>
+                  ))}
+                </View>
+                
+                {/* Calendar Days for Date Range */}
+                <View style={styles.daysGrid}>
+                  {renderDateRangeCalendar()}
+                </View>
+              </View>
+            </ScrollView>
+
+            {/* Selected Range Display */}
+            <View style={styles.selectedRangeContainer}>
+              <Text style={styles.selectedRangeText}>
+                من: {customStartDate ? customStartDate.toLocaleDateString('ar') : 'غير محدد'}
+              </Text>
+              <Text style={styles.selectedRangeText}>
+                إلى: {customEndDate ? customEndDate.toLocaleDateString('ar') : 'غير محدد'}
+              </Text>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.dateRangeActions}>
+              {customStartDate && customEndDate && (
+                <TouchableOpacity 
+                  style={[styles.datePickerButton, styles.doneButton]}
+                  onPress={() => {
+                    setShowDateRangePicker(false);
+                    setSelectedFilter('custom');
+                    // Apply the custom date range
+                    setSelectedDate(customStartDate);
+                  }}
+                >
+                  <Text style={styles.doneButtonText}>تم</Text>
+                </TouchableOpacity>
+              )}
+              
+              <TouchableOpacity 
+                style={[styles.datePickerButton, styles.cancelButton]}
+                onPress={() => {
+                  setShowDateRangePicker(false);
+                  setCustomStartDate(null);
+                  setCustomEndDate(null);
+                  setDateRangeStep('start');
+                }}
+              >
+                <Text style={[styles.datePickerButtonText, styles.cancelButtonText]}>إلغاء</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
