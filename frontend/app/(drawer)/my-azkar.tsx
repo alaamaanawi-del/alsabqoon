@@ -187,9 +187,8 @@ export default function MyAzkarScreen() {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    setShowCalendar(true);
-    // Optionally navigate to a detailed statistics view
-    // router.push(`/azkar/statistics/${formatDateForAPI(date)}`);
+    // Don't show calendar, just update the azkar list for the selected date
+    // The azkar list will automatically update because of the useEffect dependency on selectedDate
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
