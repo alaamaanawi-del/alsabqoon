@@ -102,3 +102,91 @@ export async function getZikrStats(zikrId: number): Promise<ZikrStats> {
 export async function getDailyAzkar(date: string): Promise<DailyAzkarSummary> {
   return getJson<DailyAzkarSummary>(`/azkar/daily/${date}`);
 }
+
+// Charity Types
+export interface Charity {
+  id: number;
+  nameAr: string;
+  nameEn: string;
+  nameEs: string;
+  color: string;
+  description: string;
+}
+
+export interface CharityEntry {
+  id: string;
+  user_id: string;
+  charity_id: number;
+  count: number;
+  date: string;
+  timestamp: string;
+  comments?: string;
+  edit_notes?: string[];
+}
+
+export interface CharityStats {
+  charity_id: number;
+  total_count: number;
+  total_sessions: number;
+  last_entry?: string;
+}
+
+export interface DailyCharitySummary {
+  date: string;
+  total_daily: number;
+  charity_summary: Record<number, { count: number; sessions: number; percentage: number }>;
+  entries: CharityEntry[];
+}
+
+// Charity API Functions
+export async function getCharityList(): Promise<{ charities: Charity[] }> {
+  return getJson<{ charities: Charity[] }>("/charities");
+}
+
+export async function createCharityEntry(
+  charityId: number,
+  count: number,
+  date: string,
+  comments?: string
+): Promise<CharityEntry> {
+  return postJson<CharityEntry>("/charities/entry", {
+    charity_id: charityId,
+    count: count,
+    date: date,
+    comments: comments || "",
+  });
+}
+
+export async function updateCharityEntry(
+  entryId: string,
+  count: number,
+  comments?: string,
+  editNote?: string
+): Promise<{ success: boolean; entry: CharityEntry }> {
+  const res = await fetch(api(`/charities/entry/${entryId}`), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      count: count,
+      comments: comments || "",
+      edit_note: editNote,
+    }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as { success: boolean; entry: CharityEntry };
+}
+
+export async function getCharityHistory(
+  charityId: number,
+  days: number = 30
+): Promise<{ entries: CharityEntry[] }> {
+  return getJson<{ entries: CharityEntry[] }>(`/charities/${charityId}/history?days=${days}`);
+}
+
+export async function getCharityStats(charityId: number): Promise<CharityStats> {
+  return getJson<CharityStats>(`/charities/${charityId}/stats`);
+}
+
+export async function getDailyCharity(date: string): Promise<DailyCharitySummary> {
+  return getJson<DailyCharitySummary>(`/charities/daily/${date}`);
+}
