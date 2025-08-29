@@ -649,6 +649,7 @@ def main():
     # New azkar tests as specified in the review request
     test_results.append(("Azkar List API", test_azkar_list()))
     test_results.append(("Azkar Entry Creation", test_azkar_entry_creation()))
+    test_results.append(("NEW: Azkar Update Functionality", test_azkar_update_functionality()))
     test_results.append(("Azkar History API", test_azkar_history()))
     test_results.append(("Azkar Statistics API", test_azkar_stats()))
     test_results.append(("Azkar Daily Summary", test_azkar_daily_summary()))
