@@ -153,27 +153,35 @@ export default function ZikrDetailsScreen() {
     }
 
     try {
-      // Here you would typically make an API call to update the entry
-      // For now, we'll update the local state
-      const updatedHistory = history.map(h => 
-        h.id === entry.id ? { ...h, count: newCount } : h
-      );
-      setHistory(updatedHistory);
+      // Create edit note
+      const originalCount = entry.count;
+      const editNote = `تعديل: تم تغيير العدد من ${originalCount} إلى ${newCount}`;
       
-      // Refresh stats
-      await loadZikrStats();
+      // Call backend API to update entry
+      const response = await updateZikrEntry(entry.id, newCount, editNote);
       
-      setEditingEntry(null);
-      setEditCount('');
-      
-      Alert.alert(
-        'تم الحفظ',
-        'تم تحديث الإدخال بنجاح',
-        [{ text: 'موافق' }]
-      );
+      if (response.success) {
+        // Update local state with the updated entry
+        const updatedHistory = history.map(h => 
+          h.id === entry.id ? response.entry : h
+        );
+        setHistory(updatedHistory);
+        
+        // Refresh stats
+        await loadZikrStats();
+        
+        setEditingEntry(null);
+        setEditCount('');
+        
+        Alert.alert(
+          'تم الحفظ',
+          'تم تحديث الإدخال بنجاح وحفظ ملاحظة التعديل',
+          [{ text: 'موافق' }]
+        );
+      }
     } catch (error) {
       console.error('Error updating entry:', error);
-      Alert.alert('خطأ', 'فشل في تحديث الإدخال');
+      Alert.alert('خطأ', 'فشل في تحديث الإدخال. يرجى المحاولة مرة أخرى.');
     }
   };
 
