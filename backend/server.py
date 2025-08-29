@@ -160,6 +160,34 @@ class ZikrStats(BaseModel):
     total_sessions: int
     last_entry: Optional[datetime] = None
 
+# Charity Models
+class CharityEntry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str = "default"  # For now, use default user
+    charity_id: int
+    count: int
+    date: str  # ISO date string (YYYY-MM-DD)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    comments: Optional[str] = ""  # User comments/notes
+    edit_notes: Optional[List[str]] = []  # Track edit history
+
+class CharityEntryCreate(BaseModel):
+    charity_id: int
+    count: int
+    date: str
+    comments: Optional[str] = ""
+
+class CharityEntryUpdate(BaseModel):
+    count: int
+    comments: Optional[str] = ""
+    edit_note: Optional[str] = None
+
+class CharityStats(BaseModel):
+    charity_id: int
+    total_count: int
+    total_sessions: int
+    last_entry: Optional[datetime] = None
+
 # Azkar data - this would typically come from a database
 AZKAR_LIST = [
     {"id": 1, "nameAr": "سبحان الله وبحمده", "nameEn": "Subhan Allah wa Bi Hamdih", "color": "#FF6B6B"},
