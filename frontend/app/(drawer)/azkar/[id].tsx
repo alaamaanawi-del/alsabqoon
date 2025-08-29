@@ -664,4 +664,39 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: Colors.lightGray,
   },
+  dayGroup: {
+    marginBottom: 16,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  dayHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
+  },
+  dayHeaderText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+  },
+  dayEntriesCount: {
+    fontSize: 12,
+    color: Colors.mediumGray,
+    fontWeight: '600',
+  },
+  editNotesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
+  },
+  editNotesText: {
+    fontSize: 10,
+    color: Colors.mediumGray,
+    fontStyle: 'italic',
+  },
 });
