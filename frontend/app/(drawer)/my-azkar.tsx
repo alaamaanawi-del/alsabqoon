@@ -457,19 +457,21 @@ export default function MyAzkarScreen() {
             </TouchableOpacity>
             
             {/* Actual Calendar Implementation */}
-            <View style={styles.calendarGrid}>
-              {/* Calendar Header - Day Names */}
-              <View style={styles.calendarHeader}>
-                {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
-                  <Text key={index} style={styles.dayHeader}>{day}</Text>
-                ))}
+            <ScrollView style={styles.calendarScrollView} nestedScrollEnabled={true}>
+              <View style={styles.calendarGrid}>
+                {/* Calendar Header - Day Names */}
+                <View style={styles.calendarHeader}>
+                  {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                    <Text key={index} style={styles.dayHeader}>{day}</Text>
+                  ))}
+                </View>
+                
+                {/* Calendar Days */}
+                <View style={styles.daysGrid}>
+                  {renderCalendarDays()}
+                </View>
               </View>
-              
-              {/* Calendar Days */}
-              <View style={styles.daysGrid}>
-                {renderCalendarDays()}
-              </View>
-            </View>
+            </ScrollView>
           </View>
         )}
       </View>
