@@ -323,6 +323,25 @@ const styles = StyleSheet.create({
     color: Colors.mediumGray,
     textAlign: 'center',
   },
+  dateTimeContainer: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: Colors.lightGray,
+    alignItems: 'center',
+  },
+  dateTimeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.darkGray,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  timeText: {
+    fontSize: 12,
+    color: Colors.mediumGray,
+    textAlign: 'center',
+  },
   inputContainer: {
     backgroundColor: Colors.light,
     marginHorizontal: 16,
