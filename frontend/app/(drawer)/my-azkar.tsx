@@ -51,6 +51,9 @@ export default function MyAzkarScreen() {
   const [loading, setLoading] = useState(true);
   const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
   const [weeklyData, setWeeklyData] = useState<Record<string, number>>({});
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
+  const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
 
   // Hijri calendar conversion functions
   const gregorianToHijri = (gregorianDate: Date) => {
