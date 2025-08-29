@@ -204,6 +204,42 @@ AZKAR_LIST = [
     {"id": 12, "nameAr": "آيات قرأتها", "nameEn": "Verses I read of the Quran", "color": "#82E0AA"},
 ]
 
+# Charity data - 32 categories with multi-language support
+CHARITY_LIST = [
+    {"id": 1, "nameAr": "الصدقة الصباحية", "nameEn": "Morning Charity", "nameEs": "Caridad de la mañana", "color": "#FF6B6B", "description": "صدقة تتم في الصباح للبركة في اليوم"},
+    {"id": 2, "nameAr": "الصدقة على الزوجة والأولاد", "nameEn": "Charity for Wife and Kids", "nameEs": "Caridad para la esposa y los hijos", "color": "#4ECDC4", "description": "النفقة على الأهل والأطفال من أنواع الصدقة"},
+    {"id": 3, "nameAr": "الصدقة على الأقارب", "nameEn": "Charity for Relatives", "nameEs": "Caridad para los familiares", "color": "#45B7D1", "description": "صدقة على الأقارب والأرحام لصلة الرحم"},
+    {"id": 4, "nameAr": "صلاة الضحى", "nameEn": "Duha Prayer (Salah al-Duha)", "nameEs": "Oración Duha (Salah al-Duha)", "color": "#96CEB4", "description": "صلاة الضحى من النوافل المستحبة"},
+    {"id": 5, "nameAr": "الصدقة لتعليم الإسلام", "nameEn": "Charity to Teach Islam", "nameEs": "Caridad para enseñar el Islam", "color": "#FFEAA7", "description": "الإنفاق في سبيل تعليم الدين الإسلامي"},
+    {"id": 6, "nameAr": "إطعام الفقراء", "nameEn": "Feed the Poor", "nameEs": "Alimentar a los pobres", "color": "#DDA0DD", "description": "إطعام المحتاجين والفقراء"},
+    {"id": 7, "nameAr": "إطعام اليتيم", "nameEn": "Feed an Orphan", "nameEs": "Alimentar a un huérfano", "color": "#98D8C8", "description": "إطعام الأيتام له أجر عظيم"},
+    {"id": 8, "nameAr": "دعم اليتيم", "nameEn": "Support an Orphan", "nameEs": "Apoyar a un huérfano", "color": "#F7DC6F", "description": "الدعم المالي أو المعنوي لليتامى"},
+    {"id": 9, "nameAr": "الصدقة على الوالدين", "nameEn": "Charity for Parents", "nameEs": "Caridad para los padres", "color": "#BB8FCE", "description": "بر الوالدين والإنفاق عليهما"},
+    {"id": 10, "nameAr": "إقراض الله تعالى", "nameEn": "Lending to Allah (Qardh to Allah)", "nameEs": "Prestar a Allah (Qardh a Allah)", "color": "#85C1E9", "description": "القرض الحسن في سبيل الله"},
+    {"id": 11, "nameAr": "الصدقة للمتوفى", "nameEn": "Charity for the Deceased", "nameEs": "Caridad para el difunto", "color": "#F8C471", "description": "الصدقة على روح المتوفى"},
+    {"id": 12, "nameAr": "الصدقة على الحيوانات", "nameEn": "Charity for Animals", "nameEs": "Caridad para los animales", "color": "#82E0AA", "description": "الرفق بالحيوان والإحسان إليها"},
+    {"id": 13, "nameAr": "إفطار الصائم", "nameEn": "Food for a Fasting Person", "nameEs": "Iftar para la persona que ayuna", "color": "#F9E79F", "description": "إطعام الصائمين له أجر عظيم"},
+    {"id": 14, "nameAr": "الصدقة الجارية", "nameEn": "Running Charity", "nameEs": "Caridad continua", "color": "#D7BDE2", "description": "الصدقة التي يستمر نفعها بعد الموت"},
+    {"id": 15, "nameAr": "إطعام الجيران", "nameEn": "Food for the Neighbors", "nameEs": "Comida para los vecinos", "color": "#AED6F1", "description": "إكرام الجيران بالطعام"},
+    {"id": 16, "nameAr": "الصدقة لغير المسلمين", "nameEn": "Charity for Non-Muslims", "nameEs": "Caridad para no musulmanes", "color": "#F8D7DA", "description": "البر والإحسان إلى غير المسلمين"},
+    {"id": 17, "nameAr": "إعطاء الماء في يوم حار", "nameEn": "Provide Water on a Hot Day", "nameEs": "Dar agua en un día caluroso", "color": "#B8E6B8", "description": "سقي الماء في الأيام الحارة"},
+    {"id": 18, "nameAr": "إعطاء الحليب واللحم", "nameEn": "Provide Milk and Meat", "nameEs": "Dar leche y carne", "color": "#FFD1DC", "description": "توزيع الحليب واللحم على المحتاجين"},
+    {"id": 19, "nameAr": "دفع فاتورة الغاز", "nameEn": "Pay the Gas Bill", "nameEs": "Pagar la factura de gas", "color": "#E6E6FA", "description": "دفع فواتير الخدمات للمحتاجين"},
+    {"id": 20, "nameAr": "دفع قرض شخص آخر", "nameEn": "Pay Someone's Loan", "nameEs": "Pagar la deuda de alguien", "color": "#F0E68C", "description": "قضاء الديون عن المدينين"},
+    {"id": 21, "nameAr": "الدواء للمريض", "nameEn": "Medicine for the Sick", "nameEs": "Medicamento para el enfermo", "color": "#FFA07A", "description": "توفير الدواء والعلاج للمرضى"},
+    {"id": 22, "nameAr": "الإنفاق في سبيل الله", "nameEn": "Spending in the Sake of Allah", "nameEs": "Gastar en el camino de Allah", "color": "#20B2AA", "description": "الإنفاق في جميع وجوه الخير"},
+    {"id": 23, "nameAr": "مساعدة شخص", "nameEn": "Helping a Person", "nameEs": "Ayudar a una persona", "color": "#87CEEB", "description": "تقديم المساعدة للأشخاص المحتاجين"},
+    {"id": 24, "nameAr": "إزالة الأذى من الطريق", "nameEn": "Removing Harmful Objects from the Road", "nameEs": "Eliminar objetos dañinos del camino", "color": "#DDA0DD", "description": "إزالة ما يؤذي الناس من الطريق"},
+    {"id": 25, "nameAr": "زراعة النباتات من أجل البشر أو الطيور أو الحيوانات", "nameEn": "Growing Plants for Humans, Birds, or Animals", "nameEs": "Plantar plantas para humanos, aves o animales", "color": "#90EE90", "description": "زراعة ما ينفع الإنسان والحيوان"},
+    {"id": 26, "nameAr": "كفالة يتيم", "nameEn": "Sponsoring an Orphan (Kafala Yateem)", "nameEs": "Patrocinar un huérfano", "color": "#FFB6C1", "description": "كفالة الأيتام ورعايتهم"},
+    {"id": 27, "nameAr": "التصدق بشيء تحبه", "nameEn": "Charity with Something You Love", "nameEs": "Caridad con algo que te guste", "color": "#F0E68C", "description": "التصدق بأفضل ما تحب"},
+    {"id": 28, "nameAr": "التصدق بالمال", "nameEn": "Charity with Money", "nameEs": "Caridad con dinero", "color": "#98FB98", "description": "الصدقة المالية المباشرة"},
+    {"id": 29, "nameAr": "هدية لأخ مسلم أو أخت مسلمة", "nameEn": "Gift for a Muslim Brother or Sister", "nameEs": "Regalo para un hermano o hermana musulmana", "color": "#AFEEEE", "description": "تقديم الهدايا للإخوة المسلمين"},
+    {"id": 30, "nameAr": "التصدق بقرآن", "nameEn": "Charity with the Quran", "nameEs": "Caridad con el Corán", "color": "#D8BFD8", "description": "توزيع المصاحف الشريفة"},
+    {"id": 31, "nameAr": "التصدق بملابس أو حذاء", "nameEn": "Charity with Clothes or Shoes", "nameEs": "Caridad con ropa o zapatos", "color": "#F5DEB3", "description": "التصدق بالملابس والأحذية للمحتاجين"},
+    {"id": 32, "nameAr": "دفع إيجار بيت أسرة مسلمة فقيرة", "nameEn": "Pay Rent for a Poor Muslim Family", "nameEs": "Pagar el alquiler de una familia musulmana pobre", "color": "#CD853F", "description": "دفع إيجار المنازل للأسر الفقيرة"},
+]
+
 # Azkar endpoints
 @api_router.get("/azkar")
 async def get_azkar_list():
