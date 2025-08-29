@@ -421,7 +421,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Individual zikr details routing fix"
+    - "Charity backend API implementation"
+    - "Charity frontend page development"  
+    - "Multi-language charity support"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
