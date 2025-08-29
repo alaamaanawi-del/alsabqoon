@@ -288,9 +288,12 @@ export default function MyAzkarScreen() {
           ]}
           onPress={() => {
             setSelectedDate(dayDate);
-            if (showCalendar) {
-              setShowCalendar(false); // Close calendar after selection
-            }
+            // Smooth auto-hide calendar after selection
+            setTimeout(() => {
+              if (showCalendar) {
+                setShowCalendar(false);
+              }
+            }, 300); // Delay for visual feedback
           }}
         >
           <Text style={[
