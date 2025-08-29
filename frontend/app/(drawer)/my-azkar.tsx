@@ -562,6 +562,9 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
   },
+  calendarScrollView: {
+    maxHeight: 300,
+  },
   calendarGrid: {
     backgroundColor: Colors.light,
     borderRadius: 12,
