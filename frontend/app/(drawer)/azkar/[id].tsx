@@ -338,49 +338,81 @@ export default function ZikrDetailsScreen() {
           <View style={styles.historyContainer}>
             <Text style={styles.sectionTitle}>سجل الأذكار:</Text>
             {history.length > 0 ? (
-              history.map((entry, index) => (
-                <View key={index} style={styles.historyItem}>
-                  <View style={styles.historyInfo}>
-                    <Text style={styles.historyDate}>{formatDate(entry.created_at || entry.date)}</Text>
-                    <Text style={styles.historyTime}>{formatTime(entry.created_at || entry.date)}</Text>
+              groupHistoryByDay().map((dayGroup, dayIndex) => (
+                <View key={dayIndex} style={styles.dayGroup}>
+                  {/* Day Header */}
+                  <View style={[
+                    styles.dayHeader, 
+                    { backgroundColor: getDayColor(dayGroup.dayIndex) }
+                  ]}>
+                    <Text style={styles.dayHeaderText}>
+                      {dayGroup.dayName} - {formatDate(dayGroup.date)}
+                    </Text>
+                    <Text style={styles.dayEntriesCount}>
+                      {dayGroup.entries.length} إدخال
+                    </Text>
                   </View>
-                  
-                  {/* Editable Count Section */}
-                  <View style={styles.historyCountSection}>
-                    {editingEntry === entry.id ? (
-                      <View style={styles.editCountContainer}>
-                        <TextInput
-                          style={styles.editCountInput}
-                          value={editCount}
-                          onChangeText={setEditCount}
-                          keyboardType="numeric"
-                          autoFocus={true}
-                        />
-                        <TouchableOpacity 
-                          style={styles.editActionButton}
-                          onPress={() => handleSaveEdit(entry)}
-                        >
-                          <Ionicons name="checkmark" size={16} color={Colors.success} />
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                          style={styles.editActionButton}
-                          onPress={handleCancelEdit}
-                        >
-                          <Ionicons name="close" size={16} color={Colors.accent} />
-                        </TouchableOpacity>
+
+                  {/* Entries for this day */}
+                  {dayGroup.entries.map((entry, entryIndex) => (
+                    <View 
+                      key={entry.id} 
+                      style={[
+                        styles.historyItem,
+                        { backgroundColor: getDayColor(dayGroup.dayIndex) }
+                      ]}
+                    >
+                      <View style={styles.historyInfo}>
+                        <Text style={styles.historyTime}>
+                          {formatTime(entry.created_at || entry.date)}
+                        </Text>
+                        {/* Show edit notes if available */}
+                        {entry.edit_notes && entry.edit_notes.length > 0 && (
+                          <View style={styles.editNotesContainer}>
+                            <Ionicons name="create-outline" size={12} color={Colors.mediumGray} />
+                            <Text style={styles.editNotesText}>تم التعديل</Text>
+                          </View>
+                        )}
                       </View>
-                    ) : (
-                      <View style={styles.historyCountContainer}>
-                        <Text style={styles.historyCount}>{entry.count.toLocaleString()}</Text>
-                        <TouchableOpacity 
-                          style={styles.editButton}
-                          onPress={() => handleEditEntry(entry.id, entry.count)}
-                        >
-                          <Ionicons name="create-outline" size={16} color={Colors.deepGreen} />
-                        </TouchableOpacity>
+                      
+                      {/* Editable Count Section */}
+                      <View style={styles.historyCountSection}>
+                        {editingEntry === entry.id ? (
+                          <View style={styles.editCountContainer}>
+                            <TextInput
+                              style={styles.editCountInput}
+                              value={editCount}
+                              onChangeText={setEditCount}
+                              keyboardType="numeric"
+                              autoFocus={true}
+                            />
+                            <TouchableOpacity 
+                              style={styles.editActionButton}
+                              onPress={() => handleSaveEdit(entry)}
+                            >
+                              <Ionicons name="checkmark" size={16} color={Colors.success} />
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                              style={styles.editActionButton}
+                              onPress={handleCancelEdit}
+                            >
+                              <Ionicons name="close" size={16} color={Colors.accent} />
+                            </TouchableOpacity>
+                          </View>
+                        ) : (
+                          <View style={styles.historyCountContainer}>
+                            <Text style={styles.historyCount}>{entry.count.toLocaleString()}</Text>
+                            <TouchableOpacity 
+                              style={styles.editButton}
+                              onPress={() => handleEditEntry(entry.id, entry.count)}
+                            >
+                              <Ionicons name="create-outline" size={16} color={Colors.deepGreen} />
+                            </TouchableOpacity>
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </View>
+                    </View>
+                  ))}
                 </View>
               ))
             ) : (
