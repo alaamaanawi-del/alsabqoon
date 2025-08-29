@@ -54,6 +54,8 @@ export default function MyAzkarScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
+  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
+  const [dateRangeStep, setDateRangeStep] = useState<'start' | 'end'>('start');
 
   // Hijri calendar conversion functions
   const gregorianToHijri = (gregorianDate: Date) => {
