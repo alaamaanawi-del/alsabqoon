@@ -508,6 +508,60 @@ export default function MyAzkarScreen() {
         {/* Progress Chart */}
         {renderProgressChart()}
       </ScrollView>
+
+      {/* Date Picker Modal for Select Filter */}
+      {showDatePicker && (
+        <View style={styles.datePickerOverlay}>
+          <View style={styles.datePickerModal}>
+            <Text style={styles.datePickerTitle}>اختر نطاق التاريخ</Text>
+            
+            <TouchableOpacity 
+              style={styles.datePickerButton}
+              onPress={() => {
+                const today = new Date();
+                setSelectedDate(today);
+                setShowDatePicker(false);
+                setSelectedFilter('today');
+              }}
+            >
+              <Text style={styles.datePickerButtonText}>اليوم</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.datePickerButton}
+              onPress={() => {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                setSelectedDate(weekAgo);
+                setShowDatePicker(false);
+                setSelectedFilter('week');
+              }}
+            >
+              <Text style={styles.datePickerButtonText}>آخر 7 أيام</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.datePickerButton}
+              onPress={() => {
+                const monthAgo = new Date();
+                monthAgo.setDate(monthAgo.getDate() - 30);
+                setSelectedDate(monthAgo);
+                setShowDatePicker(false);
+                setSelectedFilter('month');
+              }}
+            >
+              <Text style={styles.datePickerButtonText}>آخر 30 يوم</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.datePickerButton, styles.cancelButton]}
+              onPress={() => setShowDatePicker(false)}
+            >
+              <Text style={[styles.datePickerButtonText, styles.cancelButtonText]}>إلغاء</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -812,5 +866,50 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.deepGreen,
     textAlign: 'center',
+  },
+  datePickerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  datePickerModal: {
+    backgroundColor: Colors.light,
+    borderRadius: 12,
+    padding: 20,
+    marginHorizontal: 20,
+    maxWidth: 300,
+    width: '90%',
+  },
+  datePickerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  datePickerButton: {
+    backgroundColor: Colors.lightGray,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  datePickerButtonText: {
+    fontSize: 16,
+    color: Colors.darkGray,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    backgroundColor: Colors.accent,
+  },
+  cancelButtonText: {
+    color: Colors.light,
   },
 });
