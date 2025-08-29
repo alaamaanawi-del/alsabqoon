@@ -477,8 +477,9 @@ export default function MyAzkarScreen() {
                 </View>
               </View>
             </ScrollView>
-
-
+          </View>
+        )}
+      </View>
 
       <ScrollView 
         style={styles.scrollContainer} 
