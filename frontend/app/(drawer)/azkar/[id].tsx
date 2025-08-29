@@ -294,7 +294,43 @@ export default function ZikrDetailsScreen() {
                     <Text style={styles.historyDate}>{formatDate(entry.created_at || entry.date)}</Text>
                     <Text style={styles.historyTime}>{formatTime(entry.created_at || entry.date)}</Text>
                   </View>
-                  <Text style={styles.historyCount}>{entry.count.toLocaleString()}</Text>
+                  
+                  {/* Editable Count Section */}
+                  <View style={styles.historyCountSection}>
+                    {editingEntry === entry.id ? (
+                      <View style={styles.editCountContainer}>
+                        <TextInput
+                          style={styles.editCountInput}
+                          value={editCount}
+                          onChangeText={setEditCount}
+                          keyboardType="numeric"
+                          autoFocus={true}
+                        />
+                        <TouchableOpacity 
+                          style={styles.editActionButton}
+                          onPress={() => handleSaveEdit(entry)}
+                        >
+                          <Ionicons name="checkmark" size={16} color={Colors.success} />
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                          style={styles.editActionButton}
+                          onPress={handleCancelEdit}
+                        >
+                          <Ionicons name="close" size={16} color={Colors.accent} />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <View style={styles.historyCountContainer}>
+                        <Text style={styles.historyCount}>{entry.count.toLocaleString()}</Text>
+                        <TouchableOpacity 
+                          style={styles.editButton}
+                          onPress={() => handleEditEntry(entry.id, entry.count)}
+                        >
+                          <Ionicons name="create-outline" size={16} color={Colors.deepGreen} />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
               ))
             ) : (
@@ -511,5 +547,39 @@ const styles = StyleSheet.create({
     color: Colors.mediumGray,
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  historyCountSection: {
+    alignItems: 'flex-end',
+  },
+  historyCountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  editButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.lightGray,
+  },
+  editCountContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  editCountInput: {
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    fontSize: 14,
+    minWidth: 60,
+    textAlign: 'center',
+    backgroundColor: Colors.background,
+  },
+  editActionButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.lightGray,
   },
 });
