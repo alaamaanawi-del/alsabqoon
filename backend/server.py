@@ -377,6 +377,146 @@ async def get_daily_azkar(date: str):
         "entries": entries
     }
 
+# Charity endpoints
+@api_router.get("/charities")
+async def get_charity_list():
+    """Get the list of available charities"""
+    return {"charities": CHARITY_LIST}
+
+@api_router.post("/charities/entry", response_model=CharityEntry)
+async def create_charity_entry(entry: CharityEntryCreate):
+    """Record a charity entry"""
+    charity_dict = entry.dict()
+    charity_obj = CharityEntry(**charity_dict)
+    await db.charity_entries.insert_one(charity_obj.dict())
+    return charity_obj
+
+@api_router.put("/charities/entry/{entry_id}")
+async def update_charity_entry(entry_id: str, update_data: CharityEntryUpdate):
+    """Update a charity entry"""
+    try:
+        # Get the existing entry
+        existing_entry = await db.charity_entries.find_one({"id": entry_id, "user_id": "default"})
+        if not existing_entry:
+            raise HTTPException(status_code=404, detail="Entry not found")
+        
+        # Prepare update data
+        update_dict = {"count": update_data.count}
+        
+        if update_data.comments is not None:
+            update_dict["comments"] = update_data.comments
+        
+        # Add edit note if provided
+        if update_data.edit_note:
+            edit_notes = existing_entry.get("edit_notes", [])
+            timestamp = datetime.utcnow().isoformat()
+            edit_note = f"{timestamp}: {update_data.edit_note}"
+            edit_notes.append(edit_note)
+            update_dict["edit_notes"] = edit_notes
+        
+        # Update the entry
+        await db.charity_entries.update_one(
+            {"id": entry_id, "user_id": "default"}, 
+            {"$set": update_dict}
+        )
+        
+        # Return updated entry
+        updated_entry = await db.charity_entries.find_one({"id": entry_id, "user_id": "default"})
+        if "_id" in updated_entry:
+            updated_entry["_id"] = str(updated_entry["_id"])
+            
+        return {"success": True, "entry": updated_entry}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/charities/{charity_id}/history")
+async def get_charity_history(charity_id: int, days: Optional[int] = Query(30, description="Number of days to retrieve")):
+    """Get history for a specific charity"""
+    entries = await db.charity_entries.find(
+        {"charity_id": charity_id, "user_id": "default"}
+    ).sort("timestamp", -1).limit(days).to_list(days)
+    
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
+    return {"entries": entries}
+
+@api_router.get("/charities/{charity_id}/stats", response_model=CharityStats)
+async def get_charity_stats(charity_id: int):
+    """Get statistics for a specific charity"""
+    pipeline = [
+        {"$match": {"charity_id": charity_id, "user_id": "default"}},
+        {"$group": {
+            "_id": None,
+            "total_count": {"$sum": "$count"},
+            "total_sessions": {"$sum": 1},
+            "last_entry": {"$max": "$timestamp"}
+        }}
+    ]
+    
+    result = await db.charity_entries.aggregate(pipeline).to_list(1)
+    
+    if result:
+        stats_data = result[0]
+        return CharityStats(
+            charity_id=charity_id,
+            total_count=stats_data.get("total_count", 0),
+            total_sessions=stats_data.get("total_sessions", 0),
+            last_entry=stats_data.get("last_entry")
+        )
+    else:
+        return CharityStats(
+            charity_id=charity_id,
+            total_count=0,
+            total_sessions=0,
+            last_entry=None
+        )
+
+@api_router.get("/charities/daily/{date}")
+async def get_daily_charities(date: str):
+    """Get all charity entries for a specific date"""
+    entries = await db.charity_entries.find(
+        {"date": date, "user_id": "default"}
+    ).to_list(100)
+    
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
+    # Group by charity_id and calculate totals
+    daily_summary = {}
+    total_daily = 0
+    
+    for entry in entries:
+        charity_id = entry["charity_id"]
+        count = entry["count"]
+        
+        if charity_id not in daily_summary:
+            daily_summary[charity_id] = {"count": 0, "sessions": 0}
+        
+        daily_summary[charity_id]["count"] += count
+        daily_summary[charity_id]["sessions"] += 1
+        total_daily += count
+    
+    # Calculate percentages
+    for charity_id in daily_summary:
+        if total_daily > 0:
+            daily_summary[charity_id]["percentage"] = round(
+                (daily_summary[charity_id]["count"] / total_daily) * 100, 1
+            )
+        else:
+            daily_summary[charity_id]["percentage"] = 0
+    
+    return {
+        "date": date,
+        "total_daily": total_daily,
+        "charity_summary": daily_summary,
+        "entries": entries
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
