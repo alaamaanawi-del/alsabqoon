@@ -320,7 +320,117 @@ export default function MyAzkarScreen() {
     return days;
   };
 
-
+  const renderDateRangeCalendar = () => {
+    const today = new Date();
+    let currentMonth, currentYear, monthName;
+    
+    if (isHijri) {
+      const hijriDate = gregorianToHijri(selectedDate);
+      currentMonth = hijriDate.month;
+      currentYear = hijriDate.year;
+      monthName = getHijriMonthName(currentMonth);
+    } else {
+      currentMonth = selectedDate.getMonth();
+      currentYear = selectedDate.getFullYear();
+      const gregorianMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                             'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      monthName = gregorianMonths[currentMonth];
+    }
+    
+    // Get first day of the month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    const days = [];
+    
+    // Add month/year header with navigation
+    days.push(
+      <View key="month-header" style={styles.monthHeader}>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('prev')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-back" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
+        <Text style={styles.monthHeaderText}>
+          {monthName} {currentYear}
+        </Text>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('next')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-forward" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
+      </View>
+    );
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(
+        <View key={`empty-${i}`} style={styles.calendarDay}>
+          <Text style={styles.dayText}></Text>
+        </View>
+      );
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(currentYear, currentMonth, day);
+      const isToday = dayDate.toDateString() === today.toDateString();
+      
+      // Check if this date is in the selected range
+      const isInRange = customStartDate && customEndDate && 
+                       dayDate >= customStartDate && dayDate <= customEndDate;
+      const isStartDate = customStartDate && dayDate.toDateString() === customStartDate.toDateString();
+      const isEndDate = customEndDate && dayDate.toDateString() === customEndDate.toDateString();
+      
+      let displayDay = day;
+      if (isHijri) {
+        displayDay = day;
+      }
+      
+      days.push(
+        <TouchableOpacity
+          key={day}
+          style={[
+            styles.calendarDay,
+            isToday && styles.todayDay,
+            isStartDate && styles.startDateDay,
+            isEndDate && styles.endDateDay,
+            isInRange && styles.inRangeDay,
+          ]}
+          onPress={() => {
+            if (dateRangeStep === 'start') {
+              setCustomStartDate(dayDate);
+              setCustomEndDate(null);
+              setDateRangeStep('end');
+            } else {
+              if (customStartDate && dayDate >= customStartDate) {
+                setCustomEndDate(dayDate);
+              } else {
+                // If selected end date is before start date, swap them
+                setCustomEndDate(customStartDate);
+                setCustomStartDate(dayDate);
+              }
+            }
+          }}
+        >
+          <Text style={[
+            styles.dayText,
+            isToday && styles.todayText,
+            (isStartDate || isEndDate) && styles.selectedText,
+            isInRange && styles.rangeText,
+          ]}>
+            {displayDay}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    
+    return days;
+  };
 
   const renderFilterButtons = () => (
     <View style={styles.filterContainer}>
@@ -996,5 +1106,59 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: Colors.light,
+  },
+  // Date Range Picker Styles
+  dateRangeModal: {
+    backgroundColor: Colors.light,
+    borderRadius: 12,
+    padding: 20,
+    marginHorizontal: 20,
+    maxWidth: 350,
+    width: '95%',
+    maxHeight: '80%',
+  },
+  rangeDatePickerCalendar: {
+    maxHeight: 300,
+    marginVertical: 10,
+  },
+  selectedRangeContainer: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 10,
+  },
+  selectedRangeText: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  dateRangeActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 15,
+  },
+  doneButton: {
+    backgroundColor: Colors.deepGreen,
+    flex: 1,
+    marginRight: 8,
+  },
+  doneButtonText: {
+    color: Colors.light,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // Date Range Calendar Styles
+  startDateDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  endDateDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  inRangeDay: {
+    backgroundColor: Colors.lightGray,
+  },
+  rangeText: {
+    color: Colors.darkGray,
   },
 });
