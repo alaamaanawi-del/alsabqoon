@@ -27,23 +27,43 @@ export default function MonthCalendar({ monthDate, selectedDate, onChangeMonth, 
   const days = useMemo(() => {
     const som = startOfMonth(monthDate);
     const dim = daysInMonth(monthDate);
-    const startDow = dayOfWeek(som); // 0..6
+    const startDow = dayOfWeek(som); // 0=Sunday, 1=Monday, etc.
+    
+    // For RTL layout, we need to adjust the starting day calculation
+    // Since we display weekdays from right-to-left (Saturday to Sunday)
+    // but JavaScript uses left-to-right (Sunday to Saturday),
+    // we need to map the days correctly
+    const rtlStartDow = (7 - startDow) % 7; // Convert LTR start to RTL start
+    
     const cells: { date: Date; ymd: string }[] = [];
-    // Fill leading blanks by going back startDow days
-    for (let i = 0; i < startDow; i++) {
-      cells.push({ date: addDays(som, i - startDow), ymd: fmtYMD(addDays(som, i - startDow)) });
+    
+    // Fill leading blanks - but for RTL, we calculate differently
+    for (let i = 0; i < rtlStartDow; i++) {
+      cells.push({ date: addDays(som, i - rtlStartDow), ymd: fmtYMD(addDays(som, i - rtlStartDow)) });
     }
+    
+    // Add the days of the current month
     for (let d = 1; d <= dim; d++) {
       const dt = new Date(monthDate.getFullYear(), monthDate.getMonth(), d);
       cells.push({ date: dt, ymd: fmtYMD(dt) });
     }
+    
     // Fill to a multiple of 7
     while (cells.length % 7 !== 0) {
       const last = cells[cells.length - 1].date;
       const next = addDays(last, 1);
       cells.push({ date: next, ymd: fmtYMD(next) });
     }
-    return cells;
+    
+    // Reverse the cells array to match RTL layout
+    const rows: { date: Date; ymd: string }[][] = [];
+    for (let i = 0; i < cells.length; i += 7) {
+      const row = cells.slice(i, i + 7);
+      // Reverse each row to match RTL display
+      rows.push(row.reverse());
+    }
+    
+    return rows.flat();
   }, [monthDate]);
 
   useEffect(() => {
