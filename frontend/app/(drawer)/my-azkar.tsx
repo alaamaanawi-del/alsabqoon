@@ -322,7 +322,7 @@ export default function MyAzkarScreen() {
             styles.filterButton,
             selectedFilter === button.key && styles.filterButtonActive,
           ]}
-          onPress={() => setSelectedFilter(button.key)}
+          onPress={() => handleFilterPress(button.key)}
         >
           <Text
             style={[
@@ -336,6 +336,13 @@ export default function MyAzkarScreen() {
       ))}
     </View>
   );
+
+  const handleFilterPress = (filterKey: string) => {
+    setSelectedFilter(filterKey);
+    if (filterKey === 'select') {
+      setShowDatePicker(true);
+    }
+  };
 
   const renderAzkarList = () => (
     <View style={styles.azkarListContainer}>
