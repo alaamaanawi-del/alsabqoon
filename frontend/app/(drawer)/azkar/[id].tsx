@@ -139,12 +139,46 @@ export default function ZikrDetailsScreen() {
     });
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('ar', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+  const handleEditEntry = (entryId: string, currentCount: number) => {
+    setEditingEntry(entryId);
+    setEditCount(currentCount.toString());
+  };
+
+  const handleSaveEdit = async (entry: ZikrEntry) => {
+    const newCount = parseInt(editCount);
+    if (!newCount || newCount <= 0) {
+      Alert.alert('خطأ', 'يرجى إدخال عدد صحيح');
+      return;
+    }
+
+    try {
+      // Here you would typically make an API call to update the entry
+      // For now, we'll update the local state
+      const updatedHistory = history.map(h => 
+        h.id === entry.id ? { ...h, count: newCount } : h
+      );
+      setHistory(updatedHistory);
+      
+      // Refresh stats
+      await loadZikrStats();
+      
+      setEditingEntry(null);
+      setEditCount('');
+      
+      Alert.alert(
+        'تم الحفظ',
+        'تم تحديث الإدخال بنجاح',
+        [{ text: 'موافق' }]
+      );
+    } catch (error) {
+      console.error('Error updating entry:', error);
+      Alert.alert('خطأ', 'فشل في تحديث الإدخال');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEntry(null);
+    setEditCount('');
   };
 
   if (!zikrDetails || loading) {
