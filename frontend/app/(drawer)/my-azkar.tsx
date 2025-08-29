@@ -559,6 +559,19 @@ export default function MyAzkarScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity 
+              style={styles.datePickerButton}
+              onPress={() => {
+                setShowDatePicker(false);
+                setShowDateRangePicker(true);
+                setDateRangeStep('start');
+                setCustomStartDate(null);
+                setCustomEndDate(null);
+              }}
+            >
+              <Text style={styles.datePickerButtonText}>تحديد نطاق مخصص</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
               style={[styles.datePickerButton, styles.cancelButton]}
               onPress={() => setShowDatePicker(false)}
             >
