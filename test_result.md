@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Add comprehensive 'My Azkar' feature to ALSABQON app with calendar functionality, progress tracking, zikr recording, and detailed analytics"
+user_problem_statement: "Add comprehensive 'My Charities' feature to ALSABQON app with calendar functionality, progress tracking, charity recording, detailed analytics, and multi-language support for 32 charity categories (Arabic, English, Spanish)"
 backend:
   - task: "Root health endpoint"
     implemented: true
