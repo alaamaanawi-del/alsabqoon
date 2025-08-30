@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     color: Colors.darkText,
     marginBottom: 4,
   },
-  charityNameEn: {
+  charityNameSecondary: {
     fontSize: 14,
     color: Colors.darkGray,
     marginBottom: 4,
