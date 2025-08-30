@@ -31,7 +31,7 @@ const FILTER_BUTTONS = [
 export default function MyCharitiesScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('today');
-  const [isHijri, setIsHijri] = useState(false);
+  const [monthDate, setMonthDate] = useState(new Date());
   const [charitiesList, setCharitiesList] = useState<Charity[]>([]);
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
