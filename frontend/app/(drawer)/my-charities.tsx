@@ -334,7 +334,9 @@ export default function MyCharitiesScreen() {
         {dailySummary && (
           <View style={styles.totalContainer}>
             <Text style={styles.totalText}>
-              إجمالي الصدقات اليوم: {dailySummary.total_daily}
+              {selectedLanguage === 'ar' ? `إجمالي الصدقات اليوم: ${dailySummary.total_daily}` :
+               selectedLanguage === 'en' ? `Total charities today: ${dailySummary.total_daily}` :
+               `Total de caridades hoy: ${dailySummary.total_daily}`}
             </Text>
           </View>
         )}
