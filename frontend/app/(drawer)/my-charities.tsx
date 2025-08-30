@@ -278,12 +278,21 @@ export default function MyCharitiesScreen() {
       <ScrollView style={styles.scrollContainer} contentContainerStyle={{ padding: 16 }}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.header}>صدقاتي</Text>
+          <Text style={styles.header}>
+            {selectedLanguage === 'ar' ? 'صدقاتي' : 
+             selectedLanguage === 'en' ? 'My Charities' : 
+             'Mis Caridades'}
+          </Text>
           <TouchableOpacity 
             onPress={() => setShowCalendar(!showCalendar)}
             style={styles.calBtn}
           >
-            <Text style={styles.calTxt}>{showCalendar ? 'إغلاق' : 'التقويم'}</Text>
+            <Text style={styles.calTxt}>
+              {showCalendar 
+                ? (selectedLanguage === 'ar' ? 'إغلاق' : selectedLanguage === 'en' ? 'Close' : 'Cerrar')
+                : (selectedLanguage === 'ar' ? 'التقويم' : selectedLanguage === 'en' ? 'Calendar' : 'Calendario')
+              }
+            </Text>
           </TouchableOpacity>
         </View>
 
