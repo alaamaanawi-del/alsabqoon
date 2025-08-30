@@ -529,4 +529,43 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
     textAlign: 'center',
   },
+  languageContainer: {
+    backgroundColor: Colors.light,
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  languageTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.darkText,
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  languageButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  languageButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: Colors.lightGray,
+  },
+  languageButtonSelected: {
+    backgroundColor: Colors.deepGreen,
+  },
+  languageButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+  },
+  languageButtonTextSelected: {
+    color: Colors.light,
+  },
 });
