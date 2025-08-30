@@ -266,6 +266,9 @@ export default function MyCharitiesScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Language Selector */}
+        {renderLanguageSelector()}
+
         {/* Calendar */}
         {showCalendar && (
           <MonthCalendar 
