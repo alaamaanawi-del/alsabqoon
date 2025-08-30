@@ -68,10 +68,6 @@ export default function MyCharitiesScreen() {
 
   const onSelectDate = (date: Date) => {
     setSelectedDate(date);
-  };
-
-  const onSelectDateFromMonth = (date: Date) => {
-    setSelectedDate(date);
     setShowCalendar(false); // Close calendar when date is selected
   };
 
@@ -84,10 +80,7 @@ export default function MyCharitiesScreen() {
           selectedDate={selectedDate}
           monthDate={monthDate}
           onSelectDate={onSelectDate}
-          onSelectDateFromMonth={onSelectDateFromMonth}
-          onMonthChange={setMonthDate}
-          isHijri={isHijri}
-          onToggleCalendar={() => setIsHijri(!isHijri)}
+          onChangeMonth={setMonthDate}
         />
       </View>
     );
