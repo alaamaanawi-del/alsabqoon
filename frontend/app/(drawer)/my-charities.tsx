@@ -42,7 +42,8 @@ export default function MyCharitiesScreen() {
   useEffect(() => {
     loadCharities();
     loadDailyData();
-  }, [selectedDate]);
+    loadCharityDataForCalendar();
+  }, [selectedDate, monthDate]);
 
   const loadCharities = async () => {
     try {
@@ -60,6 +61,32 @@ export default function MyCharitiesScreen() {
       setDailySummary(result);
     } catch (error) {
       console.error('Error loading daily data:', error);
+    }
+  };
+
+  // Load charity data for all days in current month (for calendar colors)
+  const loadCharityDataForCalendar = async () => {
+    try {
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const charityData: Record<string, number> = {};
+
+      // Load data for each day of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dateStr = date.toISOString().split('T')[0];
+        try {
+          const result = await getDailyCharity(dateStr);
+          charityData[dateStr] = result.total_daily;
+        } catch (error) {
+          charityData[dateStr] = 0; // Default to 0 if no data
+        }
+      }
+
+      setCharityDataByDate(charityData);
+    } catch (error) {
+      console.error('Error loading charity data for calendar:', error);
     }
   };
 
