@@ -132,6 +132,21 @@ export default function MyCharitiesScreen() {
     const count = dailyData?.count || 0;
     const percentage = dailyData?.percentage || 0;
 
+    // Get charity name based on selected language
+    const getCharityName = (charity: Charity) => {
+      switch (selectedLanguage) {
+        case 'ar': return charity.nameAr;
+        case 'en': return charity.nameEn;
+        case 'es': return charity.nameEs;
+        default: return charity.nameAr;
+      }
+    };
+
+    const getSecondaryName = (charity: Charity) => {
+      if (selectedLanguage === 'ar') return charity.nameEn;
+      return charity.nameAr;
+    };
+
     return (
       <TouchableOpacity
         key={charity.id}
@@ -140,16 +155,54 @@ export default function MyCharitiesScreen() {
       >
         <View style={[styles.charityCircle, { backgroundColor: charity.color }]} />
         <View style={styles.charityContent}>
-          <Text style={styles.charityNameAr}>{charity.nameAr}</Text>
-          <Text style={styles.charityNameEn}>{charity.nameEn}</Text>
+          <Text style={styles.charityNamePrimary}>{getCharityName(charity)}</Text>
+          <Text style={styles.charityNameSecondary}>{getSecondaryName(charity)}</Text>
           <View style={styles.charityStats}>
-            <Text style={styles.charityCount}>العدد: {count}</Text>
+            <Text style={styles.charityCount}>
+              {selectedLanguage === 'ar' ? `العدد: ${count}` : 
+               selectedLanguage === 'en' ? `Count: ${count}` : 
+               `Cantidad: ${count}`}
+            </Text>
             <Text style={styles.charityPercentage}>{percentage.toFixed(1)}%</Text>
           </View>
         </View>
         <Ionicons name="chevron-back" size={20} color={Colors.darkGray} />
       </TouchableOpacity>
     );
+  };
+
+  const renderLanguageSelector = () => (
+    <View style={styles.languageContainer}>
+      <Text style={styles.languageTitle}>
+        {selectedLanguage === 'ar' ? 'اللغة:' : 
+         selectedLanguage === 'en' ? 'Language:' : 
+         'Idioma:'}
+      </Text>
+      <View style={styles.languageButtons}>
+        {[
+          { key: 'ar', label: 'العربية' },
+          { key: 'en', label: 'English' },
+          { key: 'es', label: 'Español' }
+        ].map((lang) => (
+          <TouchableOpacity
+            key={lang.key}
+            style={[
+              styles.languageButton,
+              selectedLanguage === lang.key && styles.languageButtonSelected
+            ]}
+            onPress={() => setSelectedLanguage(lang.key as 'ar' | 'en' | 'es')}
+          >
+            <Text style={[
+              styles.languageButtonText,
+              selectedLanguage === lang.key && styles.languageButtonTextSelected
+            ]}>
+              {lang.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
   };
 
 
