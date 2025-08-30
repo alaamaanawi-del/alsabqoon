@@ -71,6 +71,11 @@ export default function MyCharitiesScreen() {
     setShowCalendar(false); // Close calendar when date is selected
   };
 
+  const onSelectDateFromMonth = (date: Date) => {
+    setSelectedDate(date);
+    setShowCalendar(false);
+  };
+
   const renderCalendar = () => {
     if (!showCalendar) return null;
 
@@ -181,21 +186,34 @@ export default function MyCharitiesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>صدقاتي</Text>
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={{ padding: 16 }}>
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <Text style={styles.header}>صدقاتي</Text>
           <TouchableOpacity 
             onPress={() => setShowCalendar(!showCalendar)}
-            style={styles.calendarButton}
+            style={styles.calBtn}
           >
-            <Ionicons name="calendar-outline" size={24} color={Colors.light} />
+            <Text style={styles.calTxt}>{showCalendar ? 'إغلاق' : 'التقويم'}</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      <ScrollView style={styles.content}>
-        {renderCalendar()}
+        {/* Calendar */}
+        {showCalendar && (
+          <MonthCalendar 
+            monthDate={monthDate} 
+            selectedDate={selectedDate} 
+            onChangeMonth={setMonthDate} 
+            onSelectDate={onSelectDateFromMonth} 
+          />
+        )}
+
+        {/* Selected date label (Hijri + Gregorian) */}
+        <View style={styles.dateLabelBox}>
+          <Text style={styles.hijriTxt}>{hijriFullString(selectedDate)}</Text>
+          <Text style={styles.gregTxt}>{gregFullString(selectedDate)}</Text>
+        </View>
+
         {renderFilterButtons()}
 
         {/* Date Display */}
