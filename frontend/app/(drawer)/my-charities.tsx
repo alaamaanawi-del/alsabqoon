@@ -36,6 +36,7 @@ export default function MyCharitiesScreen() {
   const [charitiesList, setCharitiesList] = useState<Charity[]>([]);
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [charityDataByDate, setCharityDataByDate] = useState<Record<string, number>>({});
 
   // Load charities and daily data
   useEffect(() => {
