@@ -18,8 +18,6 @@ import {
   Charity, 
   DailyCharitySummary 
 } from '../../src/api/client';
-import CharityMonthCalendar from '../../src/components/CharityMonthCalendar';
-import CharityCharityMonthCalendar from '../../src/components/CharityCharityMonthCalendar';
 import { fmtYMD, hijriFullString, gregFullString } from '../../src/utils/date';
 
 const FILTER_BUTTONS = [
