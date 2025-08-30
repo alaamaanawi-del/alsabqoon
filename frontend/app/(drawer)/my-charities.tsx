@@ -18,8 +18,8 @@ import {
   Charity, 
   DailyCharitySummary 
 } from '../../src/api/client';
-import MonthCalendar from '../../src/components/MonthCalendar';
 import CharityMonthCalendar from '../../src/components/CharityMonthCalendar';
+import CharityCharityMonthCalendar from '../../src/components/CharityCharityMonthCalendar';
 import { fmtYMD, hijriFullString, gregFullString } from '../../src/utils/date';
 
 const FILTER_BUTTONS = [
@@ -292,7 +292,7 @@ export default function MyCharitiesScreen() {
 
         {/* Calendar */}
         {showCalendar && (
-          <MonthCalendar 
+          <CharityMonthCalendar 
             monthDate={monthDate} 
             selectedDate={selectedDate} 
             onChangeMonth={setMonthDate} 
