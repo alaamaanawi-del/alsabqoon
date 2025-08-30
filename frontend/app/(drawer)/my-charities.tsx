@@ -30,6 +30,7 @@ const FILTER_BUTTONS = [
 
 export default function MyCharitiesScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
+  const [monthDate, setMonthDate] = useState(new Date());
   const [selectedFilter, setSelectedFilter] = useState('today');
   const [monthDate, setMonthDate] = useState(new Date());
   const [charitiesList, setCharitiesList] = useState<Charity[]>([]);
