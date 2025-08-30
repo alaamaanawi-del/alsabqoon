@@ -80,45 +80,15 @@ export default function MyCharitiesScreen() {
 
     return (
       <View style={styles.calendarContainer}>
-        <View style={styles.calendarHeader}>
-          <TouchableOpacity onPress={() => setIsHijri(!isHijri)} style={styles.calendarToggle}>
-            <Text style={styles.calendarToggleText}>
-              {isHijri ? 'هجري' : 'ميلادي'}
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.calendarTitle}>
-            {selectedDate.toLocaleDateString('ar-SA', { month: 'long', year: 'numeric' })}
-          </Text>
-        </View>
-
-        <View style={styles.weekHeader}>
-          {weekdays.map((day, index) => (
-            <Text key={index} style={styles.weekDayText}>{day}</Text>
-          ))}
-        </View>
-
-        <View style={styles.calendarGrid}>
-          {calendarData.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.calendarDay,
-                item.date && {
-                  backgroundColor: getDateColor(item.count),
-                }
-              ]}
-              onPress={() => item.date && handleDatePress(item.date)}
-              disabled={!item.date}
-            >
-              <Text style={[
-                styles.calendarDayText,
-                !item.date && styles.calendarDayTextEmpty
-              ]}>
-                {item.date || ''}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <MonthCalendar
+          selectedDate={selectedDate}
+          monthDate={monthDate}
+          onSelectDate={onSelectDate}
+          onSelectDateFromMonth={onSelectDateFromMonth}
+          onMonthChange={setMonthDate}
+          isHijri={isHijri}
+          onToggleCalendar={() => setIsHijri(!isHijri)}
+        />
       </View>
     );
   };
@@ -171,6 +141,17 @@ export default function MyCharitiesScreen() {
   };
 
   const renderProgressChart = () => {
+    // Arabic day names (corrected order for proper RTL calendar flow)
+    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+    // Get color based on charity count
+    const getDateColor = (count: number) => {
+      if (count === 0) return Colors.lightGray;
+      if (count >= 1 && count <= 3) return '#FF6B6B'; // Red
+      if (count >= 4 && count <= 10) return '#FFA500'; // Orange  
+      return '#32CD32'; // Green for 11+
+    };
+
     // Sample progress data for demonstration
     const progressData = Array.from({ length: 7 }, (_, i) => ({
       date: new Date(Date.now() - i * 24 * 60 * 60 * 1000),
