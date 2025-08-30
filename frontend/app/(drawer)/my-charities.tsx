@@ -297,6 +297,7 @@ export default function MyCharitiesScreen() {
             selectedDate={selectedDate} 
             onChangeMonth={setMonthDate} 
             onSelectDate={onSelectDateFromMonth} 
+            charityDataByDate={charityDataByDate}
           />
         )}
 
