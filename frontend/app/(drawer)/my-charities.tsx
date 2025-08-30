@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   charityContent: {
     flex: 1,
   },
-  charityNameAr: {
+  charityNamePrimary: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.darkText,
