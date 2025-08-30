@@ -138,6 +138,7 @@ export default function MyCharitiesScreen() {
     );
   };
 
+
   const renderProgressChart = () => {
     // Arabic day names (corrected order for proper RTL calendar flow)
     const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
@@ -169,53 +170,6 @@ export default function MyCharitiesScreen() {
                     height: Math.max((item.count / 15) * 100, 10),
                     backgroundColor: getDateColor(item.count),
                   },
-  scrollContainer: {
-    flex: 1,
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: Colors.darkText,
-  },
-  calBtn: {
-    backgroundColor: Colors.deepGreen,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  calTxt: {
-    color: Colors.light,
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  dateLabelBox: {
-    backgroundColor: Colors.light,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  hijriTxt: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: Colors.darkText,
-    marginBottom: 4,
-  },
-  gregTxt: {
-    fontSize: 14,
-    color: Colors.darkGray,
-  },
                 ]}
               />
               <Text style={styles.progressBarDate}>
@@ -295,7 +249,6 @@ export default function MyCharitiesScreen() {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
