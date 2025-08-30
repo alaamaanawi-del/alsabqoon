@@ -302,6 +302,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.darkGray,
   },
+  calendarContainer: {
+    backgroundColor: Colors.light,
+    marginBottom: 16,
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   filterContainer: {
     flexDirection: 'row',
     marginBottom: 16,
