@@ -76,20 +76,6 @@ export default function MyCharitiesScreen() {
     setShowCalendar(false);
   };
 
-  const renderCalendar = () => {
-    if (!showCalendar) return null;
-
-    return (
-      <View style={styles.calendarContainer}>
-        <MonthCalendar
-          selectedDate={selectedDate}
-          monthDate={monthDate}
-          onSelectDate={onSelectDate}
-          onChangeMonth={setMonthDate}
-        />
-      </View>
-    );
-  };
 
   const renderFilterButtons = () => (
     <View style={styles.filterContainer}>
