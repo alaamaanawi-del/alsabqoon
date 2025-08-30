@@ -552,6 +552,13 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
     textAlign: 'center',
   },
+  progressBarCount: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    textAlign: 'center',
+    marginTop: 2,
+  },
   languageContainer: {
     backgroundColor: Colors.light,
     marginBottom: 16,
