@@ -37,44 +37,6 @@ export default function MyCharitiesScreen() {
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // Sample calendar data with color coding
-  const generateCalendarData = () => {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
-    
-    const calendarData = [];
-    
-    // Empty cells for days before the first day of the month
-    for (let i = 0; i < firstDayOfMonth; i++) {
-      calendarData.push({ date: null, count: 0 });
-    }
-    
-    // Days of the month with sample data
-    for (let day = 1; day <= daysInMonth; day++) {
-      // Generate sample charity counts for demonstration
-      const count = Math.floor(Math.random() * 15);
-      calendarData.push({ date: day, count });
-    }
-    
-    return calendarData;
-  };
-
-  const [calendarData] = useState(generateCalendarData());
-
-  // Arabic day names (corrected order for proper RTL calendar flow)
-  const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-
-  // Get color based on charity count
-  const getDateColor = (count: number) => {
-    if (count === 0) return Colors.lightGray;
-    if (count >= 1 && count <= 3) return '#FF6B6B'; // Red
-    if (count >= 4 && count <= 10) return '#FFA500'; // Orange  
-    return '#32CD32'; // Green for 11+
-  };
-
   // Load charities and daily data
   useEffect(() => {
     loadCharities();
@@ -104,10 +66,13 @@ export default function MyCharitiesScreen() {
     router.push(`/charities/${charity.id}`);
   };
 
-  const handleDatePress = (date: number) => {
-    const newDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), date);
-    setSelectedDate(newDate);
-    setShowCalendar(false);
+  const onSelectDate = (date: Date) => {
+    setSelectedDate(date);
+  };
+
+  const onSelectDateFromMonth = (date: Date) => {
+    setSelectedDate(date);
+    setShowCalendar(false); // Close calendar when date is selected
   };
 
   const renderCalendar = () => {
