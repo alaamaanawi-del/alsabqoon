@@ -23,10 +23,10 @@ import CharityMonthCalendar from '../../src/components/CharityMonthCalendar';
 import { fmtYMD, hijriFullString, gregFullString } from '../../src/utils/date';
 
 const FILTER_BUTTONS = [
-  { key: 'today', label: 'اليوم' },
-  { key: 'week', label: 'أسبوع' },
-  { key: 'month', label: 'شهر' },
-  { key: 'select', label: 'اختر' },
+  { key: 'today', labelAr: 'اليوم', labelEn: 'Today', labelEs: 'Hoy' },
+  { key: 'week', labelAr: 'أسبوع', labelEn: 'Week', labelEs: 'Semana' },
+  { key: 'month', labelAr: 'شهر', labelEn: 'Month', labelEs: 'Mes' },
+  { key: 'select', labelAr: 'اختر', labelEn: 'Select', labelEs: 'Seleccionar' },
 ];
 
 export default function MyCharitiesScreen() {
