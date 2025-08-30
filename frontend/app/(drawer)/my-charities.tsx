@@ -32,7 +32,7 @@ export default function MyCharitiesScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedFilter, setSelectedFilter] = useState('today');
-  const [monthDate, setMonthDate] = useState(new Date());
+  const [isHijri, setIsHijri] = useState(false);
   const [charitiesList, setCharitiesList] = useState<Charity[]>([]);
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
