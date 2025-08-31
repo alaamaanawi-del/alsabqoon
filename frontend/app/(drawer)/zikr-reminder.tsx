@@ -661,18 +661,39 @@ const styles = StyleSheet.create({
   volumeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
-  volumeSlider: {
+  volumeButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+  },
+  volumeDisplay: {
     flex: 1,
+    alignItems: 'center',
     marginHorizontal: 16,
-    height: 40,
   },
   volumeText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.deepGreen,
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  volumeBar: {
+    width: '100%',
+    height: 6,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  volumeBarFill: {
+    height: '100%',
+    backgroundColor: Colors.deepGreen,
+    borderRadius: 3,
   },
   sleepHeader: {
     flexDirection: 'row',
