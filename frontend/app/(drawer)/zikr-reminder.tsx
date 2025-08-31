@@ -187,7 +187,13 @@ export default function ZikrReminderScreen() {
   };
 
   const cancelAllNotifications = async () => {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    try {
+      if (Platform.OS !== 'web') {
+        await Notifications.cancelAllScheduledNotificationsAsync();
+      }
+    } catch (error) {
+      console.log('Notification cancellation not supported on this platform');
+    }
   };
 
   const playPreviewSound = async (soundId: string, customUri?: string) => {
