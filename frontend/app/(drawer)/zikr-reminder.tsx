@@ -178,7 +178,7 @@ export default function ZikrReminderScreen() {
     }
     
     const selectedPreset = PRESET_SOUNDS.find(s => s.id === settings.selectedSound);
-    return selectedPreset ? selectedPreset.uri : PRESET_SOUNDS[0].uri;
+    return selectedPreset ? selectedPreset.path : PRESET_SOUNDS[0].uri;
   };
 
   const cancelAllNotifications = async () => {
