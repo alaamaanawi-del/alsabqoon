@@ -32,6 +32,7 @@ export default function DrawerLayout() {
       <Drawer.Screen name="my-prayers/index" options={{ title: "صلاتي" }} />
       <Drawer.Screen name="my-azkar" options={{ title: "أذكاري" }} />
       <Drawer.Screen name="my-charities" options={{ title: "صدقاتي" }} />
+      <Drawer.Screen name="zikr-reminder" options={{ title: "تذكير الأذكار" }} />
       <Drawer.Screen name="tasks" options={{ title: "المهام" }} />
       <Drawer.Screen name="lessons/index" options={{ title: "الدروس" }} />
       <Drawer.Screen name="messages-support" options={{ title: "الرسائل والدعم" }} />
