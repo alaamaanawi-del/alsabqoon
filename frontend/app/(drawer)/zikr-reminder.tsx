@@ -132,32 +132,39 @@ export default function ZikrReminderScreen() {
   const scheduleNotifications = async () => {
     await cancelAllNotifications();
     
-    if (!settings.isActive) return;
+    if (!settings.isActive || Platform.OS === 'web') {
+      console.log('Notifications not supported on web platform');
+      return;
+    }
 
-    // Schedule notifications for the next 24 hours
-    const now = new Date();
-    const intervalMs = settings.interval * 60 * 1000;
-    const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Next 24 hours
+    try {
+      // Schedule notifications for the next 24 hours
+      const now = new Date();
+      const intervalMs = settings.interval * 60 * 1000;
+      const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Next 24 hours
 
-    let nextNotificationTime = new Date(now.getTime() + intervalMs);
+      let nextNotificationTime = new Date(now.getTime() + intervalMs);
 
-    while (nextNotificationTime < endTime) {
-      // Check if notification should be skipped due to sleep time
-      if (!shouldSkipDueToSleep(nextNotificationTime)) {
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: 'تذكير الأذكار',
-            body: 'حان وقت الذكر والدعاء 🤲',
-            sound: getSoundForNotification(),
-            priority: Notifications.AndroidNotificationPriority.HIGH,
-          },
-          trigger: {
-            date: nextNotificationTime,
-          },
-        });
+      while (nextNotificationTime < endTime) {
+        // Check if notification should be skipped due to sleep time
+        if (!shouldSkipDueToSleep(nextNotificationTime)) {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: 'تذكير الأذكار',
+              body: 'حان وقت الذكر والدعاء 🤲',
+              sound: getSoundForNotification(),
+              priority: Notifications.AndroidNotificationPriority.HIGH,
+            },
+            trigger: {
+              date: nextNotificationTime,
+            },
+          });
+        }
+        
+        nextNotificationTime = new Date(nextNotificationTime.getTime() + intervalMs);
       }
-      
-      nextNotificationTime = new Date(nextNotificationTime.getTime() + intervalMs);
+    } catch (error) {
+      console.error('Error scheduling notifications:', error);
     }
   };
 
