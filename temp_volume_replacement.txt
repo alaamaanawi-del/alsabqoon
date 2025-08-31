@@ -1,0 +1,36 @@
+  const renderVolumeControl = () => (
+    <View style={styles.sectionContainer}>
+      <Text style={styles.sectionTitle}>
+        {currentLanguage === 'ar' ? 'مستوى الصوت' : 'Volume Level'}
+      </Text>
+      <View style={styles.volumeContainer}>
+        <TouchableOpacity
+          style={styles.volumeButton}
+          onPress={() => setSettings(prev => ({ ...prev, volume: Math.max(0, prev.volume - 0.1) }))}
+        >
+          <Ionicons name="volume-low" size={24} color={Colors.deepGreen} />
+        </TouchableOpacity>
+        
+        <View style={styles.volumeDisplay}>
+          <Text style={styles.volumeText}>
+            {Math.round(settings.volume * 100)}%
+          </Text>
+          <View style={styles.volumeBar}>
+            <View 
+              style={[
+                styles.volumeBarFill, 
+                { width: `${settings.volume * 100}%` }
+              ]} 
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.volumeButton}
+          onPress={() => setSettings(prev => ({ ...prev, volume: Math.min(1, prev.volume + 0.1) }))}
+        >
+          <Ionicons name="volume-high" size={24} color={Colors.deepGreen} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
