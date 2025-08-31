@@ -200,7 +200,7 @@ export default function ZikrReminderScreen() {
         soundUri = { uri: customUri };
       } else {
         const preset = PRESET_SOUNDS.find(s => s.id === soundId);
-        soundUri = preset ? preset.uri : PRESET_SOUNDS[0].path;
+        soundUri = preset ? preset.path : PRESET_SOUNDS[0].path;
       }
 
       const { sound } = await Audio.loadAsync(soundUri);
