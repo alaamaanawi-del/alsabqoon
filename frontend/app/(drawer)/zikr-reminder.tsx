@@ -225,25 +225,13 @@ export default function ZikrReminderScreen() {
   };
 
   const selectCustomSound = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'audio/*',
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled && result.assets[0]) {
-        const asset = result.assets[0];
-        setSettings(prev => ({
-          ...prev,
-          selectedSound: 'custom',
-          customSoundUri: asset.uri,
-        }));
-        Alert.alert('نجح', 'تم تحديد الصوت المخصص بنجاح');
-      }
-    } catch (error) {
-      console.error('Error selecting custom sound:', error);
-      Alert.alert('خطأ', 'حدث خطأ في تحديد الصوت');
-    }
+    Alert.alert(
+      currentLanguage === 'ar' ? 'صوت مخصص' : 'Custom Sound',
+      currentLanguage === 'ar' 
+        ? 'ميزة اختيار الصوت المخصص ستتوفر قريباً في التحديث القادم'
+        : 'Custom sound selection will be available soon in the next update',
+      [{ text: currentLanguage === 'ar' ? 'موافق' : 'OK' }]
+    );
   };
 
   const formatTime = (date: Date) => {
