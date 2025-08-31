@@ -385,76 +385,106 @@ export default function ZikrReminderScreen() {
     </View>
   );
 
-  const renderSleepSettings = () => (
-    <View style={styles.sectionContainer}>
-      <View style={styles.sleepHeader}>
-        <Text style={styles.sectionTitle}>
-          {currentLanguage === 'ar' ? 'أوقات النوم والاستيقاظ' : 'Sleep & Wake Times'}
-        </Text>
-        <Switch
-          value={settings.sleepEnabled}
-          onValueChange={(value) => setSettings(prev => ({ ...prev, sleepEnabled: value }))}
-          trackColor={{ false: Colors.lightGray, true: Colors.deepGreen }}
-          thumbColor={Colors.light}
-        />
-      </View>
+  const renderSleepSettings = () => {
+    const formatTimeFromHourMin = (hours: number, minutes: number) => {
+      const time = new Date();
+      time.setHours(hours, minutes, 0, 0);
+      return time.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-SA' : 'en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+    };
 
-      {settings.sleepEnabled && (
-        <View style={styles.timeContainer}>
-          <TouchableOpacity
-            style={styles.timeSelector}
-            onPress={() => setShowSleepPicker(true)}
-          >
-            <Text style={styles.timeLabel}>
-              {currentLanguage === 'ar' ? 'وقت النوم' : 'Sleep Time'}
-            </Text>
-            <Text style={styles.timeValue}>{formatTime(settings.sleepTime)}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.timeSelector}
-            onPress={() => setShowWakePicker(true)}
-          >
-            <Text style={styles.timeLabel}>
-              {currentLanguage === 'ar' ? 'وقت الاستيقاظ' : 'Wake Time'}
-            </Text>
-            <Text style={styles.timeValue}>{formatTime(settings.wakeTime)}</Text>
-          </TouchableOpacity>
+    const TimeSelector = ({ 
+      hours, 
+      minutes, 
+      onHoursChange, 
+      onMinutesChange, 
+      label 
+    }: { 
+      hours: number;
+      minutes: number;
+      onHoursChange: (h: number) => void;
+      onMinutesChange: (m: number) => void;
+      label: string;
+    }) => (
+      <View style={styles.timeSelector}>
+        <Text style={styles.timeLabel}>{label}</Text>
+        <View style={styles.timeControls}>
+          <View style={styles.timeField}>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => onHoursChange(hours > 0 ? hours - 1 : 23)}
+            >
+              <Ionicons name="chevron-up" size={16} color={Colors.deepGreen} />
+            </TouchableOpacity>
+            <Text style={styles.timeValue}>{hours.toString().padStart(2, '0')}</Text>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => onHoursChange(hours < 23 ? hours + 1 : 0)}
+            >
+              <Ionicons name="chevron-down" size={16} color={Colors.deepGreen} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.timeSeparator}>:</Text>
+          <View style={styles.timeField}>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => onMinutesChange(minutes > 0 ? minutes - 15 : 45)}
+            >
+              <Ionicons name="chevron-up" size={16} color={Colors.deepGreen} />
+            </TouchableOpacity>
+            <Text style={styles.timeValue}>{minutes.toString().padStart(2, '0')}</Text>
+            <TouchableOpacity
+              style={styles.timeButton}
+              onPress={() => onMinutesChange(minutes < 45 ? minutes + 15 : 0)}
+            >
+              <Ionicons name="chevron-down" size={16} color={Colors.deepGreen} />
+            </TouchableOpacity>
+          </View>
         </View>
-      )}
+        <Text style={styles.timeDisplay}>
+          {formatTimeFromHourMin(hours, minutes)}
+        </Text>
+      </View>
+    );
 
-      {showSleepPicker && (
-        <DateTimePicker
-          value={settings.sleepTime}
-          mode="time"
-          is24Hour={false}
-          display="default"
-          onChange={(event, selectedTime) => {
-            setShowSleepPicker(Platform.OS === 'ios');
-            if (selectedTime) {
-              setSettings(prev => ({ ...prev, sleepTime: selectedTime }));
-            }
-          }}
-        />
-      )}
+    return (
+      <View style={styles.sectionContainer}>
+        <View style={styles.sleepHeader}>
+          <Text style={styles.sectionTitle}>
+            {currentLanguage === 'ar' ? 'أوقات النوم والاستيقاظ' : 'Sleep & Wake Times'}
+          </Text>
+          <Switch
+            value={settings.sleepEnabled}
+            onValueChange={(value) => setSettings(prev => ({ ...prev, sleepEnabled: value }))}
+            trackColor={{ false: Colors.lightGray, true: Colors.deepGreen }}
+            thumbColor={Colors.light}
+          />
+        </View>
 
-      {showWakePicker && (
-        <DateTimePicker
-          value={settings.wakeTime}
-          mode="time"
-          is24Hour={false}
-          display="default"
-          onChange={(event, selectedTime) => {
-            setShowWakePicker(Platform.OS === 'ios');
-            if (selectedTime) {
-              setSettings(prev => ({ ...prev, wakeTime: selectedTime }));
-            }
-          }}
-        />
-      )}
-    </View>
-  );
-
+        {settings.sleepEnabled && (
+          <View style={styles.timeContainer}>
+            <TimeSelector
+              hours={sleepHours}
+              minutes={sleepMinutes}
+              onHoursChange={setSleepHours}
+              onMinutesChange={setSleepMinutes}
+              label={currentLanguage === 'ar' ? 'وقت النوم' : 'Sleep Time'}
+            />
+            <TimeSelector
+              hours={wakeHours}
+              minutes={wakeMinutes}
+              onHoursChange={setWakeHours}
+              onMinutesChange={setWakeMinutes}
+              label={currentLanguage === 'ar' ? 'وقت الاستيقاظ' : 'Wake Time'}
+            />
+          </View>
+        )}
+      </View>
+    );
+  };
   const renderMainToggle = () => (
     <View style={styles.mainToggleContainer}>
       <View style={styles.toggleContent}>
