@@ -24,6 +24,36 @@ Notifications.setNotificationHandler({
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
+  timeControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 8,
+  },
+  timeField: {
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  timeButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    marginVertical: 2,
+  },
+  timeSeparator: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    marginHorizontal: 8,
+  },
+  timeDisplay: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    marginTop: 8,
+    textAlign: 'center',
+  },
 });
 
 interface ZikrReminderSettings {
@@ -804,5 +834,35 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
     lineHeight: 22,
     textAlign: 'justify',
+  },
+  timeControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 8,
+  },
+  timeField: {
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  timeButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    marginVertical: 2,
+  },
+  timeSeparator: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    marginHorizontal: 8,
+  },
+  timeDisplay: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
