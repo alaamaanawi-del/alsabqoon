@@ -67,6 +67,10 @@ export default function ZikrReminderScreen() {
   const [soundObject, setSoundObject] = useState<Audio.Sound | null>(null);
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState<'ar' | 'en'>('ar');
+  const [sleepHours, setSleepHours] = useState(22);
+  const [sleepMinutes, setSleepMinutes] = useState(0);
+  const [wakeHours, setWakeHours] = useState(6);
+  const [wakeMinutes, setWakeMinutes] = useState(0);
 
   // Load settings on mount
   useEffect(() => {
