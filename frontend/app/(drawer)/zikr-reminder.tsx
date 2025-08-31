@@ -47,7 +47,7 @@ const REMINDER_INTERVALS = [
 
 const PRESET_SOUNDS = [
   { id: 'sound1', name: 'نغمة 1', nameEn: 'Sound 1', path: 'zikr-sound-1.wav' },
-  { id: 'sound2', name: 'نغمة 2', nameEn: 'Sound 2', uri: require('../../assets/sounds/zikr-sound-2.wav') },
+  { id: 'sound2', name: 'نغمة 2', nameEn: 'Sound 2', path: 'zikr-sound-2.wav' },
   { id: 'sound3', name: 'نغمة 3', nameEn: 'Sound 3', uri: require('../../assets/sounds/zikr-sound-3.mp3') },
 ];
 
