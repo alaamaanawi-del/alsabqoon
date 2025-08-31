@@ -361,22 +361,34 @@ export default function ZikrReminderScreen() {
         {currentLanguage === 'ar' ? 'مستوى الصوت' : 'Volume Level'}
       </Text>
       <View style={styles.volumeContainer}>
-        <Ionicons name="volume-low" size={24} color={Colors.darkGray} />
-        <Slider
-          style={styles.volumeSlider}
-          minimumValue={0}
-          maximumValue={1}
-          value={settings.volume}
-          onValueChange={(value) => setSettings(prev => ({ ...prev, volume: value }))}
-          minimumTrackTintColor={Colors.deepGreen}
-          maximumTrackTintColor={Colors.lightGray}
-          thumbStyle={{ backgroundColor: Colors.deepGreen }}
-        />
-        <Ionicons name="volume-high" size={24} color={Colors.darkGray} />
+        <TouchableOpacity
+          style={styles.volumeButton}
+          onPress={() => setSettings(prev => ({ ...prev, volume: Math.max(0, prev.volume - 0.1) }))}
+        >
+          <Ionicons name="volume-low" size={24} color={Colors.deepGreen} />
+        </TouchableOpacity>
+        
+        <View style={styles.volumeDisplay}>
+          <Text style={styles.volumeText}>
+            {Math.round(settings.volume * 100)}%
+          </Text>
+          <View style={styles.volumeBar}>
+            <View 
+              style={[
+                styles.volumeBarFill, 
+                { width: `${settings.volume * 100}%` }
+              ]} 
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={styles.volumeButton}
+          onPress={() => setSettings(prev => ({ ...prev, volume: Math.min(1, prev.volume + 0.1) }))}
+        >
+          <Ionicons name="volume-high" size={24} color={Colors.deepGreen} />
+        </TouchableOpacity>
       </View>
-      <Text style={styles.volumeText}>
-        {Math.round(settings.volume * 100)}%
-      </Text>
     </View>
   );
 
