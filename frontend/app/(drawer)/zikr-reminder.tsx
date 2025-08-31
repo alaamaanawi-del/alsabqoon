@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { Audio } from 'expo-av';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Colors } from '../../src/theme/colors';
 
 // Configure notification handler
