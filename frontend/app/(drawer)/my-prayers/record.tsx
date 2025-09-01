@@ -511,7 +511,7 @@ export default function RecordPrayer() {
               onTask={() => toggleTask('taught')}
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
-            {record.rakka[activeRakka].questions.taught && (
+            {record?.rakka?.[activeRakka]?.questions?.taught === true && (
               <View style={styles.expandedRow}>
                 <Text style={styles.expandedLabel}>لكم شخص:</Text>
                 <TextInput
