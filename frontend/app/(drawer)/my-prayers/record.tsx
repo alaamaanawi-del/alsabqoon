@@ -685,8 +685,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.warmOrange,
   },
-  questionLeft: {
-    flexDirection: 'row-reverse',
+  questionRight: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
