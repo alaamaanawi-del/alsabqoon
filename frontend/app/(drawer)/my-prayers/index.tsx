@@ -27,6 +27,7 @@ export default function MyPrayers() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const router = useRouter();
   const { icons } = usePrayerIcons();
+  const insets = useSafeAreaInsets();
 
   // Refresh function to reload scores and tasks
   const refreshData = async () => {
