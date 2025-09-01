@@ -60,12 +60,14 @@ export async function loadPrayerRecord(prayer: string, date: string): Promise<Pr
         questions: { understood: false, dua: false, followed: false, taught: false },
         taughtCount: 0,
         addToTask: { understood: false, dua: false, followed: false, taught: false },
+        comments: '',
       },
       2: {
         ranges: [],
         questions: { understood: false, dua: false, followed: false, taught: false },
         taughtCount: 0,
         addToTask: { understood: false, dua: false, followed: false, taught: false },
+        comments: '',
       },
     },
   };
