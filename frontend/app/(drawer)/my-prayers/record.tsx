@@ -80,6 +80,7 @@ function QuestionRow({
 export default function RecordPrayer() {
   const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const p = (prayer as string) || 'fajr';
   const day = ymdFromParam(date as string | undefined);
 
