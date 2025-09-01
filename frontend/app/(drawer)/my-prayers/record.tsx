@@ -543,7 +543,7 @@ export default function RecordPrayer() {
             <TextInput
               placeholder="اضف تعليقاتك وملاحظاتك هنا..."
               placeholderTextColor="#888"
-              value={record.rakka[activeRakka].comments || ''}
+              value={record?.rakka?.[activeRakka]?.comments || ''}
               onChangeText={setRakkaComments}
               style={styles.commentsInput}
               textAlign="right"
