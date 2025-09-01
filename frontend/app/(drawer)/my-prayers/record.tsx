@@ -428,28 +428,7 @@ export default function RecordPrayer() {
               onTask={() => toggleTask('dua')}
               isHighlighted={focusQuestion === 'dua' && activeRakka === focusRakka}
             />
-            {record?.rakka?.[activeRakka]?.questions?.dua === true && (
-              <View style={styles.expandedRow}>
-                <Text style={styles.expandedLabel}>لكم شخص:</Text>
-                <TextInput
-                  placeholder="اسم الشخص"
-                  placeholderTextColor="#888"
-                  style={styles.expandedInput}
-                  textAlign="right"
-                />
-                <Text style={styles.expandedLabel}>خانة العدد:</Text>
-                <TextInput
-                  placeholder="0"
-                  placeholderTextColor="#888"
-                  keyboardType="number-pad"
-                  style={styles.expandedNumberInput}
-                  textAlign="center"
-                />
-                <View style={styles.taskLogoContainer}>
-                  <Text style={styles.taskLogo}>📋</Text>
-                </View>
-              </View>
-            )}
+
             
             <QuestionRow
               label="هل اتبعت الايات؟"
