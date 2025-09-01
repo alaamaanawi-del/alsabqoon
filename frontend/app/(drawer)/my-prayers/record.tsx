@@ -418,7 +418,6 @@ export default function RecordPrayer() {
         {/* Questions Section */}
         {record && (
           <View key={`questions-${activeRakka}-${record.prayer}-${record.date}`} style={styles.questionsSection}>
-            <Text style={styles.sectionTitle}>الأسئلة</Text>
             <QuestionRow
               label="هل فهمت الايات؟"
               value={record.rakka[activeRakka].questions.understood}
