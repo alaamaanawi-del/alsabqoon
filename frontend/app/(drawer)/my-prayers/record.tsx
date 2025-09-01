@@ -101,7 +101,7 @@ export default function RecordPrayer() {
   }, [focus]);
 
   const [record, setRecord] = useState<PrayerRecord | null>(null);
-  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1);
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1);
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
