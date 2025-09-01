@@ -16,7 +16,7 @@ export default function Home() {
         <Text style={styles.sectionTitle}>الإجراءات السريعة</Text>
         
         <View style={styles.actionsGrid}>
-          <Link href="/(drawer)/my-prayers/index" asChild>
+          <Link href="/my-prayers" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>🕌</Text>
               <Text style={styles.actionTitle}>صلاتي</Text>
@@ -24,7 +24,7 @@ export default function Home() {
             </TouchableOpacity>
           </Link>
 
-          <Link href="/(drawer)/my-azkar" asChild>
+          <Link href="/my-azkar" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>📿</Text>
               <Text style={styles.actionTitle}>أذكاري</Text>
@@ -32,7 +32,7 @@ export default function Home() {
             </TouchableOpacity>
           </Link>
 
-          <Link href="/(drawer)/my-charities" asChild>
+          <Link href="/my-charities" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>💝</Text>
               <Text style={styles.actionTitle}>صدقاتي</Text>
@@ -40,7 +40,7 @@ export default function Home() {
             </TouchableOpacity>
           </Link>
 
-          <Link href="/(drawer)/zikr-reminder" asChild>
+          <Link href="/zikr-reminder" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>⏰</Text>
               <Text style={styles.actionTitle}>تذكير الأذكار</Text>
@@ -48,7 +48,7 @@ export default function Home() {
             </TouchableOpacity>
           </Link>
 
-          <Link href="/(drawer)/lessons/index" asChild>
+          <Link href="/lessons" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>📚</Text>
               <Text style={styles.actionTitle}>الدروس</Text>
@@ -56,7 +56,7 @@ export default function Home() {
             </TouchableOpacity>
           </Link>
 
-          <Link href="/(drawer)/tasks" asChild>
+          <Link href="/tasks" asChild>
             <TouchableOpacity style={styles.actionCard}>
               <Text style={styles.actionIcon}>✅</Text>
               <Text style={styles.actionTitle}>المهام</Text>
