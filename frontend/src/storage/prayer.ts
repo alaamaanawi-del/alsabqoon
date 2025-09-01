@@ -26,6 +26,7 @@ export type RakkaRecord = {
     followed: boolean;
     taught: boolean;
   };
+  comments: string; // comments for this rakka
 };
 
 export type PrayerRecord = {
