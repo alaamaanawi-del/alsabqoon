@@ -297,9 +297,9 @@ export default function RecordPrayer() {
         'تم حفظ الصلاة وإضافة المهام. هل تريد الانتقال إلى صفحة المهام؟',
         [
           {
-            text: 'البقاء هنا',
+            text: 'العودة للصلوات',
             style: 'cancel',
-            onPress: () => router.back()
+            onPress: () => router.replace('/(drawer)/my-prayers/index')
           },
           {
             text: 'المهام',
@@ -310,8 +310,8 @@ export default function RecordPrayer() {
         ]
       );
     } else {
-      // No tasks added, just go back
-      router.back();
+      // No tasks added, go to prayers page
+      router.replace('/(drawer)/my-prayers/index');
     }
   };
 
