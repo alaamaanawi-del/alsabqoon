@@ -161,35 +161,7 @@ export default function MyPrayers() {
             })}
             activeOpacity={0.7}
           >
-            {/* Record Button */}
-            <View style={styles.recordButtonContainer}>
-              {!isRecorded ? (
-                <View style={styles.recordButton}>
-                  <Text style={styles.recordBtnText}>تسجيل</Text>
-                </View>
-              ) : (
-                <View style={styles.checkmarkContainer}>
-                  <Text style={styles.checkmark}>✓</Text>
-                </View>
-              )}
-            </View>
-            
-            {/* Task Icon */}
-            <View style={[styles.taskIconContainer, !hasTasks && styles.taskIconGray]}>
-              <Text style={[styles.taskIcon, !hasTasks && styles.taskIconGrayText]}>📋</Text>
-            </View>
-            
-            {/* Progress Chart */}
-            <View style={styles.progressContainer}>
-              <TaskProgressBar score={score} showPercentage={isRecorded} />
-            </View>
-            
-            {/* Prayer Name */}
-            <View style={styles.prayerNameContainer}>
-              <Text style={styles.prayer}>{p.label}</Text>
-            </View>
-            
-            {/* Prayer Icon (Logo) */}
+            {/* Prayer Icon (Logo) - RIGHTMOST */}
             <View style={styles.iconContainer}>
               {prayerIcon ? (
                 <Image 
@@ -199,6 +171,34 @@ export default function MyPrayers() {
                 />
               ) : (
                 <View style={styles.placeholderIcon} />
+              )}
+            </View>
+            
+            {/* Prayer Name */}
+            <View style={styles.prayerNameContainer}>
+              <Text style={styles.prayer}>{p.label}</Text>
+            </View>
+            
+            {/* Progress Chart */}
+            <View style={styles.progressContainer}>
+              <TaskProgressBar score={score} showPercentage={isRecorded} />
+            </View>
+            
+            {/* Task Icon */}
+            <View style={[styles.taskIconContainer, !hasTasks && styles.taskIconGray]}>
+              <Text style={[styles.taskIcon, !hasTasks && styles.taskIconGrayText]}>📋</Text>
+            </View>
+            
+            {/* Record Button - LEFTMOST */}
+            <View style={styles.recordButtonContainer}>
+              {!isRecorded ? (
+                <View style={styles.recordButton}>
+                  <Text style={styles.recordBtnText}>تسجيل</Text>
+                </View>
+              ) : (
+                <View style={styles.checkmarkContainer}>
+                  <Text style={styles.checkmark}>✓</Text>
+                </View>
               )}
             </View>
           </TouchableOpacity>
