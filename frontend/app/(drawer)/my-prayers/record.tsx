@@ -320,8 +320,14 @@ export default function RecordPrayer() {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       {/* Fixed Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>تسجيل - {p}</Text>
-        <Text style={styles.scoreText}>الدرجة: {Math.round(sc.total)}/100</Text>
+        <View style={styles.headerInfoRow}>
+          <Text style={styles.prayerNameText}>{p}</Text>
+          <Text style={styles.dayText}>{new Date().toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
+          <Text style={styles.dateText}>{new Date().toLocaleDateString('ar-SA')}</Text>
+          <View style={styles.progressBarContainer}>
+            <TaskProgressBar score={sc.total} showPercentage={true} />
+          </View>
+        </View>
       </View>
 
       {/* Rakka Tabs */}
