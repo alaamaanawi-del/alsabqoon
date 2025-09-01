@@ -449,25 +449,17 @@ export default function RecordPrayer() {
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
             {record?.rakka?.[activeRakka]?.questions?.taught === true && (
-              <View style={styles.expandedRow}>
-                <Text style={styles.expandedLabel}>لكم شخص:</Text>
-                <TextInput
-                  placeholder="اسم الشخص"
-                  placeholderTextColor="#888"
-                  style={styles.expandedInput}
-                  textAlign="right"
-                />
-                <Text style={styles.expandedLabel}>خانة العدد:</Text>
+              <View style={styles.countRow}>
+                <Text style={styles.countLabel}>كم شخصًا؟</Text>
                 <TextInput
                   placeholder="0"
                   placeholderTextColor="#888"
+                  value={String(record.rakka[activeRakka].taughtCount || 0)}
+                  onChangeText={setTaughtCount}
                   keyboardType="number-pad"
-                  style={styles.expandedNumberInput}
+                  style={styles.countInput}
                   textAlign="center"
                 />
-                <View style={styles.taskLogoContainer}>
-                  <Text style={styles.taskLogo}>📋</Text>
-                </View>
               </View>
             )}
           </View>
