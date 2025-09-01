@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   gregTxt: { color: Colors.light, opacity: 0.9, textAlign: 'right', marginTop: 4 },
   row: { flexDirection: "row-reverse", alignItems: "center", justifyContent: "space-between", backgroundColor: Colors.greenTeal, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 16, marginBottom: 8 },
   enhancedRow: { 
-    flexDirection: "row-reverse", 
+    flexDirection: "row", 
     alignItems: "center", 
     backgroundColor: Colors.greenTeal, 
     borderRadius: 12, 
