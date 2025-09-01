@@ -458,7 +458,7 @@ export default function RecordPrayer() {
             />
             {record?.rakka?.[activeRakka]?.questions?.taught === true && (
               <View style={styles.countRow}>
-                <Text style={styles.countLabel}>كم شخصًا؟</Text>
+                <Text style={styles.countLabel}>كم شخص علمت؟</Text>
                 <TextInput
                   placeholder="0"
                   placeholderTextColor="#888"
