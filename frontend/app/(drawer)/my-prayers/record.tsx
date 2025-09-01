@@ -628,7 +628,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContentContainer: {
-    paddingBottom: 80,
+    paddingBottom: 120,
   },
   searchSection: {
     backgroundColor: '#1d2a29',
