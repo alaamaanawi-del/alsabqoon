@@ -59,19 +59,19 @@ function QuestionRow({
 }) {
   return (
     <View style={[styles.questionRow, isHighlighted && styles.highlightedQuestion]}>
-      <View style={styles.questionLeft}>
-        <Text style={styles.questionTxt}>{label}</Text>
+      <Text style={styles.questionTxt}>{label}</Text>
+      <View style={styles.questionRight}>
+        <Switch
+          trackColor={{ false: '#767577', true: Colors.greenTeal }}
+          thumbColor={value ? Colors.warmOrange : '#f4f3f4'}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={onToggle}
+          value={value}
+        />
         <TouchableOpacity onPress={onTask} style={[styles.taskToggle, taskOn && styles.taskToggleOn]}>
-          <Text style={styles.taskToggleTxt}>{taskOn ? '📝' : '+'}</Text>
+          <Text style={[styles.taskToggleTxt, !taskOn && styles.taskToggleGray]}>📋</Text>
         </TouchableOpacity>
       </View>
-      <Switch
-        trackColor={{ false: '#767577', true: Colors.greenTeal }}
-        thumbColor={value ? Colors.warmOrange : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={onToggle}
-        value={value}
-      />
     </View>
   );
 }
