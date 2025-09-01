@@ -331,7 +331,14 @@ export default function RecordPrayer() {
       </View>
 
       {/* Main Scrollable Content */}
-      <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollContentContainer}>
+      <ScrollView 
+        style={styles.scrollContent} 
+        contentContainerStyle={{
+          paddingBottom: Math.max(120, insets.bottom + 30),
+          paddingLeft: Math.max(0, insets.left),
+          paddingRight: Math.max(0, insets.right),
+        }}
+      >
         {/* Selected Verses Display */}
         {record && (
           <SelectedVersesDisplay 
