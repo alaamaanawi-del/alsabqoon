@@ -161,40 +161,44 @@ export default function MyPrayers() {
             })}
             activeOpacity={0.7}
           >
-            {/* Prayer Icon */}
+            {/* Record Button */}
+            <View style={styles.recordButtonContainer}>
+              {!isRecorded ? (
+                <View style={styles.recordButton}>
+                  <Text style={styles.recordBtnText}>تسجيل</Text>
+                </View>
+              ) : (
+                <View style={styles.checkmarkContainer}>
+                  <Text style={styles.checkmark}>✓</Text>
+                </View>
+              )}
+            </View>
+            
+            {/* Task Icon */}
+            <View style={[styles.taskIconContainer, !hasTasks && styles.taskIconGray]}>
+              <Text style={[styles.taskIcon, !hasTasks && styles.taskIconGrayText]}>📋</Text>
+            </View>
+            
+            {/* Progress Chart */}
+            <View style={styles.progressContainer}>
+              <TaskProgressBar score={score} showPercentage={isRecorded} />
+            </View>
+            
+            {/* Prayer Name */}
+            <View style={styles.prayerNameContainer}>
+              <Text style={styles.prayer}>{p.label}</Text>
+            </View>
+            
+            {/* Prayer Icon (Logo) */}
             <View style={styles.iconContainer}>
               {prayerIcon ? (
                 <Image 
-                  source={{ uri: `data:image/png;base64,${prayerIcon}` }} 
+                  source={{ uri: prayerIcon }} 
                   style={styles.prayerIcon}
                   resizeMode="contain"
                 />
               ) : (
                 <View style={styles.placeholderIcon} />
-              )}
-            </View>
-            
-            {/* Prayer Name and Progress Bar */}
-            <View style={styles.prayerContent}>
-              <Text style={styles.prayer}>{p.label}</Text>
-              <TaskProgressBar score={score} showPercentage={isRecorded} />
-            </View>
-            
-            {/* Status Indicators */}
-            <View style={styles.actionContainer}>
-              {isRecorded ? (
-                <View style={styles.statusContainer}>
-                  <View style={styles.checkmarkContainer}>
-                    <Text style={styles.checkmark}>✓</Text>
-                  </View>
-                  <View style={[styles.taskIconContainer, !hasTasks && styles.taskIconGray]}>
-                    <Text style={[styles.taskIcon, !hasTasks && styles.taskIconGrayText]}>📝</Text>
-                  </View>
-                </View>
-              ) : (
-                <View style={styles.unrecordedIndicator}>
-                  <Text style={styles.recordBtnText}>تسجيل</Text>
-                </View>
               )}
             </View>
           </TouchableOpacity>
