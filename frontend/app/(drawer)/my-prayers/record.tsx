@@ -186,6 +186,13 @@ export default function RecordPrayer() {
     setRecord(next);
   };
 
+  const setRakkaComments = (comments: string) => {
+    if (!record) return;
+    const rk = record.rakka[activeRakka];
+    const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, comments } } };
+    setRecord(next);
+  };
+
   const toggleTask = (key: 'understood' | 'dua' | 'followed' | 'taught') => {
     if (!record) return;
     const rk = record.rakka[activeRakka];
