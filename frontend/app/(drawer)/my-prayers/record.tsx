@@ -11,6 +11,14 @@ import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay
 import HighlightedText from "../../../src/components/HighlightedText";
 import TaskProgressBar from "../../../src/components/TaskProgressBar";
 
+const PRAYERS = [
+  { key: "fajr", label: "الفجر" },
+  { key: "dhuhr", label: "الظهر" },
+  { key: "asr", label: "العصر" },
+  { key: "maghrib", label: "المغرب" },
+  { key: "isha", label: "العشاء" },
+];
+
 // Types for search rows
 interface DBItem {
   surahNumber: number;
