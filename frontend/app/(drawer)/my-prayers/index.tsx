@@ -290,14 +290,7 @@ const styles = StyleSheet.create({
   taskIconGrayText: {
     opacity: 0.3,
   },
-  unrecordedIndicator: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
+
   recordBtnText: {
     color: Colors.light,
     fontWeight: "600",
