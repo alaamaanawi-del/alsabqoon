@@ -522,24 +522,36 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark,
   },
   header: {
-    backgroundColor: Colors.dark,
-    paddingTop: 50,
-    paddingBottom: 16,
+    backgroundColor: Colors.deepGreen,
     paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  headerText: {
-    color: Colors.light,
-    fontSize: 20,
-    fontWeight: '800',
-    textAlign: 'right',
-    marginBottom: 4,
+  headerInfoRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
   },
-  scoreText: {
-    color: Colors.warmOrange,
+  prayerNameText: {
+    color: Colors.light,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  dayText: {
+    color: Colors.light,
     fontSize: 14,
-    textAlign: 'right',
+    fontWeight: '500',
+  },
+  dateText: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  progressBarContainer: {
+    flex: 1,
+    marginLeft: 12,
   },
   tabsContainer: {
     flexDirection: 'row-reverse',
