@@ -710,6 +710,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  taskToggleGray: {
+    opacity: 0.3,
+  },
   countRow: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
