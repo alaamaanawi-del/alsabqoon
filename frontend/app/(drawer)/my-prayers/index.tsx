@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from "../../../src/theme/colors";
 import { Link, useRouter, useFocusEffect } from "expo-router";
 import { loadPrayerRecord, computeScore, loadTasks } from "../../../src/storage/prayer";
