@@ -90,7 +90,7 @@ export default function MyPrayers() {
 
   const onSelectDateFromMonth = (d: Date) => {
     setSelectedDate(d);
-    router.push({ pathname: '/(drawer)/my-prayers/day-summary', params: { date: fmtYMD(d) } });
+    setShowCal(false); // Close the calendar after selection
   };
 
   // Navigation functions for WeekBar action sheet
