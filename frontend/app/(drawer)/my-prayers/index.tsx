@@ -259,19 +259,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 16,
   },
-  prayerContent: {
-    flex: 1,
-    gap: 8,
-  },
-  actionContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
+
   checkmarkContainer: {
     width: 32,
     height: 32,
