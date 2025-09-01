@@ -330,7 +330,7 @@ export default function RecordPrayer() {
       {/* Fixed Header */}
       <View style={styles.header}>
         <View style={styles.headerInfoRow}>
-          <Text style={styles.prayerNameText}>{p}</Text>
+          <Text style={styles.prayerNameText}>{PRAYERS.find(prayer => prayer.key === p)?.label || p}</Text>
           <Text style={styles.dayText}>{new Date().toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
           <Text style={styles.dateText}>{new Date().toLocaleDateString('ar-SA')}</Text>
           <View style={styles.progressBarContainer}>
