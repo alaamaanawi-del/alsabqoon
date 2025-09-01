@@ -411,31 +411,100 @@ export default function RecordPrayer() {
           <View style={styles.questionsSection}>
             <Text style={styles.sectionTitle}>الأسئلة</Text>
             <QuestionRow
-              label="فهمت الآيات؟"
+              label="هل فهمت الايات؟"
               value={record.rakka[activeRakka].questions.understood}
               onToggle={() => toggleQuestion('understood')}
               taskOn={record.rakka[activeRakka].addToTask.understood}
               onTask={() => toggleTask('understood')}
               isHighlighted={focusQuestion === 'understood' && activeRakka === focusRakka}
             />
+            {record.rakka[activeRakka].questions.understood && (
+              <View style={styles.expandedRow}>
+                <Text style={styles.expandedLabel}>لكم شخص:</Text>
+                <TextInput
+                  placeholder="اسم الشخص"
+                  placeholderTextColor="#888"
+                  style={styles.expandedInput}
+                  textAlign="right"
+                />
+                <Text style={styles.expandedLabel}>خانة العدد:</Text>
+                <TextInput
+                  placeholder="0"
+                  placeholderTextColor="#888"
+                  keyboardType="number-pad"
+                  style={styles.expandedNumberInput}
+                  textAlign="center"
+                />
+                <View style={styles.taskLogoContainer}>
+                  <Text style={styles.taskLogo}>📋</Text>
+                </View>
+              </View>
+            )}
+            
             <QuestionRow
-              label="هل دعوت؟"
+              label="الدعاء المتعلق بالايات."
               value={record.rakka[activeRakka].questions.dua}
               onToggle={() => toggleQuestion('dua')}
               taskOn={record.rakka[activeRakka].addToTask.dua}
               onTask={() => toggleTask('dua')}
               isHighlighted={focusQuestion === 'dua' && activeRakka === focusRakka}
             />
+            {record.rakka[activeRakka].questions.dua && (
+              <View style={styles.expandedRow}>
+                <Text style={styles.expandedLabel}>لكم شخص:</Text>
+                <TextInput
+                  placeholder="اسم الشخص"
+                  placeholderTextColor="#888"
+                  style={styles.expandedInput}
+                  textAlign="right"
+                />
+                <Text style={styles.expandedLabel}>خانة العدد:</Text>
+                <TextInput
+                  placeholder="0"
+                  placeholderTextColor="#888"
+                  keyboardType="number-pad"
+                  style={styles.expandedNumberInput}
+                  textAlign="center"
+                />
+                <View style={styles.taskLogoContainer}>
+                  <Text style={styles.taskLogo}>📋</Text>
+                </View>
+              </View>
+            )}
+            
             <QuestionRow
-              label="هل اتبعت الآيات؟"
+              label="هل اتبعت الايات؟"
               value={record.rakka[activeRakka].questions.followed}
               onToggle={() => toggleQuestion('followed')}
               taskOn={record.rakka[activeRakka].addToTask.followed}
               onTask={() => toggleTask('followed')}
               isHighlighted={focusQuestion === 'followed' && activeRakka === focusRakka}
             />
+            {record.rakka[activeRakka].questions.followed && (
+              <View style={styles.expandedRow}>
+                <Text style={styles.expandedLabel}>لكم شخص:</Text>
+                <TextInput
+                  placeholder="اسم الشخص"
+                  placeholderTextColor="#888"
+                  style={styles.expandedInput}
+                  textAlign="right"
+                />
+                <Text style={styles.expandedLabel}>خانة العدد:</Text>
+                <TextInput
+                  placeholder="0"
+                  placeholderTextColor="#888"
+                  keyboardType="number-pad"
+                  style={styles.expandedNumberInput}
+                  textAlign="center"
+                />
+                <View style={styles.taskLogoContainer}>
+                  <Text style={styles.taskLogo}>📋</Text>
+                </View>
+              </View>
+            )}
+            
             <QuestionRow
-              label="هل علّمت الآيات؟"
+              label="هل علمت الايات؟"
               value={record.rakka[activeRakka].questions.taught}
               onToggle={() => toggleQuestion('taught')}
               taskOn={record.rakka[activeRakka].addToTask.taught}
@@ -443,19 +512,44 @@ export default function RecordPrayer() {
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
             {record.rakka[activeRakka].questions.taught && (
-              <View style={styles.countRow}>
-                <Text style={styles.countLabel}>كم شخصًا؟</Text>
+              <View style={styles.expandedRow}>
+                <Text style={styles.expandedLabel}>لكم شخص:</Text>
+                <TextInput
+                  placeholder="اسم الشخص"
+                  placeholderTextColor="#888"
+                  style={styles.expandedInput}
+                  textAlign="right"
+                />
+                <Text style={styles.expandedLabel}>خانة العدد:</Text>
                 <TextInput
                   placeholder="0"
                   placeholderTextColor="#888"
-                  value={String(record.rakka[activeRakka].taughtCount || 0)}
-                  onChangeText={setTaughtCount}
                   keyboardType="number-pad"
-                  style={styles.countInput}
+                  style={styles.expandedNumberInput}
                   textAlign="center"
                 />
+                <View style={styles.taskLogoContainer}>
+                  <Text style={styles.taskLogo}>📋</Text>
+                </View>
               </View>
             )}
+          </View>
+        )}
+
+        {/* Comments Section */}
+        {record && (
+          <View style={styles.commentsSection}>
+            <Text style={styles.sectionTitle}>التعليقات والملاحظات</Text>
+            <TextInput
+              placeholder="اضف تعليقاتك وملاحظاتك هنا..."
+              placeholderTextColor="#888"
+              value={record.rakka[activeRakka].comments || ''}
+              onChangeText={setRakkaComments}
+              style={styles.commentsInput}
+              textAlign="right"
+              multiline={true}
+              numberOfLines={4}
+            />
           </View>
         )}
       </ScrollView>
