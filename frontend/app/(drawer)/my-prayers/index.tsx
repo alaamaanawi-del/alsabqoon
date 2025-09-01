@@ -315,6 +315,27 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 12
   },
+  recordButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  recordButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  progressContainer: {
+    flex: 1,
+    paddingHorizontal: 8,
+  },
+  prayerNameContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 60,
+  },
   prayer: { color: Colors.light, fontSize: 16, fontWeight: "700" },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   badgeTxt: { color: '#fff', fontWeight: '800', fontSize: 12 },
