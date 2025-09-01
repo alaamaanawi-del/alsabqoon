@@ -456,13 +456,14 @@ export default function RecordPrayer() {
               onTask={() => toggleTask('taught')}
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
-            {record && record.rakka[activeRakka].questions.taught && (
-              <View key={`taught-field-${activeRakka}`} style={styles.countRow}>
+            
+            {record && record.rakka[activeRakka] && record.rakka[activeRakka].questions.taught === true && (
+              <View style={styles.countRow}>
                 <Text style={styles.countLabel}>كم شخص علمت؟</Text>
                 <TextInput
-                  placeholder="0"
+                  placeholder="عدد الأشخاص"
                   placeholderTextColor="#888"
-                  value={String(record.rakka[activeRakka].taughtCount || 0)}
+                  value={String(record.rakka[activeRakka].taughtCount || '')}
                   onChangeText={setTaughtCount}
                   keyboardType="number-pad"
                   style={styles.countInput}
