@@ -265,10 +265,6 @@ export default function MyCharitiesScreen() {
               </TouchableOpacity>
             );
           })}
-        </View>
-            </TouchableOpacity>
-          ))}
-        </View>
       </View>
     );
   };
