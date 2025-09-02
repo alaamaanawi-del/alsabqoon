@@ -121,7 +121,7 @@ export default function MyCharitiesScreen() {
             styles.filterButtonText,
             selectedFilter === button.key && styles.filterButtonTextSelected
           ]}>
-            {button.label}
+            {selectedLanguage === 'ar' ? button.labelAr : selectedLanguage === 'en' ? button.labelEn : button.labelEs}
           </Text>
         </TouchableOpacity>
       ))}
