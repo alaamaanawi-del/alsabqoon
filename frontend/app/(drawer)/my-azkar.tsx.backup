@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../src/theme/colors';
 import { router } from 'expo-router';
@@ -42,6 +43,7 @@ const FILTER_BUTTONS = [
 ];
 
 export default function MyAzkarScreen() {
+  const insets = useSafeAreaInsets();
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('today');
   const [isHijri, setIsHijri] = useState(false);
@@ -54,6 +56,8 @@ export default function MyAzkarScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
+  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
+  const [dateRangeStep, setDateRangeStep] = useState<'start' | 'end'>('start');
 
   // Hijri calendar conversion functions
   const gregorianToHijri = (gregorianDate: Date) => {
@@ -288,9 +292,12 @@ export default function MyAzkarScreen() {
           ]}
           onPress={() => {
             setSelectedDate(dayDate);
-            if (showCalendar) {
-              setShowCalendar(false); // Close calendar after selection
-            }
+            // Smooth auto-hide calendar after selection
+            setTimeout(() => {
+              if (showCalendar) {
+                setShowCalendar(false);
+              }
+            }, 300); // Delay for visual feedback
           }}
         >
           <Text style={[
@@ -315,7 +322,117 @@ export default function MyAzkarScreen() {
     return days;
   };
 
-
+  const renderDateRangeCalendar = () => {
+    const today = new Date();
+    let currentMonth, currentYear, monthName;
+    
+    if (isHijri) {
+      const hijriDate = gregorianToHijri(selectedDate);
+      currentMonth = hijriDate.month;
+      currentYear = hijriDate.year;
+      monthName = getHijriMonthName(currentMonth);
+    } else {
+      currentMonth = selectedDate.getMonth();
+      currentYear = selectedDate.getFullYear();
+      const gregorianMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                             'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      monthName = gregorianMonths[currentMonth];
+    }
+    
+    // Get first day of the month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    const days = [];
+    
+    // Add month/year header with navigation
+    days.push(
+      <View key="month-header" style={styles.monthHeader}>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('prev')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-back" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
+        <Text style={styles.monthHeaderText}>
+          {monthName} {currentYear}
+        </Text>
+        <TouchableOpacity 
+          onPress={() => navigateMonth('next')} 
+          style={styles.monthNavButton}
+        >
+          <Ionicons name="chevron-forward" size={20} color={Colors.deepGreen} />
+        </TouchableOpacity>
+      </View>
+    );
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(
+        <View key={`empty-${i}`} style={styles.calendarDay}>
+          <Text style={styles.dayText}></Text>
+        </View>
+      );
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayDate = new Date(currentYear, currentMonth, day);
+      const isToday = dayDate.toDateString() === today.toDateString();
+      
+      // Check if this date is in the selected range
+      const isInRange = customStartDate && customEndDate && 
+                       dayDate >= customStartDate && dayDate <= customEndDate;
+      const isStartDate = customStartDate && dayDate.toDateString() === customStartDate.toDateString();
+      const isEndDate = customEndDate && dayDate.toDateString() === customEndDate.toDateString();
+      
+      let displayDay = day;
+      if (isHijri) {
+        displayDay = day;
+      }
+      
+      days.push(
+        <TouchableOpacity
+          key={day}
+          style={[
+            styles.calendarDay,
+            isToday && styles.todayDay,
+            isStartDate && styles.startDateDay,
+            isEndDate && styles.endDateDay,
+            isInRange && styles.inRangeDay,
+          ]}
+          onPress={() => {
+            if (dateRangeStep === 'start') {
+              setCustomStartDate(dayDate);
+              setCustomEndDate(null);
+              setDateRangeStep('end');
+            } else {
+              if (customStartDate && dayDate >= customStartDate) {
+                setCustomEndDate(dayDate);
+              } else {
+                // If selected end date is before start date, swap them
+                setCustomEndDate(customStartDate);
+                setCustomStartDate(dayDate);
+              }
+            }
+          }}
+        >
+          <Text style={[
+            styles.dayText,
+            isToday && styles.todayText,
+            (isStartDate || isEndDate) && styles.selectedText,
+            isInRange && styles.rangeText,
+          ]}>
+            {displayDay}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    
+    return days;
+  };
 
   const renderFilterButtons = () => (
     <View style={styles.filterContainer}>
@@ -387,8 +504,8 @@ export default function MyAzkarScreen() {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       
-      // Get day name in Arabic
-      const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      // Get day name in Arabic (without ال prefix)
+      const dayNames = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
       const dayName = dayNames[date.getDay()];
       
       // Format date
@@ -434,7 +551,9 @@ export default function MyAzkarScreen() {
         </View>
       </View>
     );
-  };  return (
+  };
+
+  return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -466,7 +585,7 @@ export default function MyAzkarScreen() {
               <View style={styles.calendarGrid}>
                 {/* Calendar Header - Day Names */}
                 <View style={styles.calendarHeader}>
-                  {['السبت', 'الجمعة', 'الخميس', 'الأربعاء', 'الثلاثاء', 'الاثنين', 'الأحد'].map((day, index) => (
+                  {['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
@@ -483,6 +602,11 @@ export default function MyAzkarScreen() {
 
       <ScrollView 
         style={styles.scrollContainer} 
+        contentContainerStyle={{
+          paddingLeft: Math.max(16, insets.left),
+          paddingRight: Math.max(16, insets.right),
+          paddingBottom: Math.max(50, insets.bottom + 30) // Extra space for navigation keys
+        }}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         keyboardShouldPersistTaps="handled"
@@ -490,23 +614,42 @@ export default function MyAzkarScreen() {
         {/* Filter Buttons */}
         {renderFilterButtons()}
 
-        {/* Current Date Display */}
-        <View style={styles.currentDateContainer}>
-          <Text style={styles.currentDateText}>
-            {selectedDate.toLocaleDateString('ar', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </Text>
+        {/* Filter Description Display */}
+        <View style={styles.filterDescriptionContainer}>
+          {selectedFilter === 'today' && (
+            <Text style={styles.filterDescriptionText}>
+              {selectedDate.toLocaleDateString('ar', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </Text>
+          )}
+          {selectedFilter === 'week' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال أسبوع
+            </Text>
+          )}
+          {selectedFilter === 'month' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال شهر
+            </Text>
+          )}
+          {selectedFilter === 'custom' && customStartDate && customEndDate && (
+            <Text style={styles.filterDescriptionText}>
+              من {customStartDate.toLocaleDateString('ar')} إلى {customEndDate.toLocaleDateString('ar')}
+            </Text>
+          )}
+        </View>
+
+        {/* Progress Chart Section - Moved to top */}
+        <View style={styles.chartSectionContainer}>
+          {renderProgressChart()}
         </View>
 
         {/* Azkar List */}
         {renderAzkarList()}
-
-        {/* Progress Chart */}
-        {renderProgressChart()}
       </ScrollView>
 
       {/* Date Picker Modal for Select Filter */}
@@ -554,11 +697,91 @@ export default function MyAzkarScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity 
+              style={styles.datePickerButton}
+              onPress={() => {
+                setShowDatePicker(false);
+                setShowDateRangePicker(true);
+                setDateRangeStep('start');
+                setCustomStartDate(null);
+                setCustomEndDate(null);
+              }}
+            >
+              <Text style={styles.datePickerButtonText}>تحديد نطاق مخصص</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
               style={[styles.datePickerButton, styles.cancelButton]}
               onPress={() => setShowDatePicker(false)}
             >
               <Text style={[styles.datePickerButtonText, styles.cancelButtonText]}>إلغاء</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Custom Date Range Picker Modal */}
+      {showDateRangePicker && (
+        <View style={styles.datePickerOverlay}>
+          <View style={styles.dateRangeModal}>
+            <Text style={styles.datePickerTitle}>
+              {dateRangeStep === 'start' ? 'اختر تاريخ البداية' : 'اختر تاريخ النهاية'}
+            </Text>
+            
+            {/* Mini Calendar for Date Range Selection */}
+            <ScrollView style={styles.rangeDatePickerCalendar} nestedScrollEnabled={true}>
+              <View style={styles.calendarGrid}>
+                {/* Calendar Header - Day Names */}
+                <View style={styles.calendarHeader}>
+                  {['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map((day, index) => (
+                    <Text key={index} style={styles.dayHeader}>{day}</Text>
+                  ))}
+                </View>
+                
+                {/* Calendar Days for Date Range */}
+                <View style={styles.daysGrid}>
+                  {renderDateRangeCalendar()}
+                </View>
+              </View>
+            </ScrollView>
+
+            {/* Selected Range Display */}
+            <View style={styles.selectedRangeContainer}>
+              <Text style={styles.selectedRangeText}>
+                من: {customStartDate ? customStartDate.toLocaleDateString('ar') : 'غير محدد'}
+              </Text>
+              <Text style={styles.selectedRangeText}>
+                إلى: {customEndDate ? customEndDate.toLocaleDateString('ar') : 'غير محدد'}
+              </Text>
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.dateRangeActions}>
+              {customStartDate && customEndDate && (
+                <TouchableOpacity 
+                  style={[styles.datePickerButton, styles.doneButton]}
+                  onPress={() => {
+                    setShowDateRangePicker(false);
+                    setSelectedFilter('custom');
+                    // Apply the custom date range
+                    setSelectedDate(customStartDate);
+                  }}
+                >
+                  <Text style={styles.doneButtonText}>تم</Text>
+                </TouchableOpacity>
+              )}
+              
+              <TouchableOpacity 
+                style={[styles.datePickerButton, styles.cancelButton]}
+                onPress={() => {
+                  setShowDateRangePicker(false);
+                  setCustomStartDate(null);
+                  setCustomEndDate(null);
+                  setDateRangeStep('start');
+                }}
+              >
+                <Text style={[styles.datePickerButtonText, styles.cancelButtonText]}>إلغاء</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -911,5 +1134,67 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: Colors.light,
+  },
+  // Date Range Picker Styles
+  dateRangeModal: {
+    backgroundColor: Colors.light,
+    borderRadius: 12,
+    padding: 20,
+    marginHorizontal: 20,
+    maxWidth: 350,
+    width: '95%',
+    maxHeight: '80%',
+  },
+  rangeDatePickerCalendar: {
+    maxHeight: 300,
+    marginVertical: 10,
+  },
+  selectedRangeContainer: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+    padding: 12,
+    marginVertical: 10,
+  },
+  selectedRangeText: {
+    fontSize: 14,
+    color: Colors.darkGray,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  dateRangeActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 15,
+  },
+  doneButton: {
+    backgroundColor: Colors.deepGreen,
+    flex: 1,
+    marginRight: 8,
+  },
+  doneButtonText: {
+    color: Colors.light,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // Date Range Calendar Styles
+  startDateDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  endDateDay: {
+    backgroundColor: Colors.deepGreen,
+  },
+  inRangeDay: {
+    backgroundColor: Colors.lightGray,
+  },
+  rangeText: {
+    color: Colors.darkGray,
+  },
+  // Chart Section Container
+  chartSectionContainer: {
+    backgroundColor: Colors.lightGray,
+    margin: 16,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
   },
 });
