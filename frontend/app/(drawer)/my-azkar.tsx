@@ -1084,7 +1084,7 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
   },
-  currentDateText: {
+  filterDescriptionText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.deepGreen,
