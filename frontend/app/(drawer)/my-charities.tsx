@@ -234,6 +234,7 @@ export default function MyCharitiesScreen() {
       // You can add smooth scrolling here if needed
     };
 
+  const renderProgressChart = () => {
     return (
       <View style={styles.progressContainer}>
         <Text style={styles.progressTitle}>
