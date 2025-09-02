@@ -537,31 +537,44 @@ export default function MyAzkarScreen() {
       });
     }
 
+    // Calculate max value for proper scaling
+    const maxCount = Math.max(...chartData.map(d => d.count));
+    const minHeight = 4;
+    const maxHeight = 80;
+
     return (
       <View style={styles.chartContainer}>
         <Text style={styles.chartTitle}>التقدم اليومي</Text>
         <View style={styles.chart}>
-          {chartData.map((data, index) => (
-            <View key={index} style={styles.chartBar}>
-              <View
-                style={[
-                  styles.bar,
-                  {
-                    height: Math.min(80, Math.max(4, (data.count / 4000) * 80)), // Ensure height stays within bounds
-                    backgroundColor: getDailyColorCode(data.count),
-                  },
-                ]}
-              />
-              {/* Zikr count */}
-              <Text style={styles.chartCount}>{data.count.toLocaleString()}</Text>
-              {/* Day name */}
-              <Text style={styles.chartDayName}>{data.dayName}</Text>
-              {/* Clickable Date */}
-              <TouchableOpacity onPress={() => handleDateClick(data.fullDate)}>
-                <Text style={styles.chartDateClickable}>{data.date}</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+          {chartData.map((data, index) => {
+            // Calculate proportional height based on actual data
+            let barHeight = minHeight;
+            if (maxCount > 0) {
+              barHeight = Math.max(minHeight, (data.count / maxCount) * maxHeight);
+            }
+
+            return (
+              <View key={index} style={styles.chartBar}>
+                <View
+                  style={[
+                    styles.bar,
+                    {
+                      height: barHeight,
+                      backgroundColor: getDailyColorCode(data.count),
+                    },
+                  ]}
+                />
+                {/* Zikr count */}
+                <Text style={styles.chartCount}>{data.count.toLocaleString()}</Text>
+                {/* Day name */}
+                <Text style={styles.chartDayName}>{data.dayName}</Text>
+                {/* Clickable Date */}
+                <TouchableOpacity onPress={() => handleDateClick(data.fullDate)}>
+                  <Text style={styles.chartDateClickable}>{data.date}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
         </View>
       </View>
     );
