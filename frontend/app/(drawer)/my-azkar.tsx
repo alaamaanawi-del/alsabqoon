@@ -630,11 +630,12 @@ export default function MyAzkarScreen() {
         <View style={styles.filterDescriptionContainer}>
           {selectedFilter === 'today' && (
             <Text style={styles.filterDescriptionText}>
-              {selectedDate.toLocaleDateString('ar', { 
+              {new Date().toLocaleDateString('ar', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
-                day: 'numeric' 
+                day: 'numeric',
+                timeZone: 'Asia/Riyadh' // Use Saudi Arabia timezone for accurate date
               })}
             </Text>
           )}
