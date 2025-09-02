@@ -522,8 +522,8 @@ export default function MyAzkarScreen() {
     const today = new Date();
     
     for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
+      // Create date with local components to avoid timezone issues
+      const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
       
       // Get day name in Arabic (without ال prefix)
       const dayNames = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
