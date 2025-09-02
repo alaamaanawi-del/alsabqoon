@@ -39,6 +39,14 @@ export default function MyCharitiesScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [charityDataByDate, setCharityDataByDate] = useState<Record<string, number>>({});
 
+  // Format date for API calls (consistent with backend expectations)
+  const formatDateForAPI = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Load charities and daily data
   useEffect(() => {
     loadCharities();
