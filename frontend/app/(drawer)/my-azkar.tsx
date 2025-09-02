@@ -846,7 +846,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   totalDisplay: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.deepGreen,
     marginBottom: 8,
@@ -1029,7 +1029,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   chartTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.darkGray,
     textAlign: 'center',
@@ -1085,7 +1085,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   filterDescriptionText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.deepGreen,
     textAlign: 'center',
@@ -1110,7 +1110,7 @@ const styles = StyleSheet.create({
     width: '90%',
   },
   datePickerTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.darkGray,
     textAlign: 'center',
