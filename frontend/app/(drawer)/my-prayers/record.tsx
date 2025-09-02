@@ -319,7 +319,7 @@ export default function RecordPrayer() {
       );
     } else {
       // No tasks added, go to prayers page
-      router.replace('/(drawer)/my-prayers/index');
+      router.replace('/my-prayers');
     }
   };
 
