@@ -113,7 +113,7 @@ export default function MyAzkarScreen() {
       const currentYear = selectedDate.getFullYear();
       const monthData: Record<string, number> = {};
       
-      // Load data for each day of the current month
+      // Load data for each day of the current month using real API
       const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
       
       for (let day = 1; day <= daysInMonth; day++) {
@@ -122,9 +122,10 @@ export default function MyAzkarScreen() {
         
         try {
           const summary = await getDailyAzkar(dateStr);
-          monthData[dateStr] = summary.total_daily;
+          monthData[dateStr] = summary.total_daily || 0; // Use actual data or 0 if no data
         } catch (error) {
-          monthData[dateStr] = Math.floor(Math.random() * 2500); // Fallback to mock data
+          console.error(`Error loading data for ${dateStr}:`, error);
+          monthData[dateStr] = 0; // Use 0 instead of random mock data
         }
       }
       
