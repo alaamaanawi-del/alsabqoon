@@ -23,10 +23,10 @@ import CharityMonthCalendar from '../../src/components/CharityMonthCalendar';
 import { fmtYMD, hijriFullString, gregFullString } from '../../src/utils/date';
 
 const FILTER_BUTTONS = [
-  { key: 'today', label: 'اليوم' },
-  { key: 'week', label: 'أسبوع' },
-  { key: 'month', label: 'شهر' },
-  { key: 'select', label: 'اختر' },
+  { key: 'today', labelAr: 'اليوم', labelEn: 'Today', labelEs: 'Hoy' },
+  { key: 'week', labelAr: 'أسبوع', labelEn: 'Week', labelEs: 'Semana' },
+  { key: 'month', labelAr: 'شهر', labelEn: 'Month', labelEs: 'Mes' },
+  { key: 'select', labelAr: 'اختر', labelEn: 'Select', labelEs: 'Seleccionar' },
 ];
 
 export default function MyCharitiesScreen() {
@@ -38,6 +38,14 @@ export default function MyCharitiesScreen() {
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [charityDataByDate, setCharityDataByDate] = useState<Record<string, number>>({});
+
+  // Format date for API calls (consistent with backend expectations)
+  const formatDateForAPI = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   // Load charities and daily data
   useEffect(() => {
@@ -121,7 +129,7 @@ export default function MyCharitiesScreen() {
             styles.filterButtonText,
             selectedFilter === button.key && styles.filterButtonTextSelected
           ]}>
-            {button.label}
+            {selectedLanguage === 'ar' ? button.labelAr : selectedLanguage === 'en' ? button.labelEn : button.labelEs}
           </Text>
         </TouchableOpacity>
       ))}
@@ -204,13 +212,9 @@ export default function MyCharitiesScreen() {
       </View>
     </View>
   );
-  };
 
 
   const renderProgressChart = () => {
-    // Arabic day names (corrected order for proper RTL calendar flow)
-    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-
     // Get color based on charity count
     const getDateColor = (count: number) => {
       if (count === 0) return Colors.lightGray;
@@ -234,6 +238,9 @@ export default function MyCharitiesScreen() {
       // You can add smooth scrolling here if needed
     };
 
+    // Arabic day names (corrected order for proper RTL calendar flow)
+    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
     return (
       <View style={styles.progressContainer}>
         <Text style={styles.progressTitle}>
@@ -241,34 +248,32 @@ export default function MyCharitiesScreen() {
            selectedLanguage === 'en' ? 'Weekly Progress' : 
            'Progreso Semanal'}
         </Text>
-        <View style={styles.progressChart}>
-          {progressData.map((item, index) => (
-            <TouchableOpacity 
-              key={index} 
-              style={styles.progressBar}
-              onPress={() => handleDateClick(item.date)}
-            >
-              <View
-                style={[
-                  styles.progressBarFill,
-                  {
-                    height: Math.max((item.count / 15) * 100, 10),
-                    backgroundColor: getDateColor(item.count),
-                  },
-                ]}
-              />
-              <Text style={styles.progressBarDate}>
-                {item.date.getDate()}
-              </Text>
-              <Text style={styles.progressBarDay}>
-                {weekdays[item.date.getDay()]}
-              </Text>
-              <Text style={styles.progressBarCount}>
-                {item.count}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <View style={styles.weeklyProgressContainer}>
+          {Array.from({ length: 7 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (6 - i));
+            const dateStr = date.toISOString().split('T')[0];
+            const count = charityDataByDate[dateStr] || 0;
+            
+            return (
+              <TouchableOpacity
+                key={i}
+                style={styles.dayContainer}
+                onPress={() => setSelectedDate(date)}
+              >
+                <View
+                  style={[
+                    styles.dayCircle,
+                    { backgroundColor: getDateColor(count) },
+                  ]}
+                >
+                  <Text style={styles.dayNumber}>{date.getDate()}</Text>
+                </View>
+                <Text style={styles.charityCount}>{count}</Text>
+              </TouchableOpacity>
+            );
+          })}
+      </View>
       </View>
     );
   };
@@ -610,5 +615,33 @@ const styles = StyleSheet.create({
   },
   languageButtonTextSelected: {
     color: Colors.light,
+  },
+  weeklyProgressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingVertical: 16,
+  },
+  dayContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  dayCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  dayNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.light,
+  },
+  charityCount: {
+    fontSize: 12,
+    color: Colors.darkGray,
+    textAlign: 'center',
   },
 });
