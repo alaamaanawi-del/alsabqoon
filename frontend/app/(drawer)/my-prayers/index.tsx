@@ -118,7 +118,7 @@ export default function MyPrayers() {
         padding: 16,
         paddingLeft: Math.max(16, insets.left),
         paddingRight: Math.max(16, insets.right),
-        paddingBottom: Math.max(16, insets.bottom + 20) // Extra space for navigation keys
+        paddingBottom: Math.max(50, insets.bottom + 30) // Extra space for navigation keys
       }}
     >
       <View style={styles.headerRow}>
