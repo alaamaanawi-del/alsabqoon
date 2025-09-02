@@ -595,9 +595,9 @@ export default function MyAzkarScreen() {
             {/* Actual Calendar Implementation */}
             <ScrollView style={styles.calendarScrollView} nestedScrollEnabled={true}>
               <View style={styles.calendarGrid}>
-                {/* Calendar Header - Day Names */}
+                {/* Calendar Header - Day Names - RTL Order */}
                 <View style={styles.calendarHeader}>
-                  {['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map((day, index) => (
+                  {['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
@@ -742,9 +742,9 @@ export default function MyAzkarScreen() {
             {/* Mini Calendar for Date Range Selection */}
             <ScrollView style={styles.rangeDatePickerCalendar} nestedScrollEnabled={true}>
               <View style={styles.calendarGrid}>
-                {/* Calendar Header - Day Names */}
+                {/* Calendar Header - Day Names - RTL Order */}
                 <View style={styles.calendarHeader}>
-                  {['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map((day, index) => (
+                  {['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
