@@ -43,6 +43,7 @@ const FILTER_BUTTONS = [
 ];
 
 export default function MyAzkarScreen() {
+  const insets = useSafeAreaInsets();
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState('today');
   const [isHijri, setIsHijri] = useState(false);
