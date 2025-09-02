@@ -289,38 +289,12 @@ export default function RecordPrayer() {
 
   const handleCompleteRecording = async () => {
     if (!record) {
-      router.back();
+      router.replace('/(drawer)/my-prayers');
       return;
     }
 
-    // Check if any tasks were added across both rakkas
-    const hasTasks = Object.values(record.rakka).some(rakka => 
-      Object.values(rakka.addToTask).some(taskAdded => taskAdded === true)
-    );
-
-    if (hasTasks) {
-      // Show confirmation dialog for navigation
-      Alert.alert(
-        'تم التسجيل',
-        'تم حفظ الصلاة وإضافة المهام. هل تريد الانتقال إلى صفحة المهام؟',
-        [
-          {
-            text: 'العودة للصلوات',
-            style: 'cancel',
-            onPress: () => router.replace('/my-prayers')
-          },
-          {
-            text: 'المهام',
-            onPress: () => {
-              router.replace('/(drawer)/tasks');
-            }
-          }
-        ]
-      );
-    } else {
-      // No tasks added, go to prayers page
-      router.replace('/my-prayers');
-    }
+    // Always navigate to main prayers page after completing
+    router.replace('/(drawer)/my-prayers');
   };
 
   const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
