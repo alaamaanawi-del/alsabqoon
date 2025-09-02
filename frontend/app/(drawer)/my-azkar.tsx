@@ -235,12 +235,11 @@ export default function MyAzkarScreen() {
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
     
-    // FIXED: Correct day of week calculation for RTL calendar
-    // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    // For Arabic RTL calendar: Sunday should be rightmost (index 6), Saturday leftmost (index 0)
-    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
-    // Convert to RTL positioning: Sunday=0 becomes 6, Monday=1 becomes 5, etc.
-    startingDayOfWeek = (7 - startingDayOfWeek) % 7;
+    // FIXED: Correct day of week calculation for RTL Arabic calendar
+    // JavaScript: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+    // Arabic RTL Header: ['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد']
+    // So Saturday(6) should be at index 0, Friday(5) at index 1, etc.
+    const startingDayOfWeek = (6 - firstDay.getDay()) % 7;
     
     const days = [];
     
@@ -352,12 +351,11 @@ export default function MyAzkarScreen() {
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
     
-    // FIXED: Correct day of week calculation for RTL calendar
-    // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-    // For Arabic RTL calendar: Sunday should be rightmost (index 6), Saturday leftmost (index 0)
-    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
-    // Convert to RTL positioning: Sunday=0 becomes 6, Monday=1 becomes 5, etc.
-    startingDayOfWeek = (7 - startingDayOfWeek) % 7;
+    // FIXED: Correct day of week calculation for RTL Arabic calendar
+    // JavaScript: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
+    // Arabic RTL Header: ['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد']
+    // So Saturday(6) should be at index 0, Friday(5) at index 1, etc.
+    const startingDayOfWeek = (6 - firstDay.getDay()) % 7;
     
     const days = [];
     
