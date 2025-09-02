@@ -1052,15 +1052,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-end',
     height: 120,
+    paddingHorizontal: 8,
+    paddingTop: 20, // Add top padding to prevent overflow
   },
   chartBar: {
     alignItems: 'center',
     flex: 1,
+    maxWidth: 40, // Limit bar width to prevent overlap
   },
   bar: {
     width: 20,
     marginBottom: 8,
     borderRadius: 4,
+    maxHeight: 80, // Ensure bars don't exceed container height
+    minHeight: 4, // Minimum height for visibility
   },
   chartCount: {
     fontSize: 10,
