@@ -605,8 +605,6 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
   },
   languageButtonTextSelected: {
-    color: Colors.light,
-  },
   weeklyProgressContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -630,9 +628,52 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.light,
   },
-  charityCount: {
-    fontSize: 12,
-    color: Colors.darkGray,
-    textAlign: 'center',
+    color: Colors.light,
+  weeklyProgressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingVertical: 16,
+  },
+  dayContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  dayCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  dayNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.light,
+  },
+  },
+  weeklyProgressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    paddingVertical: 16,
+  },
+  dayContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  dayCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  dayNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.light,
   },
 });
