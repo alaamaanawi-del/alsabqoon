@@ -138,7 +138,7 @@ export default function MyAzkarScreen() {
     try {
       const weekData: Record<string, number> = {};
       
-      // Load data for the last 7 days
+      // Load data for the last 7 days using real API
       for (let i = 6; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
@@ -146,9 +146,10 @@ export default function MyAzkarScreen() {
         
         try {
           const summary = await getDailyAzkar(dateStr);
-          weekData[dateStr] = summary.total_daily;
+          weekData[dateStr] = summary.total_daily || 0; // Use actual data or 0 if no data
         } catch (error) {
-          weekData[dateStr] = Math.floor(Math.random() * 3500); // Fallback to mock data
+          console.error(`Error loading data for ${dateStr}:`, error);
+          weekData[dateStr] = 0; // Use 0 instead of random mock data
         }
       }
       
