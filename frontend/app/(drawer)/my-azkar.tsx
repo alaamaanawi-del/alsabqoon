@@ -551,7 +551,9 @@ export default function MyAzkarScreen() {
         </View>
       </View>
     );
-  };  return (
+  };
+
+  return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
