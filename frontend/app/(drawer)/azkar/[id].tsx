@@ -19,8 +19,10 @@ import {
   getZikrHistory,
   getZikrStats,
   updateZikrEntry,
+  getAzkarList,
   ZikrEntry,
-  ZikrStats
+  ZikrStats,
+  Zikr
 } from '../../../src/api/client';
 
 const AZKAR_DETAILS = {
@@ -40,7 +42,86 @@ const AZKAR_DETAILS = {
     description: 'كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن',
     benefits: 'ثقيلتان في الميزان يوم القيامة ومحبوبتان عند الله',
   },
-  // Add more details for other azkar...
+  3: {
+    id: 3,
+    nameAr: 'سبحان الله وبحمده + استغفر الله وأتوب إليه',
+    nameEn: 'Subhan Allah wa Bi Hamdih, Astaghfir Allah wa Atubu ilayh',
+    color: '#45B7D1',
+    description: 'الجمع بين التسبيح والاستغفار يجمع خير الدنيا والآخرة',
+    benefits: 'يجمع بين فضل التسبيح وفضل الاستغفار معاً',
+  },
+  4: {
+    id: 4,
+    nameAr: 'لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شئ قدير',
+    nameEn: 'La ilaha illa Allah wahdahu la sharika lahu',
+    color: '#96CEB4',
+    description: 'من قالها في يوم مائة مرة كانت له عدل عشر رقاب، وكتبت له مائة حسنة',
+    benefits: 'تعدل عشر رقاب وتكتب مائة حسنة وتمحو مائة سيئة',
+  },
+  5: {
+    id: 5,
+    nameAr: 'لا حول ولا قوة إلا بالله',
+    nameEn: 'La hawla wala quwwata illa billah',
+    color: '#FFEAA7',
+    description: 'كنز من كنوز الجنة، وهي استعانة بالله وتفويض الأمر إليه',
+    benefits: 'كنز من كنوز الجنة وتعين على الصبر والاحتساب',
+  },
+  6: {
+    id: 6,
+    nameAr: 'سبحان الله',
+    nameEn: 'Subhan Allah',
+    color: '#DDA0DD',
+    description: 'تسبيح الله وتنزيهه عن كل نقص وعيب',
+    benefits: 'تنزه الله تعالى وتقدسه وتثقل في الميزان',
+  },
+  7: {
+    id: 7,
+    nameAr: 'سبحان الله وبحمده سبحان الله العظيم',
+    nameEn: 'Subhan Allah wa Bi Hamdih + Subhan Allah al-Azeem',
+    color: '#98D8C8',
+    description: 'كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن',
+    benefits: 'محبوبتان عند الله وثقيلتان في الميزان',
+  },
+  8: {
+    id: 8,
+    nameAr: 'سبحان الله والحمد لله ولا إله إلا الله والله أكبر',
+    nameEn: 'Subhan Allah wa al-Hamdulillah wa la ilaha illa Allah, wa Allahu Akbar',
+    color: '#F7DC6F',
+    description: 'الباقيات الصالحات، أحب الكلام إلى الله وخير ما تكلم به الناس',
+    benefits: 'أحب الكلام إلى الله وأفضل الذكر',
+  },
+  9: {
+    id: 9,
+    nameAr: 'لا إله إلا أنت سبحانك إني كنت من الظالمين',
+    nameEn: 'La ilaha illa anta subhanak inni kuntu min al-zalimeen',
+    color: '#BB8FCE',
+    description: 'دعوة ذي النون، ما دعا بها مكروب إلا فرج الله كربه',
+    benefits: 'تفرج الكروب وتزيل الهموم بإذن الله',
+  },
+  10: {
+    id: 10,
+    nameAr: 'الصلاة على النبي',
+    nameEn: 'Salat Ala al-Nabi',
+    color: '#85C1E9',
+    description: 'من صلى علي واحدة صلى الله عليه بها عشراً',
+    benefits: 'يصلي الله على من صلى على النبي عشر مرات',
+  },
+  11: {
+    id: 11,
+    nameAr: 'استغفر الله وأتوب إليه',
+    nameEn: 'Astaghfir Allah wa Atubu ilayh',
+    color: '#F8C471',
+    description: 'الاستغفار يمحو الذنوب ويجلب الرزق والفرج',
+    benefits: 'يمحو الذنوب ويجلب البركة والرزق',
+  },
+  12: {
+    id: 12,
+    nameAr: 'آيات قرأتها',
+    nameEn: 'Verses I read of the Quran',
+    color: '#82E0AA',
+    description: 'قراءة القرآن الكريم، بكل حرف حسنة والحسنة بعشر أمثالها',
+    benefits: 'بكل حرف حسنة والحسنة بعشر أمثالها',
+  },
 };
 
 export default function ZikrDetailsScreen() {
