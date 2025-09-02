@@ -307,7 +307,7 @@ export default function RecordPrayer() {
           {
             text: 'العودة للصلوات',
             style: 'cancel',
-            onPress: () => router.replace('/(drawer)/my-prayers/index')
+            onPress: () => router.replace('/my-prayers')
           },
           {
             text: 'المهام',
