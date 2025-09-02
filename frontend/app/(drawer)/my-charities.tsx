@@ -84,7 +84,7 @@ export default function MyCharitiesScreen() {
       // Load data for each day of the month
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatDateForAPI(date);
         try {
           const result = await getDailyCharity(dateStr);
           charityData[dateStr] = result.total_daily;
@@ -226,7 +226,7 @@ export default function MyCharitiesScreen() {
     // Get actual progress data from charity data
     const progressData = Array.from({ length: 7 }, (_, i) => {
       const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = formatDateForAPI(date);
       const count = charityDataByDate[dateStr] || 0;
       return { date, count };
     }).reverse();
@@ -252,7 +252,7 @@ export default function MyCharitiesScreen() {
           {Array.from({ length: 7 }, (_, i) => {
             const date = new Date();
             date.setDate(date.getDate() - (6 - i));
-            const dateStr = date.toISOString().split('T')[0];
+            const dateStr = formatDateForAPI(date);
             const count = charityDataByDate[dateStr] || 0;
             
             return (
