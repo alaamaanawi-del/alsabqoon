@@ -1076,7 +1076,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
-  currentDateContainer: {
+  filterDescriptionContainer: {
     backgroundColor: Colors.light,
     marginHorizontal: 16,
     marginBottom: 16,
