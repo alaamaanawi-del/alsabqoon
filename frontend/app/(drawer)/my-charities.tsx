@@ -240,31 +240,32 @@ export default function MyCharitiesScreen() {
            selectedLanguage === 'en' ? 'Weekly Progress' : 
            'Progreso Semanal'}
         </Text>
-        <View style={styles.progressChart}>
-          {progressData.map((item, index) => (
-            <TouchableOpacity 
-              key={index} 
-              style={styles.progressBar}
-              onPress={() => handleDateClick(item.date)}
-            >
-              <View
-                style={[
-                  styles.progressBarFill,
-                  {
-                    height: Math.max((item.count / 15) * 100, 10),
-                    backgroundColor: getDateColor(item.count),
-                  },
-                ]}
-              />
-              <Text style={styles.progressBarDate}>
-                {item.date.getDate()}
-              </Text>
-              <Text style={styles.progressBarDay}>
-                {weekdays[item.date.getDay()]}
-              </Text>
-              <Text style={styles.progressBarCount}>
-                {item.count}
-              </Text>
+        <View style={styles.weeklyProgressContainer}>
+          {Array.from({ length: 7 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (6 - i));
+            const dateStr = formatDateForAPI(date);
+            const count = charityDataByDate[dateStr] || 0;
+            
+            return (
+              <TouchableOpacity
+                key={i}
+                style={styles.dayContainer}
+                onPress={() => setSelectedDate(date)}
+              >
+                <View
+                  style={[
+                    styles.dayCircle,
+                    { backgroundColor: getDateColor(count) },
+                  ]}
+                >
+                  <Text style={styles.dayNumber}>{date.getDate()}</Text>
+                </View>
+                <Text style={styles.charityCount}>{count}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
             </TouchableOpacity>
           ))}
         </View>
