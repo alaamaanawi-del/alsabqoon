@@ -713,7 +713,7 @@ export default function MyAzkarScreen() {
               <View style={styles.calendarGrid}>
                 {/* Calendar Header - Day Names */}
                 <View style={styles.calendarHeader}>
-                  {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map((day, index) => (
+                  {['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'].map((day, index) => (
                     <Text key={index} style={styles.dayHeader}>{day}</Text>
                   ))}
                 </View>
