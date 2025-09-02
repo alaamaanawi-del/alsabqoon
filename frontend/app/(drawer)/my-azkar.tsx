@@ -624,11 +624,13 @@ export default function MyAzkarScreen() {
           </Text>
         </View>
 
+        {/* Progress Chart Section - Moved to top */}
+        <View style={styles.chartSectionContainer}>
+          {renderProgressChart()}
+        </View>
+
         {/* Azkar List */}
         {renderAzkarList()}
-
-        {/* Progress Chart */}
-        {renderProgressChart()}
       </ScrollView>
 
       {/* Date Picker Modal for Select Filter */}
