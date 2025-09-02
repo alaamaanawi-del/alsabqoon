@@ -1170,4 +1170,12 @@ const styles = StyleSheet.create({
   rangeText: {
     color: Colors.darkGray,
   },
+  // Chart Section Container
+  chartSectionContainer: {
+    backgroundColor: Colors.lightGray,
+    margin: 16,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+  },
 });
