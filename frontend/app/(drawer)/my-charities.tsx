@@ -204,7 +204,6 @@ export default function MyCharitiesScreen() {
       </View>
     </View>
   );
-  };
 
 
   const renderProgressChart = () => {
