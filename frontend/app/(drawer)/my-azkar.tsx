@@ -49,7 +49,11 @@ export default function MyAzkarScreen() {
   const [isHijri, setIsHijri] = useState(false);
   const [azkarList, setAzkarList] = useState<Zikr[]>([]);
   const [dailySummary, setDailySummary] = useState<DailyAzkarSummary | null>(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    // Initialize with current local date to avoid timezone issues
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  });
   const [loading, setLoading] = useState(true);
   const [monthlyData, setMonthlyData] = useState<Record<string, number>>({});
   const [weeklyData, setWeeklyData] = useState<Record<string, number>>({});
