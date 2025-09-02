@@ -1,0 +1,74 @@
+<analysis>
+The AI engineer successfully implemented the My Charities and Zikr Reminder features. The bulk of the trajectory, however, focused on an iterative process of fixing and enhancing the My Prayers and My Azkar pages based on detailed user feedback. This involved repeatedly addressing UI/UX issues like RTL layout, icon displays, and conditional fields, often encountering challenges such as file corruption (, ) and caching problems, necessitating git restorations and  calls. The agent demonstrated a methodical approach to tackling complex UI/UX requirements and persistent debugging. By the end, significant progress was made on My Azkar page fixes, resolving critical layout and display issues, but some chart rendering and calendar functionalities remained partially addressed.
+</analysis>
+
+<product_requirements>
+The ALSABQON app, a prayer tracker and Qur’an tool, initially featured My Charities and Zikr Reminder. Recent work focused on enhancing My Prayers and My Azkar.
+**My Prayers requirements:**
+- **Layout:** One-line, Right-to-Left display: Prayer Logo → Name → Progress Chart → Task Icon (clipboard, gray/colored) → Record Button.
+- **Calendar:** Direct navigation to prayer list on day selection (no ملخص اليوم).
+- **Rakka Comments:** Add comment boxes under each rakka's tasks.
+- **Questions:** Specific Arabic questions, with only Question 4 (هل علمت الايات؟) showing a number field for Yes answers (remove لكم شخص). Remove الأسئلة header.
+- **UI/UX:** Consistent safe area margins on all pages, تم button navigates to prayers page, Arabic prayer names, fixed Dhuhr icon, default to Rakka 1.
+**My Azkar requirements:**
+- **Layout:** Separate area for chart, bottom margins for navigation keys.
+- **Zikr Display:** Correct zikr names and icons on detail page, name in page header.
+- **Functionality:** Back button to Azkar main menu, auto-update zikr counts, correct calendar day numbers and shortened Arabic day names.
+- **UI:** Highlight Today button with date, add أداءك خلال أسبوع/شهر text for filters.
+</product_requirements>
+
+<key_technical_concepts>
+- **Expo & React Native**: Core mobile development.
+- **Expo Router**: File-based routing.
+- **FastAPI & MongoDB**: Backend API and NoSQL database.
+- **RTL Support**: Right-to-Left layout.
+- ****: Persistent local storage.
+- ****: Audio playback.
+- ****: Background reminders.
+- ****: Safe area handling.
+- **Base64 SVG Icons**: UI elements.
+- **Multi-language**: UI localization.
+</key_technical_concepts>
+
+<code_architecture>
+The application uses an Expo/React Native frontend and FastAPI/MongoDB backend.
+
+
+- : **Modified** to add  and  models, along with 5 new API endpoints for charity management and multi-language support for categories.
+- : **Modified** to integrate new routes for 'my-charities' and 'zikr-reminder' into the drawer navigation.
+- : **Modified** to apply calendar RTL fixes, ensure proper bottom margins, separate the chart into its own area, correct Arabic day names, and fix zikr name display. Syntax errors with nested  were resolved.
+- : **Modified** to fix the prayer list RTL layout (logo, name, progress, task icon, record button) and apply safe area margins. Ensured prayer logos were displayed.
+- : **Modified** extensively to add Rakka comment boxes, update questions with specific Arabic text, implement conditional number fields for Question 4 only, and fix task icon logic (gray/colored states). The تم button navigation was corrected, and the page now defaults to Rakka 1.
+- : **New file** for the My Charities feature, implementing calendar, charity list, filters, and progress charts. This file experienced multiple corruptions (styles is not defined, return outside function) requiring restoration.
+- : **New file** for Zikr Reminder with UI for intervals, sounds, volume, activation, sleep/wake. Also affected by file corruption during development.
+- : **Modified** and repeatedly corrupted/restored due to  errors. The home page navigation links were also fixed.
+- : **New audio files** for Zikr Reminder sound options.
+- : **Modified** to include  and  dependencies.
+- : **Modified** to include new API client functions for charity management.
+- : **Modified** to correct RTL day name and date alignment.
+- : **New file** for a custom charity-specific calendar.
+- : **Important** for providing base64 SVG icons for prayer logos.
+- : **Modified** by adding a  field to the  type.
+- : Regularly **updated** with plans and testing results.
+</code_architecture>
+
+<pending_tasks>
+The following tasks for the My Azkar page were not fully completed:
+- **My Azkar Chart Display**: The actual التقدم اليومي chart bars are not visibly rendering within their container.
+- **My Azkar Calendar Numbers**: Fix the calendar to display correct day numbers.
+- **My Azkar Filter Descriptions**: Add أداءك خلال أسبوع or أداءك خلال شهر text for filter buttons.
+- **My Azkar Today Button**: Implement highlighting and date display for the Today button.
+- **My Azkar Back Button**: Ensure back navigation from Zikr detail page returns to the Azkar main menu.
+- **My Azkar Auto Update**: Implement immediate UI update for zikr count on progress bar and calendar.
+</pending_tasks>
+
+<current_work>
+Immediately before this summary request, the AI engineer was addressing multiple issues on the My Azkar page. The current state reflects successful fixes for several critical functionalities and UI elements:
+The My Azkar page now features a correctly laid out chart section, positioned separately to avoid overlapping content. Bottom margins have been properly applied, ensuring that content does not interfere with mobile navigation keys. All Azkar names, including the problematic third Zikr, are displayed accurately in Arabic, resolving previous غير محدد errors. Calendar day names are now shortened (e.g., أحد), and the filter buttons (اليوم, أسبوع, شهر, تحديد) are functional, with the اليوم button correctly highlighted when active. The current date is also displayed in the correct Arabic format.
+
+However, the My Azkar page still has pending items. The التقدم اليومي chart container is visible, but the actual progress bars within it are not rendering. Further debugging is needed to resolve this. Additionally, the correct display of calendar day numbers, the inclusion of range descriptions under filter buttons, and the implementation of the Today button highlight remain to be fully tested or completed. The Zikr detail page's back button behavior and the auto-update of zikr counts on the UI also need to be addressed.
+</current_work>
+
+<optional_next_step>
+The immediate next step is to debug and ensure the التقدم اليومي chart bars are visibly rendered within the chart section on the My Azkar page.
+</optional_next_step>
