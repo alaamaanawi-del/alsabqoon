@@ -244,7 +244,7 @@ export default function MyCharitiesScreen() {
           {Array.from({ length: 7 }, (_, i) => {
             const date = new Date();
             date.setDate(date.getDate() - (6 - i));
-            const dateStr = formatDateForAPI(date);
+            const dateStr = date.toISOString().split('T')[0];
             const count = charityDataByDate[dateStr] || 0;
             
             return (
