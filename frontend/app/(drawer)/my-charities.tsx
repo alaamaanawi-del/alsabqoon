@@ -197,7 +197,7 @@ export default function MyCharitiesScreen() {
               styles.languageButtonText,
               selectedLanguage === lang.key && styles.languageButtonTextSelected
             ]}>
-              {lang.label}
+              {lang.labelAr}
             </Text>
           </TouchableOpacity>
         ))}
