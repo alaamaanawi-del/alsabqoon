@@ -504,8 +504,8 @@ export default function MyAzkarScreen() {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       
-      // Get day name in Arabic
-      const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      // Get day name in Arabic (without ال prefix)
+      const dayNames = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
       const dayName = dayNames[date.getDay()];
       
       // Format date
