@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     flex: 1,
+    minWidth: 80,
     paddingHorizontal: 8,
   },
   prayerNameContainer: {
