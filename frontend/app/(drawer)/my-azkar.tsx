@@ -232,7 +232,13 @@ export default function MyAzkarScreen() {
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    // FIXED: Correct day of week calculation for RTL calendar
+    // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    // For Arabic RTL calendar: Sunday should be rightmost (index 6), Saturday leftmost (index 0)
+    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    // Convert to RTL positioning: Sunday=0 becomes 6, Monday=1 becomes 5, etc.
+    startingDayOfWeek = (7 - startingDayOfWeek) % 7;
     
     const days = [];
     
@@ -343,7 +349,13 @@ export default function MyAzkarScreen() {
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    // FIXED: Correct day of week calculation for RTL calendar
+    // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+    // For Arabic RTL calendar: Sunday should be rightmost (index 6), Saturday leftmost (index 0)
+    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    // Convert to RTL positioning: Sunday=0 becomes 6, Monday=1 becomes 5, etc.
+    startingDayOfWeek = (7 - startingDayOfWeek) % 7;
     
     const days = [];
     
