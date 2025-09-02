@@ -200,8 +200,9 @@ export default function MyAzkarScreen() {
   };
 
   const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-    // Don't show calendar, just update the azkar list for the selected date
+    // Create a new date with local date components to avoid timezone issues
+    const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    setSelectedDate(localDate);
     // The azkar list will automatically update because of the useEffect dependency on selectedDate
   };
 
