@@ -133,23 +133,54 @@ export default function ZikrDetailsScreen() {
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<string | null>(null);
   const [editCount, setEditCount] = useState<string>('');
+  const [azkarFromAPI, setAzkarFromAPI] = useState<Zikr[]>([]);
 
   useEffect(() => {
+    loadAzkarFromAPI();
     loadZikrDetails();
     loadZikrHistory();
     loadZikrStats();
   }, [id]);
 
-  const loadZikrDetails = () => {
+  const loadAzkarFromAPI = async () => {
+    try {
+      const response = await getAzkarList();
+      setAzkarFromAPI(response.azkar || []);
+    } catch (error) {
+      console.error('Error loading azkar from API:', error);
+      setAzkarFromAPI([]);
+    }
+  };
+
+  const loadZikrDetails = async () => {
     const zikrId = parseInt(id as string);
-    const details = AZKAR_DETAILS[zikrId] || {
+    
+    // Try to get from API first
+    let apiZikr = null;
+    if (azkarFromAPI.length > 0) {
+      apiZikr = azkarFromAPI.find(z => z.id === zikrId);
+    } else {
+      try {
+        const response = await getAzkarList();
+        apiZikr = response.azkar?.find(z => z.id === zikrId);
+      } catch (error) {
+        console.error('Error loading azkar from API:', error);
+      }
+    }
+    
+    // Get local details
+    const localDetails = AZKAR_DETAILS[zikrId];
+    
+    // Merge API data with local details, prioritizing API for names and colors
+    const details = {
       id: zikrId,
-      nameAr: 'ذكر غير محدد',
-      nameEn: 'Unknown Zikr',
-      color: '#666666',
-      description: 'لا توجد تفاصيل متاحة حالياً',
-      benefits: 'سيتم إضافة الفوائد لاحقاً',
+      nameAr: apiZikr?.nameAr || localDetails?.nameAr || 'ذكر غير محدد',
+      nameEn: apiZikr?.nameEn || localDetails?.nameEn || 'Unknown Zikr',
+      color: apiZikr?.color || localDetails?.color || '#666666',
+      description: localDetails?.description || 'لا توجد تفاصيل متاحة حالياً',
+      benefits: localDetails?.benefits || 'سيتم إضافة الفوائد لاحقاً',
     };
+    
     setZikrDetails(details);
   };
 
