@@ -614,16 +614,33 @@ export default function MyAzkarScreen() {
         {/* Filter Buttons */}
         {renderFilterButtons()}
 
-        {/* Current Date Display */}
-        <View style={styles.currentDateContainer}>
-          <Text style={styles.currentDateText}>
-            {selectedDate.toLocaleDateString('ar', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </Text>
+        {/* Filter Description Display */}
+        <View style={styles.filterDescriptionContainer}>
+          {selectedFilter === 'today' && (
+            <Text style={styles.filterDescriptionText}>
+              {selectedDate.toLocaleDateString('ar', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </Text>
+          )}
+          {selectedFilter === 'week' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال أسبوع
+            </Text>
+          )}
+          {selectedFilter === 'month' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال شهر
+            </Text>
+          )}
+          {selectedFilter === 'custom' && customStartDate && customEndDate && (
+            <Text style={styles.filterDescriptionText}>
+              من {customStartDate.toLocaleDateString('ar')} إلى {customEndDate.toLocaleDateString('ar')}
+            </Text>
+          )}
         </View>
 
         {/* Progress Chart Section - Moved to top */}
