@@ -545,7 +545,7 @@ export default function MyAzkarScreen() {
                 style={[
                   styles.bar,
                   {
-                    height: Math.max(20, (data.count / 4000) * 100),
+                    height: Math.min(80, Math.max(4, (data.count / 4000) * 80)), // Ensure height stays within bounds
                     backgroundColor: getDailyColorCode(data.count),
                   },
                 ]}
