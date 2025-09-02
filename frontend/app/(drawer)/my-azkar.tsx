@@ -600,6 +600,11 @@ export default function MyAzkarScreen() {
 
       <ScrollView 
         style={styles.scrollContainer} 
+        contentContainerStyle={{
+          paddingLeft: Math.max(16, insets.left),
+          paddingRight: Math.max(16, insets.right),
+          paddingBottom: Math.max(50, insets.bottom + 30) // Extra space for navigation keys
+        }}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
         keyboardShouldPersistTaps="handled"
