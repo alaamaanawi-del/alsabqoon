@@ -247,9 +247,15 @@ export default function MyAzkarScreen() {
     
     // FIXED: Correct day of week calculation for RTL Arabic calendar
     // JavaScript: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
-    // Arabic RTL Header: ['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد']
-    // So Saturday(6) should be at index 0, Friday(5) at index 1, etc.
-    const startingDayOfWeek = (6 - firstDay.getDay()) % 7;
+    // Arabic RTL Header: ['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة']
+    // Header Index:        0      1       2         3          4          5        6
+    // So: Saturday(6)→0, Sunday(0)→1, Monday(1)→2, Tuesday(2)→3, Wednesday(3)→4, Thursday(4)→5, Friday(5)→6
+    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    if (startingDayOfWeek === 6) { // Saturday
+      startingDayOfWeek = 0;
+    } else { // Sunday(0) to Friday(5) become 1 to 6
+      startingDayOfWeek = startingDayOfWeek + 1;
+    }
     
     const days = [];
     
@@ -363,9 +369,15 @@ export default function MyAzkarScreen() {
     
     // FIXED: Correct day of week calculation for RTL Arabic calendar
     // JavaScript: 0=Sunday, 1=Monday, 2=Tuesday, 3=Wednesday, 4=Thursday, 5=Friday, 6=Saturday
-    // Arabic RTL Header: ['سبت', 'جمعة', 'خميس', 'أربعاء', 'ثلاثاء', 'اثنين', 'أحد']
-    // So Saturday(6) should be at index 0, Friday(5) at index 1, etc.
-    const startingDayOfWeek = (6 - firstDay.getDay()) % 7;
+    // Arabic RTL Header: ['سبت', 'أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة']
+    // Header Index:        0      1       2         3          4          5        6
+    // So: Saturday(6)→0, Sunday(0)→1, Monday(1)→2, Tuesday(2)→3, Wednesday(3)→4, Thursday(4)→5, Friday(5)→6
+    let startingDayOfWeek = firstDay.getDay(); // 0 = Sunday, 6 = Saturday
+    if (startingDayOfWeek === 6) { // Saturday
+      startingDayOfWeek = 0;
+    } else { // Sunday(0) to Friday(5) become 1 to 6
+      startingDayOfWeek = startingDayOfWeek + 1;
+    }
     
     const days = [];
     
