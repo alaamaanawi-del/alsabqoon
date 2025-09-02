@@ -142,11 +142,12 @@ export default function MyAzkarScreen() {
   const loadWeeklyData = async () => {
     try {
       const weekData: Record<string, number> = {};
+      const today = new Date();
       
       // Load data for the last 7 days using real API
       for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
+        // Create date with local components to avoid timezone issues
+        const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
         const dateStr = formatDateForAPI(date);
         
         try {
