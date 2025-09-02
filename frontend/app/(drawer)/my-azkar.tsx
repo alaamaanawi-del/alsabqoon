@@ -177,7 +177,7 @@ export default function MyAzkarScreen() {
     }
   };
 
-const formatDateForAPI = (date: Date): string => {
+  const formatDateForAPI = (date: Date): string => {
     // Use local date components to avoid timezone issues
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
