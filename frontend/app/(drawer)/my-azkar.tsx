@@ -272,7 +272,7 @@ export default function MyAzkarScreen() {
       const isToday = dayDate.toDateString() === today.toDateString();
       const isSelected = dayDate.toDateString() === selectedDate.toDateString();
       
-      // Get zikr count for this day from monthlyData
+      // Get zikr count for this day from monthlyData - FIXED: Use correct date format
       const dateStr = formatDateForAPI(dayDate);
       const dayZikrCount = monthlyData[dateStr] || 0;
       
