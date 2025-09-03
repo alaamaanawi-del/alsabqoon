@@ -129,7 +129,7 @@ export default function MyCharitiesScreen() {
             styles.filterButtonText,
             selectedFilter === button.key && styles.filterButtonTextSelected
           ]}>
-            {selectedLanguage === 'ar' ? button.labelAr : selectedLanguage === 'en' ? button.labelEn : button.labelEs}
+            {button.labelAr}
           </Text>
         </TouchableOpacity>
       ))}
@@ -141,21 +141,6 @@ export default function MyCharitiesScreen() {
     const count = dailyData?.count || 0;
     const percentage = dailyData?.percentage || 0;
 
-    // Get charity name based on selected language
-    const getCharityName = (charity: Charity) => {
-      switch (selectedLanguage) {
-        case 'ar': return charity.nameAr;
-        case 'en': return charity.nameEn;
-        case 'es': return charity.nameEs;
-        default: return charity.nameAr;
-      }
-    };
-
-    const getSecondaryName = (charity: Charity) => {
-      if (selectedLanguage === 'ar') return charity.nameEn;
-      return charity.nameAr;
-    };
-
     return (
       <TouchableOpacity
         key={charity.id}
@@ -164,14 +149,9 @@ export default function MyCharitiesScreen() {
       >
         <View style={[styles.charityCircle, { backgroundColor: charity.color }]} />
         <View style={styles.charityContent}>
-          <Text style={styles.charityNamePrimary}>{getCharityName(charity)}</Text>
-          <Text style={styles.charityNameSecondary}>{getSecondaryName(charity)}</Text>
+          <Text style={styles.charityNamePrimary}>{charity.nameAr}</Text>
           <View style={styles.charityStats}>
-            <Text style={styles.charityCount}>
-              {selectedLanguage === 'ar' ? `العدد: ${count}` : 
-               selectedLanguage === 'en' ? `Count: ${count}` : 
-               `Cantidad: ${count}`}
-            </Text>
+            <Text style={styles.charityCount}>العدد: {count}</Text>
             <Text style={styles.charityPercentage}>{percentage.toFixed(1)}%</Text>
           </View>
         </View>
