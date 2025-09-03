@@ -122,7 +122,13 @@ export default function MyCharitiesScreen() {
             styles.filterButton,
             selectedFilter === button.key && styles.filterButtonSelected
           ]}
-          onPress={() => setSelectedFilter(button.key)}
+          onPress={() => {
+            setSelectedFilter(button.key);
+            // Show calendar when "Select" button is pressed
+            if (button.key === 'select') {
+              setShowCalendar(true);
+            }
+          }}
         >
           <Text style={[
             styles.filterButtonText,
