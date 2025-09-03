@@ -320,31 +320,11 @@ export default function MyCharitiesScreen() {
           )}
         </View>
 
-        {/* Date Display */}
-        <View style={styles.dateContainer}>
-          <Text style={styles.dateText}>
-            {selectedDate.toLocaleDateString('ar-SA', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </Text>
-        </View>
-
-        {/* Total Daily Count */}
-        {dailySummary && (
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalText}>
-              {selectedLanguage === 'ar' ? `إجمالي الصدقات اليوم: ${dailySummary.total_daily}` :
-               selectedLanguage === 'en' ? `Total charities today: ${dailySummary.total_daily}` :
-               `Total de caridades hoy: ${dailySummary.total_daily}`}
-            </Text>
-          </View>
-        )}
-
-        {/* Charities List */}
+        {/* Charity List */}
         <View style={styles.charitiesContainer}>
+          <Text style={styles.totalDailyText}>
+            إجمالي الصدقات اليوم: {dailySummary?.total_daily || 0}
+          </Text>
           {charitiesList.map(renderCharityItem)}
         </View>
 
@@ -352,8 +332,7 @@ export default function MyCharitiesScreen() {
         {renderProgressChart()}
       </ScrollView>
     </SafeAreaView>
-  );
-}
+  );}
 
 const styles = StyleSheet.create({
   container: {
