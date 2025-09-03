@@ -36,6 +36,9 @@ export default function MyCharitiesScreen() {
   const [dailySummary, setDailySummary] = useState<DailyCharitySummary | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [charityDataByDate, setCharityDataByDate] = useState<Record<string, number>>({});
+  const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
+  const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
+  const [isSelectingStartDate, setIsSelectingStartDate] = useState(true);
 
   // Format date for API calls (consistent with backend expectations)
   const formatDateForAPI = (date: Date): string => {
