@@ -290,8 +290,6 @@ export default function MyCharitiesScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Language Selector */}
-        {renderLanguageSelector()}
 
         {/* Calendar */}
         {showCalendar && (
@@ -311,6 +309,36 @@ export default function MyCharitiesScreen() {
         </View>
 
         {renderFilterButtons()}
+
+        {/* Filter Description Display */}
+        <View style={styles.filterDescriptionContainer}>
+          {selectedFilter === 'today' && (
+            <Text style={styles.filterDescriptionText}>
+              {new Date().toLocaleDateString('ar', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                timeZone: 'Asia/Riyadh'
+              })}
+            </Text>
+          )}
+          {selectedFilter === 'week' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال أسبوع
+            </Text>
+          )}
+          {selectedFilter === 'month' && (
+            <Text style={styles.filterDescriptionText}>
+              أدائك خلال شهر
+            </Text>
+          )}
+          {selectedFilter === 'select' && (
+            <Text style={styles.filterDescriptionText}>
+              النطاق المحدد
+            </Text>
+          )}
+        </View>
 
         {/* Date Display */}
         <View style={styles.dateContainer}>
