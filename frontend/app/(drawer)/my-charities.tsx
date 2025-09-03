@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.light,
   },
-  charityCount: {
+  dayCharityCount: {
     fontSize: 12,
     color: Colors.darkGray,
     textAlign: 'center',
