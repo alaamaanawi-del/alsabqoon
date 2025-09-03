@@ -232,7 +232,7 @@ export default function MyCharitiesScreen() {
                 >
                   <Text style={styles.dayNumber}>{date.getDate()}</Text>
                 </View>
-                <Text style={styles.charityCount}>{count}</Text>
+                <Text style={styles.dayCharityCount}>{count}</Text>
               </TouchableOpacity>
             );
           })}
