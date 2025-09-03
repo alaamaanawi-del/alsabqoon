@@ -389,6 +389,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
+  headerLeft: {
+    flex: 1,
+  },
+  headerRight: {
+    flex: 1,
+    alignItems: "flex-end",
+  },
+  filterDescriptionContainer: {
+    backgroundColor: Colors.light,
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  filterDescriptionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.darkText,
+    textAlign: 'center',
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
