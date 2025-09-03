@@ -87,7 +87,9 @@ export default function MyCharitiesScreen() {
 
   const loadDailyData = async () => {
     try {
-      const dateStr = selectedDate.toISOString().split('T')[0];
+      // Use formatDateForAPI to ensure consistent date formatting
+      const dateStr = formatDateForAPI(selectedDate);
+      console.log('Loading charity data for date:', dateStr, 'selectedDate:', selectedDate);
       const result = await getDailyCharity(dateStr);
       setDailySummary(result);
     } catch (error) {
