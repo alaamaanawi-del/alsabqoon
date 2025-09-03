@@ -234,12 +234,6 @@ export default function MyCharitiesScreen() {
           />
         )}
 
-        {/* Selected date label (Hijri + Gregorian) */}
-        <View style={styles.dateLabelBox}>
-          <Text style={styles.hijriTxt}>{hijriFullString(selectedDate)}</Text>
-          <Text style={styles.gregTxt}>{gregFullString(selectedDate)}</Text>
-        </View>
-
         {renderFilterButtons()}
 
         {/* Filter Description Display */}
