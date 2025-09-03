@@ -138,7 +138,7 @@ export default function MyCharitiesScreen() {
   const onSelectDateFromMonth = (date: Date) => {
     // Create a local date to avoid timezone shifts
     const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    console.log('Calendar date selected:', date, 'converted to local:', localDate);
+    console.log('Month calendar date selected:', date, 'converted to local:', localDate);
     setSelectedDate(localDate);
     setShowCalendar(false);
   };
