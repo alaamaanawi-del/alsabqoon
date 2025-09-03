@@ -45,6 +45,30 @@ export default function MyCharitiesScreen() {
     return `${year}-${month}-${day}`;
   };
 
+  // Get week date range for display
+  const getWeekDateRange = (): string => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - 6); // Last 7 days including today
+    
+    const startDateStr = startOfWeek.toLocaleDateString('ar');
+    const endDateStr = today.toLocaleDateString('ar');
+    
+    return `من ${startDateStr} إلى ${endDateStr}`;
+  };
+
+  // Get month date range for display
+  const getMonthDateRange = (): string => {
+    const today = new Date();
+    const startOfMonth = new Date(today);
+    startOfMonth.setDate(today.getDate() - 29); // Last 30 days including today
+    
+    const startDateStr = startOfMonth.toLocaleDateString('ar');
+    const endDateStr = today.toLocaleDateString('ar');
+    
+    return `من ${startDateStr} إلى ${endDateStr}`;
+  };
+
   // Load charities and daily data
   useEffect(() => {
     loadCharities();
