@@ -202,31 +202,10 @@ export default function MyCharitiesScreen() {
       return '#32CD32'; // Green for 11+
     };
 
-    // Get actual progress data from charity data
-    const progressData = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-      const dateStr = formatDateForAPI(date);
-      const count = charityDataByDate[dateStr] || 0;
-      return { date, count };
-    }).reverse();
-
-    // Handle date click to navigate to specific day
-    const handleDateClick = (date: Date) => {
-      setSelectedDate(date);
-      // Scroll to top to show the selected date
-      // You can add smooth scrolling here if needed
-    };
-
-    // Arabic day names (corrected order for proper RTL calendar flow)
-    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-
     return (
       <View style={styles.progressContainer}>
-        <Text style={styles.progressTitle}>
-          {selectedLanguage === 'ar' ? 'التقدم الأسبوعي' : 
-           selectedLanguage === 'en' ? 'Weekly Progress' : 
-           'Progreso Semanal'}
-        </Text>
+        <Text style={styles.progressTitle}>التقدم الأسبوعي</Text>
+        
         <View style={styles.weeklyProgressContainer}>
           {Array.from({ length: 7 }, (_, i) => {
             const date = new Date();
@@ -252,7 +231,7 @@ export default function MyCharitiesScreen() {
               </TouchableOpacity>
             );
           })}
-      </View>
+        </View>
       </View>
     );
   };
