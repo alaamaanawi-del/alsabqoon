@@ -164,37 +164,6 @@ export default function MyCharitiesScreen() {
     );
   };
 
-  const renderLanguageSelector = () => (
-    <View style={styles.languageContainer}>
-      <Text style={styles.languageTitle}>
-        {selectedLanguage === 'ar' ? 'اللغة:' : 
-         selectedLanguage === 'en' ? 'Language:' : 
-         'Idioma:'}
-      </Text>
-      <View style={styles.languageButtons}>
-        {[
-          { key: 'ar', label: 'العربية' },
-          { key: 'en', label: 'English' },
-          { key: 'es', label: 'Español' }
-        ].map((lang) => (
-          <TouchableOpacity
-            key={lang.key}
-            style={[
-              styles.languageButton,
-              selectedLanguage === lang.key && styles.languageButtonSelected
-            ]}
-            onPress={() => setSelectedLanguage(lang.key as 'ar' | 'en' | 'es')}
-          >
-            <Text style={[
-              styles.languageButtonText,
-              selectedLanguage === lang.key && styles.languageButtonTextSelected
-            ]}>
-              {lang.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
   );
 
 
