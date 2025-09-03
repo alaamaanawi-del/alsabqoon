@@ -142,8 +142,27 @@ export default function MyCharitiesScreen() {
     // Create a local date to avoid timezone shifts
     const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     console.log('Month calendar date selected:', date, 'converted to local:', localDate);
-    setSelectedDate(localDate);
-    setShowCalendar(false);
+    
+    if (selectedFilter === 'select') {
+      // Handle date range selection for "اختر" button
+      if (isSelectingStartDate) {
+        setCustomStartDate(localDate);
+        setIsSelectingStartDate(false);
+        console.log('Start date selected:', localDate);
+      } else {
+        setCustomEndDate(localDate);
+        setIsSelectingStartDate(true);
+        setShowCalendar(false);
+        console.log('End date selected:', localDate);
+        // Load data for the selected date range
+        // For now, just use the end date as selected date
+        setSelectedDate(localDate);
+      }
+    } else {
+      // Normal single date selection for other filters
+      setSelectedDate(localDate);
+      setShowCalendar(false);
+    }
   };
 
 
