@@ -164,9 +164,6 @@ export default function MyCharitiesScreen() {
     );
   };
 
-  );
-
-
   const renderProgressChart = () => {
     // Get color based on charity count
     const getDateColor = (count: number) => {
