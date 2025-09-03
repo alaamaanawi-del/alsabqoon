@@ -477,6 +477,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.deepGreen,
   },
+  totalDailyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   charitiesContainer: {
     marginBottom: 16,
   },
