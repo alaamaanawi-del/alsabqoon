@@ -270,17 +270,6 @@ export default function MyCharitiesScreen() {
 
         {/* Filter Description Display */}
         <View style={styles.filterDescriptionContainer}>
-          {selectedFilter === 'today' && (
-            <Text style={styles.filterDescriptionText}>
-              {new Date().toLocaleDateString('ar', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                timeZone: 'Asia/Riyadh'
-              })}
-            </Text>
-          )}
           {selectedFilter === 'week' && (
             <Text style={styles.filterDescriptionText}>
               أدائك خلال أسبوع
