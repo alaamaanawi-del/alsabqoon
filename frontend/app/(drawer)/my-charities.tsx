@@ -235,19 +235,30 @@ export default function MyCharitiesScreen() {
 
         {/* Filter Description Display */}
         <View style={styles.filterDescriptionContainer}>
+          {selectedFilter === 'today' && (
+            <Text style={styles.filterDescriptionText}>
+              {new Date().toLocaleDateString('ar', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                timeZone: 'Asia/Riyadh'
+              })}
+            </Text>
+          )}
           {selectedFilter === 'week' && (
             <Text style={styles.filterDescriptionText}>
-              أدائك خلال أسبوع
+              أدائك خلال أسبوع - {getWeekDateRange()}
             </Text>
           )}
           {selectedFilter === 'month' && (
             <Text style={styles.filterDescriptionText}>
-              أدائك خلال شهر
+              أدائك خلال شهر - {getMonthDateRange()}
             </Text>
           )}
           {selectedFilter === 'select' && (
             <Text style={styles.filterDescriptionText}>
-              النطاق المحدد
+              النطاق المحدد - {selectedDate.toLocaleDateString('ar')}
             </Text>
           )}
         </View>
