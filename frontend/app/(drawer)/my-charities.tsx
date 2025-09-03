@@ -311,13 +311,13 @@ const styles = StyleSheet.create({
   filterDescriptionText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: Colors.dark,
     textAlign: 'center',
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    color: Colors.darkText,
+    color: Colors.dark,
   },
   calBtn: {
     backgroundColor: Colors.deepGreen,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   hijriTxt: {
     fontSize: 16,
     fontWeight: "bold",
-    color: Colors.darkText,
+    color: Colors.dark,
     marginBottom: 4,
   },
   gregTxt: {
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: Colors.dark,
   },
   totalContainer: {
     backgroundColor: Colors.light,
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   charityNamePrimary: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: Colors.dark,
     marginBottom: 4,
   },
   charityNameSecondary: {
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   progressTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: Colors.dark,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   languageTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: Colors.dark,
     marginBottom: 12,
     textAlign: 'center',
   },
