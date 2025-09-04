@@ -341,13 +341,31 @@ export default function MyCharitiesScreen() {
 
         {/* Calendar */}
         {showCalendar && (
-          <CharityMonthCalendar 
-            monthDate={monthDate} 
-            selectedDate={selectedDate} 
-            onChangeMonth={setMonthDate} 
-            onSelectDate={onSelectDateFromMonth} 
-            charityDataByDate={charityDataByDate}
-          />
+          <View style={styles.calendarContainer}>
+            <View style={styles.monthHeader}>
+              <TouchableOpacity onPress={() => {
+                const prevMonth = new Date(monthDate);
+                prevMonth.setMonth(monthDate.getMonth() - 1);
+                setMonthDate(prevMonth);
+              }}>
+                <Text style={styles.navButton}>‹</Text>
+              </TouchableOpacity>
+              
+              <Text style={styles.monthTitle}>
+                {monthDate.toLocaleDateString('ar', { month: 'long', year: 'numeric' })}
+              </Text>
+              
+              <TouchableOpacity onPress={() => {
+                const nextMonth = new Date(monthDate);
+                nextMonth.setMonth(monthDate.getMonth() + 1);
+                setMonthDate(nextMonth);
+              }}>
+                <Text style={styles.navButton}>›</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {renderSimpleCalendar()}
+          </View>
         )}
 
         {renderFilterButtons()}
