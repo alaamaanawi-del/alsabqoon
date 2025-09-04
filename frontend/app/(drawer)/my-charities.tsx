@@ -107,6 +107,62 @@ export default function MyCharitiesScreen() {
     }
   };
 
+  // Load data for custom date range
+  const loadDateRangeData = async () => {
+    try {
+      if (!customStartDate || !customEndDate) return;
+      
+      console.log('Loading date range data from:', customStartDate, 'to:', customEndDate);
+      
+      // For now, we'll aggregate data from the date range
+      // Since the API only supports single date queries, we'll need to query each day
+      let totalCount = 0;
+      const charitySummary: Record<string, { count: number; percentage: number }> = {};
+      
+      const daysDiff = Math.ceil((customEndDate.getTime() - customStartDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      for (let i = 0; i <= daysDiff; i++) {
+        const currentDate = new Date(customStartDate);
+        currentDate.setDate(customStartDate.getDate() + i);
+        const dateStr = formatDateForAPI(currentDate);
+        
+        try {
+          const dayResult = await getDailyCharity(dateStr);
+          totalCount += dayResult.total_daily || 0;
+          
+          // Aggregate charity counts
+          Object.entries(dayResult.charity_summary || {}).forEach(([charityId, data]) => {
+            if (!charitySummary[charityId]) {
+              charitySummary[charityId] = { count: 0, percentage: 0 };
+            }
+            charitySummary[charityId].count += data.count || 0;
+          });
+        } catch (error) {
+          console.log(`No data for ${dateStr}`);
+        }
+      }
+      
+      // Calculate percentages
+      Object.keys(charitySummary).forEach(charityId => {
+        if (totalCount > 0) {
+          charitySummary[charityId].percentage = (charitySummary[charityId].count / totalCount) * 100;
+        }
+      });
+      
+      // Set the aggregated summary
+      setDailySummary({
+        date: formatDateForAPI(customEndDate),
+        total_daily: totalCount,
+        charity_summary: charitySummary,
+        entries: [] // We don't need entries for summary view
+      });
+      
+      console.log('Date range data loaded:', { totalCount, charitySummary });
+    } catch (error) {
+      console.error('Error loading date range data:', error);
+    }
+  };
+
   // Load charity data for all days in current month (for calendar colors)
   const loadCharityDataForCalendar = async () => {
     try {
