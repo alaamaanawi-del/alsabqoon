@@ -231,6 +231,97 @@ export default function MyCharitiesScreen() {
   };
 
 
+  const renderSimpleCalendar = () => {
+    const year = monthDate.getFullYear();
+    const month = monthDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    const days = [];
+    const today = new Date();
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(day);
+    }
+    
+    const getDateColor = (day: number) => {
+      const date = new Date(year, month, day);
+      const dateStr = formatDateForAPI(date);
+      const count = charityDataByDate[dateStr] || 0;
+      
+      if (count === 0) return Colors.lightGray;
+      if (count >= 1 && count <= 3) return '#FF6B6B'; // Red
+      if (count >= 4 && count <= 10) return '#FFA500'; // Orange  
+      return '#32CD32'; // Green for 11+
+    };
+    
+    const isToday = (day: number) => {
+      const date = new Date(year, month, day);
+      return date.toDateString() === today.toDateString();
+    };
+    
+    const isSelected = (day: number) => {
+      const date = new Date(year, month, day);
+      return date.toDateString() === selectedDate.toDateString();
+    };
+    
+    return (
+      <View style={styles.calendarGrid}>
+        {/* Day headers */}
+        <View style={styles.dayHeadersRow}>
+          {['أح', 'إث', 'ث', 'أر', 'خ', 'ج', 'س'].map((dayName, index) => (
+            <Text key={index} style={styles.dayHeader}>{dayName}</Text>
+          ))}
+        </View>
+        
+        {/* Calendar days */}
+        <View style={styles.calendarDaysContainer}>
+          {Array.from({ length: Math.ceil(days.length / 7) }, (_, weekIndex) => (
+            <View key={weekIndex} style={styles.weekRow}>
+              {days.slice(weekIndex * 7, (weekIndex + 1) * 7).map((day, dayIndex) => {
+                if (day === null) {
+                  return <View key={dayIndex} style={styles.emptyDay} />;
+                }
+                
+                return (
+                  <TouchableOpacity
+                    key={dayIndex}
+                    style={[
+                      styles.calendarDay,
+                      { backgroundColor: getDateColor(day) },
+                      isSelected(day) && styles.selectedDay,
+                      isToday(day) && styles.todayDay,
+                    ]}
+                    onPress={() => {
+                      const date = new Date(year, month, day);
+                      onSelectDateFromMonth(date);
+                    }}
+                  >
+                    <Text style={[
+                      styles.calendarDayText,
+                      isSelected(day) && styles.selectedDayText,
+                      isToday(day) && styles.todayDayText,
+                    ]}>
+                      {day}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   const renderFilterButtons = () => (
     <View style={styles.filterContainer}>
       {FILTER_BUTTONS.map((button) => (
