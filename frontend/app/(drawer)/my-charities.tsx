@@ -134,7 +134,7 @@ export default function MyCharitiesScreen() {
           Object.entries(dayResult.charity_summary || {}).forEach(([charityIdStr, data]) => {
             const charityId = parseInt(charityIdStr, 10);
             if (!charitySummary[charityId]) {
-              charitySummary[charityId] = { count: 0, percentage: 0 };
+              charitySummary[charityId] = { count: 0, sessions: 0, percentage: 0 };
             }
             charitySummary[charityId].count += data.count || 0;
           });
