@@ -137,6 +137,7 @@ export default function MyCharitiesScreen() {
               charitySummary[charityId] = { count: 0, sessions: 0, percentage: 0 };
             }
             charitySummary[charityId].count += data.count || 0;
+            charitySummary[charityId].sessions += data.sessions || 0;
           });
         } catch (error) {
           console.log(`No data for ${dateStr}`);
