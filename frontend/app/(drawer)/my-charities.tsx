@@ -828,4 +828,84 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
     textAlign: 'center',
   },
+  monthHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  navButton: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.deepGreen,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  monthTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.dark,
+    textAlign: 'center',
+  },
+  calendarGrid: {
+    backgroundColor: Colors.light,
+  },
+  dayHeadersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
+  },
+  dayHeader: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+    textAlign: 'center',
+    flex: 1,
+  },
+  calendarDaysContainer: {
+    backgroundColor: Colors.light,
+  },
+  weekRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 4,
+  },
+  emptyDay: {
+    flex: 1,
+    height: 40,
+  },
+  calendarDay: {
+    flex: 1,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 2,
+    borderRadius: 8,
+  },
+  selectedDay: {
+    borderWidth: 2,
+    borderColor: Colors.deepGreen,
+  },
+  todayDay: {
+    borderWidth: 2,
+    borderColor: Colors.primary,
+  },
+  calendarDayText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.light,
+    textAlign: 'center',
+  },
+  selectedDayText: {
+    color: Colors.deepGreen,
+    fontWeight: 'bold',
+  },
+  todayDayText: {
+    color: Colors.primary,
+    fontWeight: 'bold',
+  },
 });
