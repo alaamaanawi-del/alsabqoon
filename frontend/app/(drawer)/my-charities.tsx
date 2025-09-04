@@ -117,7 +117,7 @@ export default function MyCharitiesScreen() {
       // For now, we'll aggregate data from the date range
       // Since the API only supports single date queries, we'll need to query each day
       let totalCount = 0;
-      const charitySummary: Record<string, { count: number; percentage: number }> = {};
+      const charitySummary: Record<number, { count: number; sessions: number; percentage: number }> = {};
       
       const daysDiff = Math.ceil((customEndDate.getTime() - customStartDate.getTime()) / (1000 * 60 * 60 * 24));
       
