@@ -1,6 +1,0 @@
-  // Load charities and daily data
-  useEffect(() => {
-    loadCharities();
-    loadDailyData();
-    loadCharityDataForCalendar();
-  }, [selectedDate, monthDate]);
