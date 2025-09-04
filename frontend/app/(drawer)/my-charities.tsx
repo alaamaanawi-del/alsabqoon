@@ -131,7 +131,7 @@ export default function MyCharitiesScreen() {
           totalCount += dayResult.total_daily || 0;
           
           // Aggregate charity counts
-          Object.entries(dayResult.charity_summary || {}).forEach(([charityId, data]) => {
+          Object.entries(dayResult.charity_summary || {}).forEach(([charityIdStr, data]) => {
             if (!charitySummary[charityId]) {
               charitySummary[charityId] = { count: 0, percentage: 0 };
             }
