@@ -77,7 +77,14 @@ export default function MyCharitiesScreen() {
     loadCharities();
     loadDailyData();
     loadCharityDataForCalendar();
-  }, [selectedDate, monthDate]);
+  }, [selectedDate, monthDate, selectedFilter]);
+
+  // Additional effect to reload data when custom date range changes
+  useEffect(() => {
+    if (selectedFilter === 'select' && customStartDate && customEndDate) {
+      loadDateRangeData();
+    }
+  }, [customStartDate, customEndDate]);
 
   const loadCharities = async () => {
     try {
