@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
   },
   todayDay: {
     borderWidth: 2,
-    borderColor: Colors.primary,
+    borderColor: Colors.deepGreen,
   },
   calendarDayText: {
     fontSize: 14,
@@ -905,7 +905,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   todayDayText: {
-    color: Colors.primary,
+    color: Colors.deepGreen,
     fontWeight: 'bold',
   },
 });
