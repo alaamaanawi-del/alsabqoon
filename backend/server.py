@@ -454,9 +454,8 @@ async def update_charity_entry(entry_id: str, update_data: CharityEntryUpdate):
         # Add edit note if provided
         if update_data.edit_note:
             edit_notes = existing_entry.get("edit_notes", [])
-            # Use user's timezone for edit timestamp
-            user_timezone = update_data.timezone
-            timestamp = get_user_timezone_now(user_timezone).isoformat()
+            # Use client timestamp or current time in user's timezone
+            timestamp = create_timestamp_from_client(update_data.client_timestamp, update_data.timezone).isoformat()
             edit_note = f"{timestamp}: {update_data.edit_note}"
             edit_notes.append(edit_note)
             update_dict["edit_notes"] = edit_notes
