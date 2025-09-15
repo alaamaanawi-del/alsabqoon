@@ -7,6 +7,16 @@ function api(path: string) {
   return url;
 }
 
+// Get device timezone
+export function getDeviceTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch (error) {
+    console.warn('Could not get device timezone, falling back to UTC:', error);
+    return 'UTC';
+  }
+}
+
 export async function getJson<T>(path: string): Promise<T> {
   const res = await fetch(api(path));
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
