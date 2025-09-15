@@ -163,10 +163,12 @@ class ZikrEntryCreate(BaseModel):
     zikr_id: int
     count: int
     date: str
+    timezone: Optional[str] = None  # User's device timezone (e.g., "America/New_York")
 
 class ZikrEntryUpdate(BaseModel):
     count: int
     edit_note: Optional[str] = None
+    timezone: Optional[str] = None  # User's device timezone for edit timestamp
 
 class ZikrStats(BaseModel):
     zikr_id: int
