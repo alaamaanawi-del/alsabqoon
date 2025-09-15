@@ -179,6 +179,7 @@ export async function createCharityEntry(
     date: date,
     comments: comments || "",
     timezone: getDeviceTimezone(), // Include device timezone
+    client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
   });
 }
 
@@ -196,6 +197,7 @@ export async function updateCharityEntry(
       comments: comments || "",
       edit_note: editNote,
       timezone: getDeviceTimezone(), // Include device timezone for edit timestamp
+      client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
     }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
