@@ -105,6 +105,7 @@ export async function updateZikrEntry(
       count: count,
       edit_note: editNote,
       timezone: getDeviceTimezone(), // Include device timezone for edit timestamp
+      client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
     }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
