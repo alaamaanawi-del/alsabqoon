@@ -192,11 +192,13 @@ class CharityEntryCreate(BaseModel):
     count: int
     date: str
     comments: Optional[str] = ""
+    timezone: Optional[str] = None  # User's device timezone
 
 class CharityEntryUpdate(BaseModel):
     count: int
     comments: Optional[str] = ""
     edit_note: Optional[str] = None
+    timezone: Optional[str] = None  # User's device timezone for edit timestamp
 
 class CharityStats(BaseModel):
     charity_id: int
