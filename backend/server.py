@@ -28,6 +28,19 @@ def get_user_timezone_now(timezone_name: str = None):
         logger.warning(f"Invalid timezone {timezone_name}, falling back to UTC: {e}")
         return datetime.now(pytz.UTC)
 
+def create_timestamp_from_client(client_timestamp: str = None, timezone_name: str = None):
+    """Create timestamp from client or use current time in user's timezone"""
+    try:
+        if client_timestamp:
+            # If client sends exact timestamp, use it
+            return datetime.fromisoformat(client_timestamp.replace('Z', '+00:00'))
+        else:
+            # Otherwise, use current time in user's timezone
+            return get_user_timezone_now(timezone_name)
+    except Exception as e:
+        logger.warning(f"Error parsing client timestamp {client_timestamp}: {e}")
+        return get_user_timezone_now(timezone_name)
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
