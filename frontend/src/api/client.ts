@@ -17,6 +17,16 @@ export function getDeviceTimezone(): string {
   }
 }
 
+// Get current local timestamp
+export function getCurrentLocalTimestamp(): string {
+  try {
+    return new Date().toISOString();
+  } catch (error) {
+    console.warn('Could not get current timestamp:', error);
+    return new Date().toISOString();
+  }
+}
+
 export async function getJson<T>(path: string): Promise<T> {
   const res = await fetch(api(path));
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
