@@ -15,18 +15,12 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-def get_user_timezone_now(timezone_name: str = None):
-    """Get current time in user's timezone or UTC if not provided"""
-    try:
-        if timezone_name:
-            user_tz = pytz.timezone(timezone_name)
-            return datetime.now(user_tz)
-        else:
-            # Fallback to UTC if no timezone provided
-            return datetime.now(pytz.UTC)
-    except Exception as e:
-        logger.warning(f"Invalid timezone {timezone_name}, falling back to UTC: {e}")
-        return datetime.now(pytz.UTC)
+# Saudi Arabia timezone
+SAUDI_TZ = pytz.timezone('Asia/Riyadh')
+
+def get_saudi_now():
+    """Get current time in Saudi Arabia timezone"""
+    return datetime.now(SAUDI_TZ)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -48,7 +42,7 @@ api_router = APIRouter(prefix="/api")
 class StatusCheck(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
-    timestamp: datetime = Field(default_factory=lambda: get_user_timezone_now())
+    timestamp: datetime = Field(default_factory=get_saudi_now)
 
 class StatusCheckCreate(BaseModel):
     client_name: str
@@ -156,7 +150,7 @@ class ZikrEntry(BaseModel):
     zikr_id: int
     count: int
     date: str  # ISO date string (YYYY-MM-DD)
-    timestamp: datetime = Field(default_factory=lambda: get_user_timezone_now())
+    timestamp: datetime = Field(default_factory=get_saudi_now)
     edit_notes: Optional[List[str]] = []  # Track edit history
 
 class ZikrEntryCreate(BaseModel):
@@ -181,7 +175,7 @@ class CharityEntry(BaseModel):
     charity_id: int
     count: int
     date: str  # ISO date string (YYYY-MM-DD)
-    timestamp: datetime = Field(default_factory=lambda: get_user_timezone_now())
+    timestamp: datetime = Field(default_factory=get_saudi_now)
     comments: Optional[str] = ""  # User comments/notes
     edit_notes: Optional[List[str]] = []  # Track edit history
 
@@ -283,7 +277,7 @@ async def update_zikr_entry(entry_id: str, update_data: ZikrEntryUpdate):
         # Add edit note if provided
         if update_data.edit_note:
             edit_notes = existing_entry.get("edit_notes", [])
-            timestamp = get_user_timezone_now().isoformat()
+            timestamp = get_saudi_now().isoformat()
             edit_note = f"{timestamp}: {update_data.edit_note}"
             edit_notes.append(edit_note)
             update_dict["edit_notes"] = edit_notes
@@ -423,7 +417,7 @@ async def update_charity_entry(entry_id: str, update_data: CharityEntryUpdate):
         # Add edit note if provided
         if update_data.edit_note:
             edit_notes = existing_entry.get("edit_notes", [])
-            timestamp = get_user_timezone_now().isoformat()
+            timestamp = get_saudi_now().isoformat()
             edit_note = f"{timestamp}: {update_data.edit_note}"
             edit_notes.append(edit_note)
             update_dict["edit_notes"] = edit_notes
