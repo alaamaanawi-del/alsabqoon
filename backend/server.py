@@ -15,6 +15,13 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Saudi Arabia timezone
+SAUDI_TZ = pytz.timezone('Asia/Riyadh')
+
+def get_saudi_now():
+    """Get current time in Saudi Arabia timezone"""
+    return datetime.now(SAUDI_TZ)
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
