@@ -89,6 +89,7 @@ export async function createZikrEntry(
     count: count,
     date: date,
     timezone: getDeviceTimezone(), // Include device timezone
+    client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
   });
 }
 
