@@ -177,11 +177,13 @@ class ZikrEntryCreate(BaseModel):
     count: int
     date: str
     timezone: Optional[str] = None  # User's device timezone (e.g., "America/New_York")
+    client_timestamp: Optional[str] = None  # Exact timestamp from client device
 
 class ZikrEntryUpdate(BaseModel):
     count: int
     edit_note: Optional[str] = None
     timezone: Optional[str] = None  # User's device timezone for edit timestamp
+    client_timestamp: Optional[str] = None  # Exact timestamp from client device
 
 class ZikrStats(BaseModel):
     zikr_id: int
