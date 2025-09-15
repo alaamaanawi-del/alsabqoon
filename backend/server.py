@@ -175,7 +175,7 @@ class CharityEntry(BaseModel):
     charity_id: int
     count: int
     date: str  # ISO date string (YYYY-MM-DD)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=get_saudi_now)
     comments: Optional[str] = ""  # User comments/notes
     edit_notes: Optional[List[str]] = []  # Track edit history
 
