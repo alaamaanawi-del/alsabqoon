@@ -410,9 +410,15 @@ async def get_charity_list():
 
 @api_router.post("/charities/entry", response_model=CharityEntry)
 async def create_charity_entry(entry: CharityEntryCreate):
-    """Record a charity entry"""
-    charity_dict = entry.dict()
-    charity_obj = CharityEntry(**charity_dict)
+    """Record a charity entry with user's device timezone"""
+    user_timezone = entry.timezone
+    charity_obj = CharityEntry(
+        charity_id=entry.charity_id,
+        count=entry.count,
+        date=entry.date,
+        comments=entry.comments,
+        timestamp=get_user_timezone_now(user_timezone)
+    )
     await db.charity_entries.insert_one(charity_obj.dict())
     return charity_obj
 
