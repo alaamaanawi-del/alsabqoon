@@ -150,7 +150,7 @@ class ZikrEntry(BaseModel):
     zikr_id: int
     count: int
     date: str  # ISO date string (YYYY-MM-DD)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=get_saudi_now)
     edit_notes: Optional[List[str]] = []  # Track edit history
 
 class ZikrEntryCreate(BaseModel):
