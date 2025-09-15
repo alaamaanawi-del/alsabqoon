@@ -277,7 +277,7 @@ async def update_zikr_entry(entry_id: str, update_data: ZikrEntryUpdate):
         # Add edit note if provided
         if update_data.edit_note:
             edit_notes = existing_entry.get("edit_notes", [])
-            timestamp = datetime.utcnow().isoformat()
+            timestamp = get_saudi_now().isoformat()
             edit_note = f"{timestamp}: {update_data.edit_note}"
             edit_notes.append(edit_note)
             update_dict["edit_notes"] = edit_notes
