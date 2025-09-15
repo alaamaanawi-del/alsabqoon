@@ -93,6 +93,7 @@ export async function updateZikrEntry(
     body: JSON.stringify({
       count: count,
       edit_note: editNote,
+      timezone: getDeviceTimezone(), // Include device timezone for edit timestamp
     }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
