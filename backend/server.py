@@ -266,9 +266,16 @@ async def get_azkar_list():
 
 @api_router.post("/azkar/entry", response_model=ZikrEntry)
 async def create_zikr_entry(entry: ZikrEntryCreate):
-    """Record a zikr entry"""
+    """Record a zikr entry with user's device timezone"""
     zikr_dict = entry.dict()
-    zikr_obj = ZikrEntry(**zikr_dict)
+    # Create entry with user's timezone
+    user_timezone = entry.timezone
+    zikr_obj = ZikrEntry(
+        zikr_id=entry.zikr_id,
+        count=entry.count,
+        date=entry.date,
+        timestamp=get_user_timezone_now(user_timezone)
+    )
     await db.zikr_entries.insert_one(zikr_obj.dict())
     return zikr_obj
 
