@@ -78,6 +78,7 @@ export async function createZikrEntry(
     zikr_id: zikrId,
     count: count,
     date: date,
+    timezone: getDeviceTimezone(), // Include device timezone
   });
 }
 
