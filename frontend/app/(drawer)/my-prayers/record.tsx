@@ -6,6 +6,7 @@ import { Colors } from "../../../src/theme/colors";
 import { searchQuran } from "../../../src/db/quran.index";
 import { loadPrayerRecord, savePrayerRecord, syncTasksFromRecord, computeScore, type PrayerRecord, type VerseRange, type RakkaIndex } from "../../../src/storage/prayer";
 import { showToast } from "../../../src/utils/toast";
+import { createZikrEntry, getCurrentLocalDateString } from "../../../src/api/client";
 import SurahSelector from "../../../src/components/SurahSelector";
 import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay";
 import HighlightedText from "../../../src/components/HighlightedText";
