@@ -321,9 +321,17 @@ export default function MyCharitiesScreen() {
             selectedFilter === button.key && styles.filterButtonSelected
           ]}
           onPress={() => {
+            console.log('Filter button pressed:', button.key);
             setSelectedFilter(button.key);
-            // Show calendar when "Select" button is pressed
-            if (button.key === 'select') {
+            
+            // Update selectedDate based on filter type
+            if (button.key === 'today') {
+              // Set selected date to today for immediate data loading
+              const today = new Date();
+              setSelectedDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
+              console.log('Today filter - setting selectedDate to today:', today);
+            } else if (button.key === 'select') {
+              // Show calendar when "Select" button is pressed
               setShowCalendar(true);
             }
           }}
