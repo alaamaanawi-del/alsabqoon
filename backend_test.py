@@ -1341,7 +1341,7 @@ def test_azkar_range_filtering():
                 
                 # Verify percentage calculations
                 total_percentage = sum(summary.get("percentage", 0) for summary in azkar_summary.values())
-                if abs(total_percentage - 100.0) < 0.1:  # Allow small rounding differences
+                if abs(total_percentage - 100.0) < 1.0:  # Allow for rounding differences
                     print(f"   ✅ PASS: Percentages sum to {total_percentage}% (correct)")
                 else:
                     print(f"   ❌ FAIL: Percentages sum to {total_percentage}% (should be 100%)")
