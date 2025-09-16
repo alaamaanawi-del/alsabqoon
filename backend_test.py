@@ -1639,8 +1639,9 @@ def main():
         print("🎉 All tests passed!")
         print("✅ Backend APIs are working correctly")
         print("✅ Azkar functionality is fully operational")
-        print("✅ NEW: Azkar Range Filtering functionality is fully operational")
-        print("✅ NEW: Charity functionality is fully operational")
+        print("✅ Azkar Range Filtering functionality is fully operational")
+        print("✅ Charity functionality is fully operational")
+        print("✅ NEW: Charity Range Filtering functionality is fully operational")
         return 0
     else:
         print("⚠️  Some tests failed - requires investigation")
