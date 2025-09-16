@@ -95,7 +95,7 @@ export default function MyAzkarScreen() {
     loadAzkarData();
     loadMonthlyData();
     loadWeeklyData();
-  }, [selectedFilter, selectedDate]);
+  }, [selectedFilter, selectedDate, customStartDate, customEndDate]);
 
   const loadInitialData = async () => {
     try {
