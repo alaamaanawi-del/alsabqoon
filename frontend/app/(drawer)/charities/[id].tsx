@@ -78,7 +78,9 @@ export default function CharityDetailScreen() {
 
     setLoading(true);
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getCurrentLocalDateString(); // Use local date instead of UTC
+      console.log('Creating charity entry:', { charityId, countNum, today, comments, localTime: new Date().toString() });
+      
       await createCharityEntry(charityId, countNum, today, comments);
       
       Alert.alert('نجح', 'تم تسجيل الصدقة بنجاح');
