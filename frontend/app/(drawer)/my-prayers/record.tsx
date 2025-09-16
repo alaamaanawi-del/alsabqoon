@@ -314,7 +314,7 @@ export default function RecordPrayer() {
         const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
         const autoComment = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
         
-        console.log('Creating Da'wah entry:', { totalTaughtCount, autoComment });
+        console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
         
         await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
         
