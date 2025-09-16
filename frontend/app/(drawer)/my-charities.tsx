@@ -81,12 +81,23 @@ export default function MyCharitiesScreen() {
     loadCharityDataForCalendar();
   }, [selectedDate, monthDate, selectedFilter]);
 
+  // Refresh data when screen comes into focus (e.g., returning from charity detail page)
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('Charity screen focused - refreshing data');
+      loadCharities();
+      loadDailyData();
+      loadCharityDataForCalendar();
+    }, [selectedFilter, selectedDate, monthDate])
+  );
+
   // Additional effect to reload data when custom date range changes
   useEffect(() => {
     if (selectedFilter === 'select' && customStartDate && customEndDate) {
       loadDateRangeData();
     }
   }, [customStartDate, customEndDate]);
+
 
   const loadCharities = async () => {
     try {
