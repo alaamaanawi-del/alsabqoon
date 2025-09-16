@@ -127,6 +127,16 @@ export async function getDailyAzkar(date: string): Promise<DailyAzkarSummary> {
   return getJson<DailyAzkarSummary>(`/azkar/daily/${date}`);
 }
 
+export async function getAzkarRange(startDate: string, endDate: string): Promise<{
+  start_date: string;
+  end_date: string;
+  total_range: number;
+  azkar_summary: Record<number, { count: number; sessions: number; percentage: number }>;
+  entries: ZikrEntry[];
+}> {
+  return getJson(`/azkar/range/${startDate}/${endDate}`);
+}
+
 // Charity Types
 export interface Charity {
   id: number;
