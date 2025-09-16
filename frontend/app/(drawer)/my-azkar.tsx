@@ -16,6 +16,7 @@ import { router } from 'expo-router';
 import { 
   getAzkarList, 
   getDailyAzkar, 
+  getAzkarRange,
   Zikr, 
   DailyAzkarSummary 
 } from '../../src/api/client';
