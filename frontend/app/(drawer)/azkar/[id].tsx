@@ -686,6 +686,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: Colors.background,
   },
+  commentInput: {
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    backgroundColor: Colors.background,
+    minHeight: 100,
+  },
   submitButton: {
     backgroundColor: Colors.deepGreen,
     paddingHorizontal: 24,
