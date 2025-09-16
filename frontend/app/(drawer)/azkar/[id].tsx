@@ -236,7 +236,7 @@ export default function ZikrDetailsScreen() {
       
       console.log('Creating zikr entry:', { zikrId, countValue, dateStr, localTime: new Date().toString() });
       
-      await createZikrEntry(zikrId, countValue, dateStr);
+      await createZikrEntry(zikrId, countValue, dateStr, comments.trim() || undefined);
       
       // Refresh data
       await loadZikrHistory();
