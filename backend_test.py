@@ -1810,6 +1810,13 @@ def main():
     test_results.append(("Azkar Regression After Range", test_azkar_regression_after_range_implementation()))
     
     print("\n" + "=" * 70)
+    print("🆕 NEW DA'WAH CATEGORY FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # NEW: Da'wah category tests as requested in review
+    test_results.append(("NEW: Da'wah Category Functionality", test_dawah_category_functionality()))
+    
+    print("\n" + "=" * 70)
     print("💰 NEW CHARITY FUNCTIONALITY TESTS")
     print("=" * 70)
     
