@@ -448,6 +448,23 @@ export default function ZikrDetailsScreen() {
             </View>
           </View>
 
+          {/* Comment Field - Show for Da'wah category or if user wants to add notes */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>
+              {zikrDetails.id === 13 ? 'ملاحظات (ماذا علمته، السياق، المكان، إلخ):' : 'ملاحظات (اختياري):'}
+            </Text>
+            <TextInput
+              style={styles.commentInput}
+              value={comments}
+              onChangeText={setComments}
+              placeholder={zikrDetails.id === 13 ? "مثال: علمت القرآن للأطفال في المسجد..." : "اكتب ملاحظاتك هنا..."}
+              placeholderTextColor={Colors.mediumGray}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+          </View>
+
           {/* Description */}
           <View style={styles.descriptionContainer}>
             <Text style={styles.sectionTitle}>وصف الذكر:</Text>
