@@ -1,15 +1,72 @@
-export default function RecordPrayer() {
-  const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
-  const router = useRouter();
-  const p = (prayer as string) || 'fajr';
-  const day = ymdFromParam(date as string | undefined);
+  const handleCompleteRecording = async () => {
+    if (!record) {
+      console.log('❌ No record found in handleCompleteRecording');
+      router.replace('/(drawer)/my-prayers');
+      return;
+    }
 
-  // Parse focus parameter: "1:understood" or "2:dua"
-  const [focusRakka, focusQuestion] = useMemo(() => {
-    if (!focus) return [null, null];
-    const [r, q] = focus.split(':');
-    return [parseInt(r) as RakkaIndex || null, q as QuestionKey || null];
-  }, [focus]);
+    try {
+      console.log('🔍 DEBUGGING: handleCompleteRecording called');
+      console.log('📊 Record data:', JSON.stringify(record, null, 2));
+      
+      // Check if any rakka has teaching count > 0
+      let totalTaughtCount = 0;
+      const taughtRakkas = [];
+      
+      for (let i = 0; i < 2; i++) {
+        const rakka = record.rakka[i];
+        console.log(`🔍 Checking rakka ${i + 1}:`, rakka);
+        
+        if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
+          console.log(`✅ Rakka ${i + 1} has teaching: count=${rakka.taughtCount}`);
+          totalTaughtCount += rakka.taughtCount;
+          taughtRakkas.push(i + 1);
+        } else {
+          console.log(`❌ Rakka ${i + 1} no teaching:`, {
+            exists: !!rakka,
+            hasQuestions: !!(rakka?.questions),
+            taught: rakka?.questions?.taught,
+            count: rakka?.taughtCount
+          });
+        }
+      }
 
-  const [record, setRecord] = useState<PrayerRecord | null>(null);
-  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1);
+      console.log(`📊 Total taught count: ${totalTaughtCount}`);
+      console.log(`📊 Taught rakkas: ${taughtRakkas}`);
+
+      // If user taught people, create an entry in Da'wah category (ID 13)
+      if (totalTaughtCount > 0) {
+        console.log('🎯 Creating Da\'wah entry...');
+        
+        const dateStr = getCurrentLocalDateString();
+        const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
+        const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
+        const autoComment = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
+        
+        console.log('📝 Da\'wah entry details:', {
+          zikrId: 13,
+          count: totalTaughtCount,
+          date: dateStr,
+          comment: autoComment
+        });
+        
+        await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
+        
+        console.log('✅ Da\'wah entry created successfully!');
+        
+        Alert.alert(
+          'تم الحفظ',
+          `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
+          [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
+        );
+      } else {
+        console.log('❌ No teaching count found, navigating without creating Da\'wah entry');
+        // Always navigate to main prayers page after completing
+        router.replace('/(drawer)/my-prayers');
+      }
+    } catch (error) {
+      console.error('❌ Error in handleCompleteRecording:', error);
+      // Still navigate even if Da'wah entry creation fails
+      router.replace('/(drawer)/my-prayers');
+    }
+  };
