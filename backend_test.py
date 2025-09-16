@@ -1549,6 +1549,227 @@ def test_azkar_regression_after_range_implementation():
     
     return all(test_results)
 
+def test_dawah_category_functionality():
+    """Test the new Da'wah category (ID 13) functionality as requested in review"""
+    print("\n🔍 Testing NEW Da'wah Category Functionality (ID 13 - 'الدعوة – تعليم')...")
+    
+    # Step 1: Verify the new Da'wah category appears in azkar list
+    print("   Step 1: Verifying Da'wah category appears in /api/azkar endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar")
+        if response.status_code != 200:
+            print(f"   ❌ FAIL: Could not get azkar list - Status: {response.status_code}")
+            return False
+        
+        data = response.json()
+        azkar_list = data.get("azkar", [])
+        
+        # Find the Da'wah category (ID 13)
+        dawah_category = None
+        for azkar in azkar_list:
+            if azkar.get("id") == 13:
+                dawah_category = azkar
+                break
+        
+        if dawah_category:
+            print(f"   ✅ PASS: Da'wah category found in azkar list")
+            print(f"   Arabic Name: {dawah_category['nameAr']}")
+            print(f"   English Name: {dawah_category['nameEn']}")
+            print(f"   Color: {dawah_category['color']}")
+            
+            # Verify the correct names
+            if (dawah_category['nameAr'] == "الدعوة – تعليم" and 
+                dawah_category['nameEn'] == "Da'wah - Teaching Islam"):
+                print("   ✅ PASS: Da'wah category has correct Arabic and English names")
+            else:
+                print(f"   ❌ FAIL: Da'wah category names incorrect")
+                return False
+        else:
+            print("   ❌ FAIL: Da'wah category (ID 13) not found in azkar list")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR getting azkar list: {str(e)}")
+        return False
+    
+    # Step 2: Test creating an entry with the new comment functionality
+    print("   Step 2: Testing azkar entry creation with comment functionality...")
+    test_date = "2025-01-20"
+    test_comment = "تعليم آيات الصلاة - الفجر (الركعة 1)"
+    
+    create_data = {
+        "zikr_id": 13,  # Da'wah category
+        "count": 1,
+        "date": test_date,
+        "comment": test_comment
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=create_data)
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            created_entry = response.json()
+            entry_id = created_entry["id"]
+            
+            # Verify the entry was created correctly
+            required_fields = ["id", "user_id", "zikr_id", "count", "date", "timestamp", "edit_notes"]
+            if all(field in created_entry for field in required_fields):
+                print(f"   ✅ PASS: Da'wah entry created with ID {entry_id}")
+                
+                # Verify the zikr_id is correct
+                if created_entry["zikr_id"] == 13:
+                    print("   ✅ PASS: Da'wah entry has correct zikr_id (13)")
+                else:
+                    print(f"   ❌ FAIL: Expected zikr_id 13, got {created_entry['zikr_id']}")
+                    return False
+                
+                # Step 3: Verify the comment is stored in edit_notes
+                print("   Step 3: Verifying comment is stored in edit_notes...")
+                if "edit_notes" in created_entry and len(created_entry["edit_notes"]) > 0:
+                    edit_notes = created_entry["edit_notes"]
+                    if test_comment in edit_notes[0]:
+                        print(f"   ✅ PASS: Comment stored correctly in edit_notes: '{test_comment}'")
+                    else:
+                        print(f"   ❌ FAIL: Comment not found in edit_notes: {edit_notes}")
+                        return False
+                else:
+                    print("   ❌ FAIL: edit_notes field missing or empty")
+                    return False
+                
+            else:
+                print(f"   ❌ FAIL: Missing required fields in created entry: {created_entry}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Entry creation failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR creating Da'wah entry: {str(e)}")
+        return False
+    
+    # Step 4: Test creating entries both with and without comments
+    print("   Step 4: Testing entries with and without comments...")
+    
+    # Create entry without comment
+    create_data_no_comment = {
+        "zikr_id": 13,
+        "count": 2,
+        "date": test_date
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=create_data_no_comment)
+        if response.status_code == 200:
+            entry_no_comment = response.json()
+            
+            # Verify entry without comment has empty or no edit_notes
+            if "edit_notes" not in entry_no_comment or len(entry_no_comment["edit_notes"]) == 0:
+                print("   ✅ PASS: Entry without comment has no edit_notes (correct)")
+            else:
+                print(f"   ❌ FAIL: Entry without comment should have no edit_notes: {entry_no_comment['edit_notes']}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Entry creation without comment failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR creating entry without comment: {str(e)}")
+        return False
+    
+    # Step 5: Integration testing - verify Da'wah category behaves like other azkar categories
+    print("   Step 5: Integration testing - verifying Da'wah category behaves like other azkar...")
+    
+    # Test history endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/13/history")
+        if response.status_code == 200:
+            history_data = response.json()
+            entries = history_data.get("entries", [])
+            if len(entries) >= 2:  # We created 2 entries
+                print(f"   ✅ PASS: Da'wah history endpoint working - found {len(entries)} entries")
+            else:
+                print(f"   ❌ FAIL: Expected at least 2 entries in history, got {len(entries)}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Da'wah history endpoint failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing Da'wah history: {str(e)}")
+        return False
+    
+    # Test stats endpoint
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/13/stats")
+        if response.status_code == 200:
+            stats_data = response.json()
+            required_fields = ["zikr_id", "total_count", "total_sessions", "last_entry"]
+            if all(field in stats_data for field in required_fields):
+                if stats_data["zikr_id"] == 13 and stats_data["total_count"] >= 3:  # 1 + 2 = 3
+                    print(f"   ✅ PASS: Da'wah stats endpoint working - Total: {stats_data['total_count']}, Sessions: {stats_data['total_sessions']}")
+                else:
+                    print(f"   ❌ FAIL: Da'wah stats incorrect: {stats_data}")
+                    return False
+            else:
+                print(f"   ❌ FAIL: Missing fields in Da'wah stats: {stats_data}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Da'wah stats endpoint failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing Da'wah stats: {str(e)}")
+        return False
+    
+    # Test daily summary includes Da'wah category
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/daily/{test_date}")
+        if response.status_code == 200:
+            daily_data = response.json()
+            azkar_summary = daily_data.get("azkar_summary", {})
+            
+            if "13" in azkar_summary:
+                dawah_summary = azkar_summary["13"]
+                if dawah_summary["count"] >= 3 and dawah_summary["sessions"] >= 2:
+                    print(f"   ✅ PASS: Da'wah appears in daily summary - Count: {dawah_summary['count']}, Sessions: {dawah_summary['sessions']}")
+                else:
+                    print(f"   ❌ FAIL: Da'wah daily summary incorrect: {dawah_summary}")
+                    return False
+            else:
+                print("   ❌ FAIL: Da'wah category not found in daily summary")
+                return False
+        else:
+            print(f"   ❌ FAIL: Daily summary endpoint failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing daily summary: {str(e)}")
+        return False
+    
+    # Step 6: Test range queries include the new category
+    print("   Step 6: Testing range queries include Da'wah category...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/range/{test_date}/{test_date}")
+        if response.status_code == 200:
+            range_data = response.json()
+            azkar_summary = range_data.get("azkar_summary", {})
+            
+            if "13" in azkar_summary:
+                dawah_range_summary = azkar_summary["13"]
+                if dawah_range_summary["count"] >= 3:
+                    print(f"   ✅ PASS: Da'wah appears in range queries - Count: {dawah_range_summary['count']}")
+                else:
+                    print(f"   ❌ FAIL: Da'wah range summary incorrect: {dawah_range_summary}")
+                    return False
+            else:
+                print("   ❌ FAIL: Da'wah category not found in range query")
+                return False
+        else:
+            print(f"   ❌ FAIL: Range query endpoint failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing range query: {str(e)}")
+        return False
+    
+    print("   🎉 ALL DA'WAH CATEGORY TESTS PASSED!")
+    print("   ✅ Da'wah category (ID 13) is fully functional and ready for prayer integration")
+    return True
+
 def main():
     """Run all backend tests including new charity functionality"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
