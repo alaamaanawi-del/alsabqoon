@@ -303,16 +303,17 @@ export default function RecordPrayer() {
       let totalTaughtCount = 0;
       const taughtRakkas = [];
       
-      for (let i = 0; i < 2; i++) {
-        const rakka = record.rakka[i];
-        console.log(`🔍 Checking rakka ${i + 1}:`, rakka);
+      // Check both rak ka 1 and rakka 2 (using 1-based indexing like the rest of the app)
+      for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+        const rakka = record.rakka[rakkaNum];
+        console.log(`🔍 Checking rakka ${rakkaNum}:`, rakka);
         
         if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
-          console.log(`✅ Rakka ${i + 1} has teaching: count=${rakka.taughtCount}`);
+          console.log(`✅ Rakka ${rakkaNum} has teaching: count=${rakka.taughtCount}`);
           totalTaughtCount += rakka.taughtCount;
-          taughtRakkas.push(i + 1);
+          taughtRakkas.push(rakkaNum);
         } else {
-          console.log(`❌ Rakka ${i + 1} no teaching:`, {
+          console.log(`❌ Rakka ${rakkaNum} no teaching:`, {
             exists: !!rakka,
             hasQuestions: !!(rakka?.questions),
             taught: rakka?.questions?.taught,
