@@ -240,7 +240,7 @@ def test_azkar_list():
             print(f"   Response: Found {len(azkar_list)} azkar")
             
             # Verify we have 12 azkar
-            if len(azkar_list) == 12:
+            if len(azkar_list) == 13:
                 print("   ✅ PASS: Found all 12 azkar types")
                 
                 # Check structure of first azkar
