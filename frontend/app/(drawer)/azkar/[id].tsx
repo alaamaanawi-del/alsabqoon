@@ -476,7 +476,7 @@ export default function ZikrDetailsScreen() {
                     >
                       <View style={styles.historyInfo}>
                         <Text style={styles.historyTime}>
-                          {formatTime(entry.created_at || entry.date)}
+                          {formatTime(entry.timestamp)}
                         </Text>
                         {/* Show edit notes if available */}
                         {entry.edit_notes && entry.edit_notes.length > 0 && (
