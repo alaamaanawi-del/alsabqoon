@@ -594,7 +594,11 @@ async def get_daily_charities(date: str):
         count = entry["count"]
         
         if charity_id not in daily_summary:
-            daily_summary[charity_id] = {"count": 0, "sessions": 0}
+            daily_summary[charity_id] = {
+                "count": 0,
+                "sessions": 0,
+                "percentage": 0
+            }
         
         daily_summary[charity_id]["count"] += count
         daily_summary[charity_id]["sessions"] += 1
@@ -613,6 +617,55 @@ async def get_daily_charities(date: str):
         "date": date,
         "total_daily": total_daily,
         "charity_summary": daily_summary,
+        "entries": entries
+    }
+
+@api_router.get("/charities/range/{start_date}/{end_date}")
+async def get_charities_range(start_date: str, end_date: str):
+    """Get all charity entries for a date range"""
+    entries = await db.charity_entries.find({
+        "date": {"$gte": start_date, "$lte": end_date},
+        "user_id": "default"
+    }).to_list(1000)
+    
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
+    # Group by charity_id and calculate totals across the range
+    range_summary = {}
+    total_range = 0
+    
+    for entry in entries:
+        charity_id = entry["charity_id"]
+        count = entry["count"]
+        
+        if charity_id not in range_summary:
+            range_summary[charity_id] = {
+                "count": 0,
+                "sessions": 0,
+                "percentage": 0
+            }
+        
+        range_summary[charity_id]["count"] += count
+        range_summary[charity_id]["sessions"] += 1
+        total_range += count
+    
+    # Calculate percentages
+    for charity_id in range_summary:
+        if total_range > 0:
+            range_summary[charity_id]["percentage"] = round(
+                (range_summary[charity_id]["count"] / total_range) * 100, 1
+            )
+        else:
+            range_summary[charity_id]["percentage"] = 0
+    
+    return {
+        "start_date": start_date,
+        "end_date": end_date,
+        "total_range": total_range,
+        "charity_summary": range_summary,
         "entries": entries
     }
 
