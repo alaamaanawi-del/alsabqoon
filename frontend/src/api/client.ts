@@ -228,3 +228,13 @@ export async function getCharityStats(charityId: number): Promise<CharityStats> 
 export async function getDailyCharity(date: string): Promise<DailyCharitySummary> {
   return getJson<DailyCharitySummary>(`/charities/daily/${date}`);
 }
+
+export async function getCharityRange(startDate: string, endDate: string): Promise<{
+  start_date: string;
+  end_date: string;
+  total_range: number;
+  charity_summary: Record<number, { count: number; sessions: number; percentage: number }>;
+  entries: CharityEntry[];
+}> {
+  return getJson(`/charities/range/${startDate}/${endDate}`);
+}
