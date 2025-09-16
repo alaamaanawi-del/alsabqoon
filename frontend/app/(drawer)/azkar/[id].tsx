@@ -243,6 +243,7 @@ export default function ZikrDetailsScreen() {
       await loadZikrStats();
       
       setCount('');
+      setComments('');
       
       Alert.alert(
         'تم الحفظ',
