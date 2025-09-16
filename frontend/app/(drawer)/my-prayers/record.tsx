@@ -290,33 +290,59 @@ export default function RecordPrayer() {
 
   const handleCompleteRecording = async () => {
     if (!record) {
+      console.log('❌ No record found in handleCompleteRecording');
       router.replace('/(drawer)/my-prayers');
       return;
     }
 
     try {
+      console.log('🔍 DEBUGGING: handleCompleteRecording called');
+      console.log('📊 Record data:', JSON.stringify(record, null, 2));
+      
       // Check if any rakka has teaching count > 0
       let totalTaughtCount = 0;
       const taughtRakkas = [];
       
       for (let i = 0; i < 2; i++) {
         const rakka = record.rakka[i];
-        if (rakka && rakka.questions.taught && rakka.taughtCount > 0) {
+        console.log(`🔍 Checking rakka ${i + 1}:`, rakka);
+        
+        if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
+          console.log(`✅ Rakka ${i + 1} has teaching: count=${rakka.taughtCount}`);
           totalTaughtCount += rakka.taughtCount;
           taughtRakkas.push(i + 1);
+        } else {
+          console.log(`❌ Rakka ${i + 1} no teaching:`, {
+            exists: !!rakka,
+            hasQuestions: !!(rakka?.questions),
+            taught: rakka?.questions?.taught,
+            count: rakka?.taughtCount
+          });
         }
       }
 
+      console.log(`📊 Total taught count: ${totalTaughtCount}`);
+      console.log(`📊 Taught rakkas: ${taughtRakkas}`);
+
       // If user taught people, create an entry in Da'wah category (ID 13)
       if (totalTaughtCount > 0) {
+        console.log('🎯 Creating Da\'wah entry...');
+        
         const dateStr = getCurrentLocalDateString();
         const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
         const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
         const autoComment = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
         
-        console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
+        console.log('📝 Da\'wah entry details:', {
+          zikrId: 13,
+          count: totalTaughtCount,
+          date: dateStr,
+          comment: autoComment
+        });
         
         await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
+        
+        console.log('✅ Da\'wah entry created successfully!');
         
         Alert.alert(
           'تم الحفظ',
@@ -324,15 +350,17 @@ export default function RecordPrayer() {
           [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
         );
       } else {
+        console.log('❌ No teaching count found, navigating without creating Da\'wah entry');
         // Always navigate to main prayers page after completing
         router.replace('/(drawer)/my-prayers');
       }
     } catch (error) {
-      console.error('Error in handleCompleteRecording:', error);
+      console.error('❌ Error in handleCompleteRecording:', error);
       // Still navigate even if Da'wah entry creation fails
       router.replace('/(drawer)/my-prayers');
     }
   };
+
 
   const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
 
