@@ -979,6 +979,295 @@ def test_charity_complete_workflow():
         print(f"   ❌ ERROR getting daily summary: {str(e)}")
         return False
 
+def test_charity_range_filtering():
+    """Test NEW charity range filtering functionality - GET /api/charities/range/{start_date}/{end_date}"""
+    print("\n🔍 Testing NEW Charity Range Filtering (GET /api/charities/range/{start_date}/{end_date})...")
+    
+    # Step 1: Create test data across multiple dates for range testing
+    print("   Step 1: Creating test charity entries across multiple dates...")
+    
+    test_entries = [
+        # Week 1 entries (2024-09-01 to 2024-09-03)
+        {"charity_id": 1, "count": 50, "date": "2024-09-01", "comments": "صدقة صباحية - خمسون ريال"},  # Morning charity
+        {"charity_id": 6, "count": 2, "date": "2024-09-01", "comments": "إطعام فقيرين"},   # Feed the poor
+        {"charity_id": 1, "count": 25, "date": "2024-09-02", "comments": "صدقة إضافية"},   # Additional charity
+        {"charity_id": 26, "count": 1, "date": "2024-09-02", "comments": "كفالة يتيم"},  # Orphan sponsorship
+        {"charity_id": 6, "count": 3, "date": "2024-09-03", "comments": "إطعام ثلاثة فقراء"},   # Feed the poor
+        
+        # Week 2 entries (2024-09-05 to 2024-09-07)
+        {"charity_id": 1, "count": 100, "date": "2024-09-05", "comments": "صدقة كبيرة - مائة ريال"},  # Large charity
+        {"charity_id": 2, "count": 1, "date": "2024-09-06", "comments": "صدقة على الزوجة والأولاد"},   # Family charity
+        {"charity_id": 26, "count": 2, "date": "2024-09-07", "comments": "كفالة يتيمين"},  # Two orphans
+        
+        # Month entries (2024-09-15 to 2024-09-30)
+        {"charity_id": 1, "count": 200, "date": "2024-09-15", "comments": "صدقة شهرية كبيرة"},  # Monthly large charity
+        {"charity_id": 6, "count": 5, "date": "2024-09-20", "comments": "إطعام خمسة فقراء"},  # Feed five poor
+        {"charity_id": 26, "count": 3, "date": "2024-09-25", "comments": "كفالة ثلاثة أيتام"}, # Three orphans
+        {"charity_id": 2, "count": 2, "date": "2024-09-30", "comments": "صدقة على الأقارب"},   # Relatives charity
+    ]
+    
+    created_count = 0
+    for entry_data in test_entries:
+        try:
+            response = requests.post(f"{BASE_URL}/charities/entry", json=entry_data)
+            if response.status_code == 200:
+                created_count += 1
+        except Exception as e:
+            print(f"   ❌ ERROR creating test entry: {str(e)}")
+    
+    print(f"   ✅ Created {created_count}/{len(test_entries)} test entries for range testing")
+    
+    # Step 2: Test 7-day range (2024-09-01 to 2024-09-07)
+    print("   Step 2: Testing 7-day range (2024-09-01 to 2024-09-07)...")
+    try:
+        response = requests.get(f"{BASE_URL}/charities/range/2024-09-01/2024-09-07")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            # Verify response structure
+            required_fields = ["start_date", "end_date", "total_range", "charity_summary", "entries"]
+            if all(field in data for field in required_fields):
+                print("   ✅ PASS: Response structure contains all required fields")
+                
+                # Verify dates
+                if data["start_date"] == "2024-09-01" and data["end_date"] == "2024-09-07":
+                    print("   ✅ PASS: Start and end dates correct")
+                else:
+                    print(f"   ❌ FAIL: Date range incorrect - got {data['start_date']} to {data['end_date']}")
+                    return False
+                
+                # Verify charity_summary structure
+                charity_summary = data["charity_summary"]
+                if charity_summary:
+                    first_charity_id = list(charity_summary.keys())[0]
+                    first_summary = charity_summary[first_charity_id]
+                    summary_fields = ["count", "sessions", "percentage"]
+                    if all(field in first_summary for field in summary_fields):
+                        print("   ✅ PASS: Charity summary contains count, sessions, and percentage fields")
+                    else:
+                        print(f"   ❌ FAIL: Missing fields in charity_summary: {first_summary}")
+                        return False
+                
+                # Verify percentage calculations
+                total_percentage = sum(summary.get("percentage", 0) for summary in charity_summary.values())
+                if abs(total_percentage - 100.0) < 0.1:  # Allow small rounding differences
+                    print(f"   ✅ PASS: Percentages sum to {total_percentage}% (correct)")
+                else:
+                    print(f"   ❌ FAIL: Percentages sum to {total_percentage}% (should be 100%)")
+                    return False
+                
+                print(f"   ✅ 7-day range summary: {data['total_range']} total, {len(charity_summary)} charity types, {len(data['entries'])} entries")
+                
+            else:
+                print(f"   ❌ FAIL: Missing required fields in response: {data}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing 7-day range: {str(e)}")
+        return False
+    
+    # Step 3: Test 30-day range (2024-09-01 to 2024-09-30)
+    print("   Step 3: Testing 30-day range (2024-09-01 to 2024-09-30)...")
+    try:
+        response = requests.get(f"{BASE_URL}/charities/range/2024-09-01/2024-09-30")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            # Verify response structure
+            required_fields = ["start_date", "end_date", "total_range", "charity_summary", "entries"]
+            if all(field in data for field in required_fields):
+                print("   ✅ PASS: 30-day range response structure correct")
+                
+                # Verify dates
+                if data["start_date"] == "2024-09-01" and data["end_date"] == "2024-09-30":
+                    print("   ✅ PASS: 30-day range dates correct")
+                else:
+                    print(f"   ❌ FAIL: 30-day range dates incorrect")
+                    return False
+                
+                # Verify that 30-day range has more data than 7-day range
+                if data["total_range"] >= 300:  # Should include all our test entries
+                    print(f"   ✅ PASS: 30-day range aggregation working - Total: {data['total_range']}")
+                else:
+                    print(f"   ❌ FAIL: 30-day range total seems low: {data['total_range']}")
+                    return False
+                
+                # Verify percentage calculations for 30-day range
+                charity_summary = data["charity_summary"]
+                total_percentage = sum(summary.get("percentage", 0) for summary in charity_summary.values())
+                if abs(total_percentage - 100.0) < 0.1:
+                    print(f"   ✅ PASS: 30-day range percentages sum to {total_percentage}% (correct)")
+                else:
+                    print(f"   ❌ FAIL: 30-day range percentages sum to {total_percentage}% (should be 100%)")
+                    return False
+                
+                print(f"   ✅ 30-day range summary: {data['total_range']} total, {len(charity_summary)} charity types, {len(data['entries'])} entries")
+                
+            else:
+                print(f"   ❌ FAIL: Missing required fields in 30-day response: {data}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Expected status 200 for 30-day range, got {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing 30-day range: {str(e)}")
+        return False
+    
+    # Step 4: Test data integrity - verify aggregation accuracy
+    print("   Step 4: Testing data integrity and aggregation accuracy...")
+    try:
+        # Test a smaller range where we can manually verify
+        response = requests.get(f"{BASE_URL}/charities/range/2024-09-01/2024-09-03")
+        
+        if response.status_code == 200:
+            data = response.json()
+            charity_summary = data["charity_summary"]
+            
+            # Manually verify charity_id=1 should have count=75 (50+25), sessions=2
+            if "1" in charity_summary:
+                charity_1_data = charity_summary["1"]
+                expected_count = 75  # 50 + 25
+                expected_sessions = 2
+                
+                if charity_1_data["count"] == expected_count and charity_1_data["sessions"] == expected_sessions:
+                    print(f"   ✅ PASS: Data integrity verified - charity_id=1 has {charity_1_data['count']} count, {charity_1_data['sessions']} sessions")
+                else:
+                    print(f"   ❌ FAIL: Data integrity issue - charity_id=1 expected {expected_count} count, {expected_sessions} sessions, got {charity_1_data}")
+                    return False
+            
+            # Verify charity_id=6 should have count=5 (2+3), sessions=2
+            if "6" in charity_summary:
+                charity_6_data = charity_summary["6"]
+                expected_count = 5  # 2 + 3
+                expected_sessions = 2
+                
+                if charity_6_data["count"] == expected_count and charity_6_data["sessions"] == expected_sessions:
+                    print(f"   ✅ PASS: Data integrity verified - charity_id=6 has {charity_6_data['count']} count, {charity_6_data['sessions']} sessions")
+                else:
+                    print(f"   ❌ FAIL: Data integrity issue - charity_id=6 expected {expected_count} count, {expected_sessions} sessions, got {charity_6_data}")
+                    return False
+            
+        else:
+            print(f"   ❌ FAIL: Could not test data integrity - Status: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing data integrity: {str(e)}")
+        return False
+    
+    # Step 5: Test edge cases
+    print("   Step 5: Testing edge cases...")
+    
+    # Test empty range
+    try:
+        response = requests.get(f"{BASE_URL}/charities/range/2024-12-01/2024-12-07")
+        if response.status_code == 200:
+            data = response.json()
+            if data["total_range"] == 0 and len(data["charity_summary"]) == 0:
+                print("   ✅ PASS: Empty range handled correctly")
+            else:
+                print(f"   ❌ FAIL: Empty range not handled correctly: {data}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Empty range test failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing empty range: {str(e)}")
+        return False
+    
+    # Test single day range
+    try:
+        response = requests.get(f"{BASE_URL}/charities/range/2024-09-01/2024-09-01")
+        if response.status_code == 200:
+            data = response.json()
+            if data["start_date"] == data["end_date"] == "2024-09-01":
+                print("   ✅ PASS: Single day range handled correctly")
+            else:
+                print(f"   ❌ FAIL: Single day range not handled correctly: {data}")
+                return False
+        else:
+            print(f"   ❌ FAIL: Single day range test failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ ERROR testing single day range: {str(e)}")
+        return False
+    
+    print("   🎉 ALL CHARITY RANGE FILTERING TESTS PASSED!")
+    return True
+
+def test_charity_regression_after_range_implementation():
+    """Test existing charity endpoints to ensure no regression after range implementation"""
+    print("\n🔍 Testing Charity Regression After Range Implementation...")
+    
+    # Test existing endpoints still work
+    test_results = []
+    
+    # Test charity list
+    print("   Testing charity list endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/charities")
+        if response.status_code == 200:
+            data = response.json()
+            if "charities" in data and len(data["charities"]) == 32:
+                print("   ✅ PASS: Charity list endpoint still working")
+                test_results.append(True)
+            else:
+                print("   ❌ FAIL: Charity list endpoint regression")
+                test_results.append(False)
+        else:
+            print(f"   ❌ FAIL: Charity list endpoint status {response.status_code}")
+            test_results.append(False)
+    except Exception as e:
+        print(f"   ❌ ERROR testing charity list: {str(e)}")
+        test_results.append(False)
+    
+    # Test daily endpoint
+    print("   Testing charity daily endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/charities/daily/2024-09-01")
+        if response.status_code == 200:
+            data = response.json()
+            required_fields = ["date", "total_daily", "charity_summary", "entries"]
+            if all(field in data for field in required_fields):
+                print("   ✅ PASS: Charity daily endpoint still working")
+                test_results.append(True)
+            else:
+                print("   ❌ FAIL: Charity daily endpoint regression")
+                test_results.append(False)
+        else:
+            print(f"   ❌ FAIL: Charity daily endpoint status {response.status_code}")
+            test_results.append(False)
+    except Exception as e:
+        print(f"   ❌ ERROR testing charity daily: {str(e)}")
+        test_results.append(False)
+    
+    # Test stats endpoint
+    print("   Testing charity stats endpoint...")
+    try:
+        response = requests.get(f"{BASE_URL}/charities/1/stats")
+        if response.status_code == 200:
+            data = response.json()
+            required_fields = ["charity_id", "total_count", "total_sessions", "last_entry"]
+            if all(field in data for field in required_fields):
+                print("   ✅ PASS: Charity stats endpoint still working")
+                test_results.append(True)
+            else:
+                print("   ❌ FAIL: Charity stats endpoint regression")
+                test_results.append(False)
+        else:
+            print(f"   ❌ FAIL: Charity stats endpoint status {response.status_code}")
+            test_results.append(False)
+    except Exception as e:
+        print(f"   ❌ ERROR testing charity stats: {str(e)}")
+        test_results.append(False)
+    
+    return all(test_results)
+
 def test_azkar_range_filtering():
     """Test NEW azkar range filtering functionality - GET /api/azkar/range/{start_date}/{end_date}"""
     print("\n🔍 Testing NEW Azkar Range Filtering (GET /api/azkar/range/{start_date}/{end_date})...")
