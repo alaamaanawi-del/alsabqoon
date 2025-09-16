@@ -376,6 +376,20 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE TIMEZONE TESTING COMPLETE: All 6 timezone tests passed successfully. Client-side timestamp handling working perfectly across different timezones (New York EST, Dubai GST, London GMT). Date boundary handling verified for both azkar and charity daily endpoints. Midnight edge cases thoroughly tested - entries created just before/after midnight are correctly stored with proper local dates. Timezone consistency verified across all operations. The timezone and date handling fixes are working perfectly and ready for production use."
+  - task: "NEW: Da'wah Category Functionality (ID 13)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented new Da'wah category (ID 13 - 'الدعوة – تعليم') with comment functionality for prayer integration"
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE DA'WAH CATEGORY TESTING COMPLETE: All 6 test scenarios passed successfully! TESTED ALL REQUIREMENTS: 1) Da'wah category (ID 13) appears correctly in /api/azkar endpoint with Arabic name 'الدعوة – تعليم' and English name 'Da'wah - Teaching Islam', 2) Entry creation with comment functionality working - comment 'تعليم آيات الصلاة - الفجر (الركعة 1)' stored correctly in edit_notes field, 3) Entry creation without comment working - no edit_notes created (correct behavior), 4) Integration testing successful - Da'wah category behaves identically to other azkar categories: history endpoint returns 2 entries, stats endpoint shows 3 total count with 2 sessions, daily summary includes Da'wah with correct counts, 5) Range queries include Da'wah category correctly with proper aggregation, 6) All backend endpoints (history, stats, daily, range) work perfectly with the new category. NEW Da'wah category is fully functional and ready for prayer integration as requested."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
