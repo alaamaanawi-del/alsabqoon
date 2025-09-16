@@ -145,11 +145,23 @@ export default function CharityDetailScreen() {
   };
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('ar-SA', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    try {
+      // Ensure the timestamp has timezone info, assume UTC if missing
+      let timeString = timestamp;
+      if (timeString && !timeString.includes('Z') && !timeString.includes('+') && !timeString.includes('-', 10)) {
+        timeString = timeString + 'Z'; // Treat as UTC if no timezone info
+      }
+      
+      const date = new Date(timeString);
+      return date.toLocaleTimeString('ar-SA', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use device timezone
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return 'وقت غير صحيح';
+    }
   };
 
   // Group history by date
