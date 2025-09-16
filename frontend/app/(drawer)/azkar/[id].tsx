@@ -136,6 +136,7 @@ const AZKAR_DETAILS = {
 export default function ZikrDetailsScreen() {
   const { id } = useLocalSearchParams();
   const [count, setCount] = useState('');
+  const [comments, setComments] = useState('');
   const [zikrDetails, setZikrDetails] = useState(null);
   const [history, setHistory] = useState<ZikrEntry[]>([]);
   const [stats, setStats] = useState<ZikrStats | null>(null);
