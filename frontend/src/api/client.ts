@@ -17,13 +17,48 @@ export function getDeviceTimezone(): string {
   }
 }
 
-// Get current local timestamp
+// Get current local timestamp (in local timezone, not UTC)
 export function getCurrentLocalTimestamp(): string {
   try {
-    return new Date().toISOString();
+    // Create date in local timezone and format it properly
+    const now = new Date();
+    
+    // Format as local ISO string with timezone offset
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+    
+    // Get timezone offset in minutes and convert to ±HH:MM format
+    const offsetMinutes = now.getTimezoneOffset();
+    const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+    const offsetMins = Math.abs(offsetMinutes) % 60;
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    const offsetString = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${offsetString}`;
   } catch (error) {
-    console.warn('Could not get current timestamp:', error);
+    console.warn('Could not get current local timestamp:', error);
+    // Fallback to UTC but log the issue
     return new Date().toISOString();
+  }
+}
+
+// Get current local date string (YYYY-MM-DD in local timezone)
+export function getCurrentLocalDateString(): string {
+  try {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    console.warn('Could not get current local date:', error);
+    // Fallback to UTC date
+    return new Date().toISOString().split('T')[0];
   }
 }
 
