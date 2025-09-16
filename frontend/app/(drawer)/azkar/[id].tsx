@@ -429,14 +429,16 @@ export default function ZikrDetailsScreen() {
 
           {/* Count Input */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>أدخل عدد مرات الذكر:</Text>
+            <Text style={styles.inputLabel}>
+              {zikrDetails.id === 13 ? 'كم شخصاً علمته بنفسك؟' : 'أدخل عدد مرات الذكر:'}
+            </Text>
             <View style={styles.inputRow}>
               <TextInput
                 style={styles.countInput}
                 value={count}
                 onChangeText={setCount}
                 keyboardType="numeric"
-                placeholder="مثال: 100"
+                placeholder={zikrDetails.id === 13 ? "مثال: 5" : "مثال: 100"}
                 placeholderTextColor={Colors.mediumGray}
               />
               <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
