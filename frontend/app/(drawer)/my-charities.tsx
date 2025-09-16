@@ -15,6 +15,7 @@ import { router } from 'expo-router';
 import { 
   getCharityList, 
   getDailyCharity, 
+  getCharityRange,
   Charity, 
   DailyCharitySummary 
 } from '../../src/api/client';
