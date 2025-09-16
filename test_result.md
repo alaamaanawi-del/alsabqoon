@@ -362,6 +362,20 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ TESTING SUCCESS: My Charities feature fully functional! Screenshots confirm: 1) Main page loads with Arabic header 'صدقاتي', 2) Filter buttons working (اليوم, أسبوع, شهر, اختر), 3) All 32 charity categories display correctly with Arabic/English names, 4) Colored circles and percentage calculations working, 5) Navigation to charity details working, 6) Multi-language support confirmed, 7) API integration successful with backend"
+  - task: "Timezone and date handling fixes"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented timezone and date handling fixes with client-side timestamp support, proper date boundary handling, and midnight edge case resolution"
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TIMEZONE TESTING COMPLETE: All 6 timezone tests passed successfully. Client-side timestamp handling working perfectly across different timezones (New York EST, Dubai GST, London GMT). Date boundary handling verified for both azkar and charity daily endpoints. Midnight edge cases thoroughly tested - entries created just before/after midnight are correctly stored with proper local dates. Timezone consistency verified across all operations. The timezone and date handling fixes are working perfectly and ready for production use."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
