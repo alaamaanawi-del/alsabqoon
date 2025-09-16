@@ -1609,6 +1609,14 @@ def main():
     test_results.append(("Charity Daily Summary", test_charity_daily_summary()))
     test_results.append(("Complete Charity Workflow", test_charity_complete_workflow()))
     
+    print("\n" + "=" * 70)
+    print("🆕 NEW CHARITY RANGE FILTERING FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # NEW: Charity range filtering tests as requested in review
+    test_results.append(("NEW: Charity Range Filtering", test_charity_range_filtering()))
+    test_results.append(("Charity Regression After Range", test_charity_regression_after_range_implementation()))
+    
     # Summary
     print("\n" + "=" * 70)
     print("📊 COMPREHENSIVE TEST SUMMARY")
