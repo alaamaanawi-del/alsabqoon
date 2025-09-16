@@ -186,9 +186,23 @@ export default function RecordPrayer() {
 
   const toggleQuestion = (key: QuestionKey) => {
     if (!record) return;
+    console.log('🔄 TOGGLE DEBUG: Before toggle', { 
+      key, 
+      activeRakka, 
+      currentValue: record.rakka[activeRakka]?.questions?.[key],
+      fullRakka: record.rakka[activeRakka] 
+    });
+    
     const rk = record.rakka[activeRakka];
     const next = { ...record, rakka: { ...record.rakka, [activeRakka]: { ...rk, questions: { ...rk.questions, [key]: !rk.questions[key] } } } };
     setRecord(next);
+    
+    console.log('🔄 TOGGLE DEBUG: After toggle', { 
+      key, 
+      activeRakka, 
+      newValue: !rk.questions[key],
+      newRakka: next.rakka[activeRakka] 
+    });
   };
 
   const setTaughtCount = (n: string) => {
