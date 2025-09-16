@@ -123,6 +123,14 @@ const AZKAR_DETAILS = {
     description: 'قراءة القرآن الكريم، بكل حرف حسنة والحسنة بعشر أمثالها',
     benefits: 'بكل حرف حسنة والحسنة بعشر أمثالها',
   },
+  13: {
+    id: 13,
+    nameAr: 'الدعوة – تعليم',
+    nameEn: 'Da\'wah - Teaching Islam',
+    color: '#FF9F43',
+    description: 'تسجيل عدد الأشخاص الذين علمتهم الإسلام أو القرآن أو الأحاديث النبوية',
+    benefits: 'الدال على الخير كفاعله، ومن دعا إلى هدى كان له من الأجر مثل أجور من تبعه',
+  },
 };
 
 export default function ZikrDetailsScreen() {
