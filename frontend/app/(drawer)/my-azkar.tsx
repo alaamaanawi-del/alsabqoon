@@ -556,9 +556,14 @@ export default function MyAzkarScreen() {
   );
 
   const handleFilterPress = (filterKey: string) => {
+    console.log('Filter pressed:', filterKey);
     setSelectedFilter(filterKey);
     if (filterKey === 'select') {
       setShowDatePicker(true);
+    } else if (filterKey === 'today') {
+      // Set selected date to today for immediate data loading
+      const today = new Date();
+      setSelectedDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
     }
   };
 
