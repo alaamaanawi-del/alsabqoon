@@ -526,7 +526,7 @@ export default function RecordPrayer() {
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
             
-{/* Always show count field for teaching question - TEMPORARY FIX */}
+            {/* Always show count field for teaching question - TEMPORARY FIX */}
             <View style={styles.countRow}>
               <Text style={styles.countLabel}>كم شخص علمت؟</Text>
               <TextInput
