@@ -1300,6 +1300,14 @@ def main():
     test_results.append(("Complete Azkar Workflow", test_azkar_complete_flow()))
     
     print("\n" + "=" * 70)
+    print("🆕 NEW AZKAR RANGE FILTERING FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # NEW: Azkar range filtering tests as requested in review
+    test_results.append(("NEW: Azkar Range Filtering", test_azkar_range_filtering()))
+    test_results.append(("Azkar Regression After Range", test_azkar_regression_after_range_implementation()))
+    
+    print("\n" + "=" * 70)
     print("💰 NEW CHARITY FUNCTIONALITY TESTS")
     print("=" * 70)
     
