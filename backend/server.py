@@ -395,7 +395,11 @@ async def get_daily_azkar(date: str):
         count = entry["count"]
         
         if zikr_id not in daily_summary:
-            daily_summary[zikr_id] = {"count": 0, "sessions": 0}
+            daily_summary[zikr_id] = {
+                "count": 0,
+                "sessions": 0,
+                "percentage": 0
+            }
         
         daily_summary[zikr_id]["count"] += count
         daily_summary[zikr_id]["sessions"] += 1
@@ -414,6 +418,55 @@ async def get_daily_azkar(date: str):
         "date": date,
         "total_daily": total_daily,
         "azkar_summary": daily_summary,
+        "entries": entries
+    }
+
+@api_router.get("/azkar/range/{start_date}/{end_date}")
+async def get_azkar_range(start_date: str, end_date: str):
+    """Get all azkar entries for a date range"""
+    entries = await db.zikr_entries.find({
+        "date": {"$gte": start_date, "$lte": end_date},
+        "user_id": "default"
+    }).to_list(1000)
+    
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
+    # Group by zikr_id and calculate totals across the range
+    range_summary = {}
+    total_range = 0
+    
+    for entry in entries:
+        zikr_id = entry["zikr_id"]
+        count = entry["count"]
+        
+        if zikr_id not in range_summary:
+            range_summary[zikr_id] = {
+                "count": 0,
+                "sessions": 0,
+                "percentage": 0
+            }
+        
+        range_summary[zikr_id]["count"] += count
+        range_summary[zikr_id]["sessions"] += 1
+        total_range += count
+    
+    # Calculate percentages
+    for zikr_id in range_summary:
+        if total_range > 0:
+            range_summary[zikr_id]["percentage"] = round(
+                (range_summary[zikr_id]["count"] / total_range) * 100, 1
+            )
+        else:
+            range_summary[zikr_id]["percentage"] = 0
+    
+    return {
+        "start_date": start_date,
+        "end_date": end_date,
+        "total_range": total_range,
+        "azkar_summary": range_summary,
         "entries": entries
     }
 
