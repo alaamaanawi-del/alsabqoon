@@ -168,11 +168,73 @@ export default function MyAzkarScreen() {
 
   const loadAzkarData = async () => {
     try {
-      const dateStr = formatDateForAPI(selectedDate);
-      const summary = await getDailyAzkar(dateStr);
-      setDailySummary(summary);
+      console.log('Loading azkar data for filter:', selectedFilter);
+      
+      if (selectedFilter === 'today') {
+        // Load data for today
+        const dateStr = formatDateForAPI(selectedDate);
+        console.log('Loading today data for:', dateStr);
+        const summary = await getDailyAzkar(dateStr);
+        setDailySummary(summary);
+      } else if (selectedFilter === 'week') {
+        // Load data for the last 7 days
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 6); // Last 7 days
+        
+        const startDateStr = formatDateForAPI(startDate);
+        const endDateStr = formatDateForAPI(endDate);
+        console.log('Loading week data from:', startDateStr, 'to:', endDateStr);
+        
+        const rangeData = await getAzkarRange(startDateStr, endDateStr);
+        // Convert range data to daily summary format
+        setDailySummary({
+          date: `${startDateStr} to ${endDateStr}`,
+          total_daily: rangeData.total_range,
+          azkar_summary: rangeData.azkar_summary,
+          entries: rangeData.entries
+        });
+      } else if (selectedFilter === 'month') {
+        // Load data for the last 30 days
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 29); // Last 30 days
+        
+        const startDateStr = formatDateForAPI(startDate);
+        const endDateStr = formatDateForAPI(endDate);
+        console.log('Loading month data from:', startDateStr, 'to:', endDateStr);
+        
+        const rangeData = await getAzkarRange(startDateStr, endDateStr);
+        // Convert range data to daily summary format
+        setDailySummary({
+          date: `${startDateStr} to ${endDateStr}`,
+          total_daily: rangeData.total_range,
+          azkar_summary: rangeData.azkar_summary,
+          entries: rangeData.entries
+        });
+      } else if (selectedFilter === 'custom' && customStartDate && customEndDate) {
+        // Load data for custom date range
+        const startDateStr = formatDateForAPI(customStartDate);
+        const endDateStr = formatDateForAPI(customEndDate);
+        console.log('Loading custom range data from:', startDateStr, 'to:', endDateStr);
+        
+        const rangeData = await getAzkarRange(startDateStr, endDateStr);
+        // Convert range data to daily summary format
+        setDailySummary({
+          date: `${startDateStr} to ${endDateStr}`,
+          total_daily: rangeData.total_range,
+          azkar_summary: rangeData.azkar_summary,
+          entries: rangeData.entries
+        });
+      } else {
+        // Fallback to today's data
+        const dateStr = formatDateForAPI(selectedDate);
+        console.log('Loading fallback data for:', dateStr);
+        const summary = await getDailyAzkar(dateStr);
+        setDailySummary(summary);
+      }
     } catch (error) {
-      console.error('Error loading daily azkar:', error);
+      console.error('Error loading azkar data:', error);
       // Set empty summary on error
       setDailySummary({
         date: formatDateForAPI(selectedDate),
