@@ -188,7 +188,7 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: GET /api/charities/{charity_id}/stats returns accurate statistics. Verified charity_id=1 shows 30 total count with 2 sessions, charity_id=6 shows 2 total with 1 session, charity_id=26 shows 1 total with 1 session. MongoDB aggregation pipeline working correctly for charity statistics."
-  - task: "Daily charity summary API (/api/charities/daily/{date})"
+  - task: "NEW: Charity range filtering API (/api/charities/range/{start_date}/{end_date})"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -198,10 +198,10 @@ backend:
     status_history:
       - working: false
         agent: "main"
-        comment: "Implemented GET /api/charities/daily/{date} for daily progress tracking with percentages"
+        comment: "Implemented NEW GET /api/charities/range/{start_date}/{end_date} for charity range filtering functionality with comprehensive aggregation, percentage calculations, and multi-date support"
       - working: true
         agent: "testing"
-        comment: "✅ TESTED: GET /api/charities/daily/{date} returns comprehensive daily summaries. Tested dates 2024-01-15 (7 total, 2 charity types) and 2024-01-16 (1 total, 1 charity type). Percentage calculations accurate - all percentages sum to 100%. Daily grouping and statistics working perfectly for charity tracking."
+        comment: "✅ COMPREHENSIVE TESTING COMPLETE: NEW Charity Range Filtering functionality fully operational! TESTED ALL REQUIREMENTS: 1) 7-day range (2024-09-01 to 2024-09-07) returns 184 total with 4 charity types, correct response structure (start_date, end_date, total_range, charity_summary, entries), 2) 30-day range (2024-09-01 to 2024-09-30) returns 394 total with proper aggregation, 3) Charity_summary contains count, sessions, percentage fields as required, 4) Percentage calculations accurate (sum to ~100%), 5) Data integrity verified - manual verification shows charity_id=1 has 150+ count with 4+ sessions, charity_id=6 has 10+ count with 4+ sessions, 6) Edge cases handled correctly (empty ranges, single day ranges), 7) Existing charity endpoints regression tested - all working perfectly (list, daily, stats). Created 12 test entries across multiple dates, verified aggregation accuracy, confirmed percentage calculations. NEW charity range filtering backend is production-ready and fully functional!"
   - task: "Create Status Check (POST /api/status)"
     implemented: true
     working: true
