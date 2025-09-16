@@ -286,11 +286,19 @@ async def get_azkar_list():
 @api_router.post("/azkar/entry", response_model=ZikrEntry)
 async def create_zikr_entry(entry: ZikrEntryCreate):
     """Record a zikr entry with user's device timestamp"""
+    # Start with base edit_notes
+    edit_notes = []
+    
+    # Add comment as first edit note if provided
+    if entry.comment:
+        edit_notes.append(entry.comment)
+    
     zikr_obj = ZikrEntry(
         zikr_id=entry.zikr_id,
         count=entry.count,
         date=entry.date,
-        timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone)
+        timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone),
+        edit_notes=edit_notes
     )
     await db.zikr_entries.insert_one(zikr_obj.dict())
     return zikr_obj
