@@ -237,6 +237,7 @@ AZKAR_LIST = [
     {"id": 10, "nameAr": "الصلاة على النبي", "nameEn": "Salat Ala al-Nabi", "color": "#85C1E9"},
     {"id": 11, "nameAr": "استغفر الله وأتوب إليه", "nameEn": "Astaghfir Allah wa Atubu ilayh", "color": "#F8C471"},
     {"id": 12, "nameAr": "آيات قرأتها", "nameEn": "Verses I read of the Quran", "color": "#82E0AA"},
+    {"id": 13, "nameAr": "الدعوة – تعليم", "nameEn": "Da'wah - Teaching Islam", "color": "#FF9F43"},
 ]
 
 # Charity data - 32 categories with multi-language support
