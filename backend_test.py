@@ -253,7 +253,7 @@ def test_azkar_list():
                     print(f"   ❌ FAIL: Missing required fields in azkar structure: {first_azkar}")
                     return False
             else:
-                print(f"   ❌ FAIL: Expected 12 azkar, got {len(azkar_list)}")
+                print(f"   ❌ FAIL: Expected 13 azkar, got {len(azkar_list)}")
                 return False
         else:
             print(f"   ❌ FAIL: Expected status 200, got {response.status_code}")
