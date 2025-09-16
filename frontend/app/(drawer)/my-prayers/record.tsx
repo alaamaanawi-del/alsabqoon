@@ -526,7 +526,7 @@ export default function RecordPrayer() {
               isHighlighted={focusQuestion === 'taught' && activeRakka === focusRakka}
             />
             
-            {record && record.rakka[activeRakka].questions.taught && (
+            {record && record.rakka[activeRakka] && record.rakka[activeRakka].questions.taught && (
               <View style={styles.countRow}>
                 <Text style={styles.countLabel}>كم شخص علمت؟</Text>
                 <TextInput
