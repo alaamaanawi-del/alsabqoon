@@ -223,7 +223,9 @@ export default function ZikrDetailsScreen() {
 
     try {
       const zikrId = parseInt(id as string);
-      const dateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      const dateStr = getCurrentLocalDateString(); // Use local date instead of UTC
+      
+      console.log('Creating zikr entry:', { zikrId, countValue, dateStr, localTime: new Date().toString() });
       
       await createZikrEntry(zikrId, countValue, dateStr);
       
