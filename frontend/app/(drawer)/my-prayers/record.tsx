@@ -117,6 +117,13 @@ export default function RecordPrayer() {
   // Make results independent per rakka
   const [results, setResults] = useState<Record<RakkaIndex, SearchItem[]>>({ 1: [], 2: [] });
   const [showSurahSelector, setShowSurahSelector] = useState(false);
+  const [showSuraViewer, setShowSuraViewer] = useState(false);
+  const [selectedSura, setSelectedSura] = useState<{
+    number: number;
+    nameAr: string;
+    nameEn: string;
+    initialVerse?: number;
+  } | null>(null);
 
   // Range selection state - per rakka
   const [rangeStart, setRangeStart] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
