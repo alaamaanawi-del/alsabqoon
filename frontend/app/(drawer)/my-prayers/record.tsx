@@ -168,24 +168,14 @@ export default function RecordPrayer() {
   };
 
   const onVerseNumberPress = (item: SearchItem) => {
-    const start = rangeStart[activeRakka];
-    const end = rangeEnd[activeRakka];
-    
-    if (!start) { 
-      setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
-      return; 
-    }
-    if (start && !end) {
-      if (item.surahNumber !== start.surahNumber) {
-        setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
-        setRangeEnd(prev => ({ ...prev, [activeRakka]: null })); 
-        return;
-      }
-      setRangeEnd(prev => ({ ...prev, [activeRakka]: item }));
-      return;
-    }
-    setRangeStart(prev => ({ ...prev, [activeRakka]: item })); 
-    setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
+    // When user clicks on search result, open the sura viewer at that verse
+    setSelectedSura({
+      number: item.surahNumber,
+      nameAr: item.nameAr,
+      nameEn: item.nameEn,
+      initialVerse: item.ayah
+    });
+    setShowSuraViewer(true);
   };
 
   const selectWholeSurah = async () => {
