@@ -500,7 +500,7 @@ export default function RecordPrayer() {
 
       {/* Fixed Footer */}
       <View style={styles.footer}>
-        <TouchableOpacity onPress={handleCompleteRecording} style={styles.doneButton}>
+        <TouchableOpacity onPress={() => router.replace("/(drawer)/my-prayers")} style={styles.doneButton}>
           <Text style={styles.doneButtonText}>تم</Text>
         </TouchableOpacity>
       </View>
