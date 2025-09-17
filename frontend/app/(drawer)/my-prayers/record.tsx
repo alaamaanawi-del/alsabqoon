@@ -141,13 +141,20 @@ export default function RecordPrayer() {
   const doSearch = async () => {
     if (!query.trim()) { 
       setResults(prev => ({ ...prev, [activeRakka]: [] })); 
+      setShowSearchResults(false);
       return; 
     }
     try {
       const rows = await searchQuran(query, (bilingualParam as any) || '');
       setResults(prev => ({ ...prev, [activeRakka]: rows as SearchItem[] }));
+      // Show search results modal when there are results
+      if (rows.length > 0) {
+        setShowSearchResults(true);
+      }
     } catch (e) {
       console.warn("search error", e);
+      setResults(prev => ({ ...prev, [activeRakka]: [] }));
+      setShowSearchResults(false);
     }
   };
   useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam, activeRakka]);
