@@ -145,8 +145,14 @@ export default function SuraViewer({
   const handleSelectWholeSura = () => {
     if (verses.length === 0) return;
     
-    setRangeStart(1);
-    setRangeEnd(verses[verses.length - 1].ayah);
+    // Select all verses from first to last
+    const firstVerse = verses[0].ayah;
+    const lastVerse = verses[verses.length - 1].ayah;
+    
+    setRangeStart(firstVerse);
+    setRangeEnd(lastVerse);
+    
+    console.log(`Selected whole sura: verses ${firstVerse} to ${lastVerse}`);
   };
 
   const getRangeText = (): string => {
