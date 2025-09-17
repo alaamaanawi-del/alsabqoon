@@ -228,58 +228,25 @@ export default function RecordPrayer() {
 
   // SurahSelector handlers
   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
-    // Set up for range selection mode - user will select verses manually
-    const mockItem: SearchItem = {
-      surahNumber: surah.number,
+    // Open sura viewer for range selection
+    setSelectedSura({
+      number: surah.number,
       nameAr: surah.nameAr,
       nameEn: surah.nameEn,
-      ayah: 1,
-      textAr: '',
-    };
-    setRangeStart(prev => ({ ...prev, [activeRakka]: mockItem }));
-    setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
-    showToast(`تم اختيار ${surah.nameAr} - اختر نطاق الآيات`);
+      initialVerse: 1
+    });
+    setShowSuraViewer(true);
   };
 
-  const handleSelectWholeSurah = async (surah: { number: number; nameAr: string; nameEn: string }) => {
-    try {
-      const mod = Platform.OS === 'web' ? await import("../../../src/db/quran.web") : await import("../../../src/db/quran.native");
-      const range = await mod.getSurahRange(surah.number);
-      if (range) {
-        const startItem: SearchItem = {
-          surahNumber: surah.number,
-          nameAr: surah.nameAr,
-          nameEn: surah.nameEn,
-          ayah: range.fromAyah,
-          textAr: '',
-        };
-        const endItem: SearchItem = {
-          surahNumber: surah.number,
-          nameAr: surah.nameAr,
-          nameEn: surah.nameEn,
-          ayah: range.toAyah,
-          textAr: '',
-        };
-        setRangeStart(prev => ({ ...prev, [activeRakka]: startItem }));
-        setRangeEnd(prev => ({ ...prev, [activeRakka]: endItem }));
-        showToast(`تم اختيار ${surah.nameAr} كاملة`);
-      } else {
-        // Fallback - just set a mock range
-        const startItem: SearchItem = {
-          surahNumber: surah.number,
-          nameAr: surah.nameAr,
-          nameEn: surah.nameEn,
-          ayah: 1,
-          textAr: '',
-        };
-        setRangeStart(prev => ({ ...prev, [activeRakka]: startItem }));
-        setRangeEnd(prev => ({ ...prev, [activeRakka]: startItem }));
-        showToast(`تم اختيار ${surah.nameAr}`);
-      }
-    } catch (error) {
-      console.warn('Error getting surah range:', error);
-      showToast(`خطأ في تحديد نطاق ${surah.nameAr}`);
-    }
+  const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+    // Open sura viewer with whole sura pre-selected
+    setSelectedSura({
+      number: surah.number,
+      nameAr: surah.nameAr,
+      nameEn: surah.nameEn,
+      initialVerse: 1
+    });
+    setShowSuraViewer(true);
   };
 
   // Load initial data
