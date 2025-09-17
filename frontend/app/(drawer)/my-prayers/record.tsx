@@ -313,14 +313,6 @@ export default function RecordPrayer() {
       showToast('حدث خطأ في حفظ الآيات المحددة');
     }
   };
-        router.replace('/(drawer)/my-prayers');
-      }
-    } catch (error) {
-      console.error('❌ Error in handleCompleteRecording:', error);
-      // Still navigate even if Da'wah entry creation fails
-      router.replace('/(drawer)/my-prayers');
-    }
-  };
 
 
   const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
