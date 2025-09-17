@@ -300,6 +300,10 @@ export default function RecordPrayer() {
       setRangeStart(prev => ({ ...prev, [activeRakka]: null }));
       setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
       
+      // Clear search results and query to hide search display
+      setQuery("");
+      setResults(prev => ({ ...prev, [activeRakka]: [] }));
+      
       // Close viewers
       setShowSuraViewer(false);
       setSelectedSura(null);
@@ -309,8 +313,8 @@ export default function RecordPrayer() {
       showToast(`تم إضافة ${verseText} من ${selectedSura!.nameAr}`);
       
     } catch (error) {
-      console.error('Error handling range selection:', error);
-      showToast('حدث خطأ في حفظ الآيات المحددة');
+      console.error("Error handling range selection:", error);
+      showToast("حدث خطأ في حفظ الآيات المحددة");
     }
   };
 
