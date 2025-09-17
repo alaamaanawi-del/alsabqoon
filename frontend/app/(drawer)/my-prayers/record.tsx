@@ -486,6 +486,15 @@ export default function RecordPrayer() {
         </TouchableOpacity>
       </View>
 
+      {/* SearchResultsModal */}
+      <SearchResultsModal
+        visible={showSearchResults}
+        onClose={() => setShowSearchResults(false)}
+        results={results[activeRakka]}
+        searchTerm={query}
+        onVersePress={onVerseNumberPress}
+      />
+
       {/* SurahSelector Modal */}
       <SurahSelector
         visible={showSurahSelector}
