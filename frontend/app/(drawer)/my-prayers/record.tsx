@@ -267,6 +267,52 @@ export default function RecordPrayer() {
     return () => clearTimeout(timer);
   }, [record, p, day]);
 
+  const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
+    if (!record) return;
+    
+    try {
+      // Create verse range objects for the selected verses
+      const ranges: VerseRange[] = verses.map(verse => ({
+        surahNumber: selectedSura!.number,
+        surahNameAr: selectedSura!.nameAr,
+        surahNameEn: selectedSura!.nameEn,
+        fromAyah: verse.ayah,
+        toAyah: verse.ayah,
+        textAr: verse.textAr,
+      }));
+
+      // Update the record with the selected verse ranges
+      const rk = record.rakka[activeRakka];
+      const next = { 
+        ...record, 
+        rakka: { 
+          ...record.rakka, 
+          [activeRakka]: { 
+            ...rk, 
+            ranges: [...(rk.ranges || []), ...ranges]
+          } 
+        } 
+      };
+      
+      setRecord(next);
+      
+      // Clear range selection state
+      setRangeStart(prev => ({ ...prev, [activeRakka]: null }));
+      setRangeEnd(prev => ({ ...prev, [activeRakka]: null }));
+      
+      // Close viewers
+      setShowSuraViewer(false);
+      setSelectedSura(null);
+      
+      const verseCount = endVerse - startVerse + 1;
+      const verseText = verseCount === 1 ? `الآية ${startVerse}` : `الآيات ${startVerse}-${endVerse}`;
+      showToast(`تم إضافة ${verseText} من ${selectedSura!.nameAr}`);
+      
+    } catch (error) {
+      console.error('Error handling range selection:', error);
+      showToast('حدث خطأ في حفظ الآيات المحددة');
+    }
+  };
         router.replace('/(drawer)/my-prayers');
       }
     } catch (error) {
