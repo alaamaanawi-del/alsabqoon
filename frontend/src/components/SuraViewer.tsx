@@ -48,6 +48,19 @@ export default function SuraViewer({
     }
   }, [visible, surahNumber]);
 
+  // Scroll to initial verse when verses are loaded
+  useEffect(() => {
+    if (verses.length > 0 && initialVerse && initialVerse > 1) {
+      // Highlight the initial verse
+      setRangeStart(initialVerse);
+      setRangeEnd(null);
+      
+      // In a real app, you would scroll to the verse here
+      // For now, we'll just log it
+      console.log(`Should scroll to verse ${initialVerse}`);
+    }
+  }, [verses, initialVerse]);
+
   const loadSuraVerses = async () => {
     setLoading(true);
     try {
