@@ -9,6 +9,7 @@ import { showToast } from "../../../src/utils/toast";
 import { createZikrEntry, getCurrentLocalDateString } from "../../../src/api/client";
 import SurahSelector from "../../../src/components/SurahSelector";
 import SuraViewer from "../../../src/components/SuraViewer";
+import SearchResultsModal from "../../../src/components/SearchResultsModal";
 import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay";
 import HighlightedText from "../../../src/components/HighlightedText";
 import TaskProgressBar from "../../../src/components/TaskProgressBar";
