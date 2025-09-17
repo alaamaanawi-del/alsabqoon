@@ -7,7 +7,8 @@ import {
   ScrollView,
   Modal,
   SafeAreaView,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import { Colors } from '../theme/colors';
 
