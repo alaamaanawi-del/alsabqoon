@@ -119,6 +119,7 @@ export default function RecordPrayer() {
   const [results, setResults] = useState<Record<RakkaIndex, SearchItem[]>>({ 1: [], 2: [] });
   const [showSurahSelector, setShowSurahSelector] = useState(false);
   const [showSuraViewer, setShowSuraViewer] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [selectedSura, setSelectedSura] = useState<{
     number: number;
     nameAr: string;
