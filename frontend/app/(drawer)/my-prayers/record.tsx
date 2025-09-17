@@ -399,40 +399,8 @@ export default function RecordPrayer() {
             textAlign="right"
           />
 
-          {/* Search Results */}
-          {results[activeRakka].length > 0 && (
-            <View style={styles.resultsContainer}>
-              <Text style={styles.resultsTitle}>نتائج البحث ({results[activeRakka].length})</Text>
-              {results[activeRakka].slice(0, 10).map((item, idx) => (
-                <TouchableOpacity
-                  key={`${item.surahNumber}-${item.ayah}-${idx}`}
-                  style={[
-                    styles.resultRow,
-                    withinRange(item) && styles.resultRowSelected
-                  ]}
-                  onPress={() => onVerseNumberPress(item)}
-                >
-                  <View style={styles.resultHeader}>
-                    <Text style={styles.verseRef}>
-                      {item.nameAr} {item.surahNumber}:{item.ayah}
-                    </Text>
-                  </View>
-                  <HighlightedText 
-                    text={item.textAr}
-                    searchTerm={query}
-                    style={styles.arabicText}
-                  />
-                  {lang === "ar_tafseer" && item.tafseer && (
-                    <HighlightedText 
-                      text={item.tafseer}
-                      searchTerm={query}
-                      style={styles.tafseerText}
-                    />
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+          {/* Search Results - Now shown in SearchResultsModal instead of inline */}
+          {/* Inline search results removed to prevent overlapping with questions */}
         </View>
 
         {/* Questions Section */}
