@@ -28,26 +28,55 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
   const tokensNorm = tokens.map(normalizeArabic);
 
   const results: SearchItem[] = [];
-  for (const s of (seed as any).surahs) {
-    for (const a of s.ayahs) {
-      const ar = a.textAr;
-      const matchAr = tokens.every((t, i) => ar.includes(t) || normalizeArabic(ar).includes(tokensNorm[i]));
-      const matchEn = tokens.length ? tokens.every(t => (a.en || '').toLowerCase().includes(t.toLowerCase())) : false;
-      const matchEs = tokens.length ? tokens.every(t => (a.es || '').toLowerCase().includes(t.toLowerCase())) : false;
-      if (matchAr || matchEn || matchEs) {
-        results.push({
-          surahNumber: s.number,
-          nameAr: s.nameAr,
-          nameEn: s.nameEn,
-          ayah: a.ayah,
-          textAr: a.textAr,
-          en: bilingual === 'en' ? a.en : undefined,
-          es: bilingual === 'es' ? a.es : undefined,
-        });
-        if (results.length >= 100) return results;
+  
+  try {
+    for (const s of (seed as any).surahs) {
+      // Handle different data structure formats
+      const surahNameAr = s.nameAr || s.surah || `Surah ${s.number}`;
+      const surahNameEn = s.nameEn || `Surah ${s.number}`;
+      
+      for (const a of s.ayahs) {
+        // Handle different data structure formats
+        const textAr = a.textAr || a.text || '';
+        const ayahNumber = a.ayah || a.ayah_number || 1;
+        const enText = a.en || '';
+        const esText = a.es || '';
+        
+        if (!textAr) continue; // Skip if no Arabic text
+        
+        // Arabic text matching
+        const matchAr = tokens.every((t, i) => 
+          textAr.includes(t) || normalizeArabic(textAr).includes(tokensNorm[i])
+        );
+        
+        // English text matching (safe)
+        const matchEn = tokens.length && enText ? tokens.every(t => 
+          enText.toLowerCase().includes(t.toLowerCase())
+        ) : false;
+        
+        // Spanish text matching (safe)
+        const matchEs = tokens.length && esText ? tokens.every(t => 
+          esText.toLowerCase().includes(t.toLowerCase())
+        ) : false;
+        
+        if (matchAr || matchEn || matchEs) {
+          results.push({
+            surahNumber: s.number,
+            nameAr: surahNameAr,
+            nameEn: surahNameEn,
+            ayah: ayahNumber,
+            textAr: textAr,
+            en: bilingual === 'en' ? enText : undefined,
+            es: bilingual === 'es' ? esText : undefined,
+          });
+          if (results.length >= 100) return results;
+        }
       }
     }
+  } catch (error) {
+    console.error('Search error:', error);
   }
+  
   return results;
 }
 
