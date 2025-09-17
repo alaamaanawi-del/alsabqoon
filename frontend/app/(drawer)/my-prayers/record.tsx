@@ -512,6 +512,22 @@ export default function RecordPrayer() {
         onSelectSurah={handleSelectSurah}
         onSelectWholeSurah={handleSelectWholeSurah}
       />
+
+      {/* SuraViewer Modal */}
+      {selectedSura && (
+        <SuraViewer
+          visible={showSuraViewer}
+          onClose={() => {
+            setShowSuraViewer(false);
+            setSelectedSura(null);
+          }}
+          surahNumber={selectedSura.number}
+          surahNameAr={selectedSura.nameAr}
+          surahNameEn={selectedSura.nameEn}
+          initialVerse={selectedSura.initialVerse}
+          onRangeSelected={handleRangeSelected}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
