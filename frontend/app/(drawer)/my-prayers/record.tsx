@@ -371,7 +371,21 @@ export default function RecordPrayer() {
         const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
         const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
         const baseTitle = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
-        const autoComment = teachingComments ? `${baseTitle}\n\nتفاصيل التعليم: ${teachingComments}` : baseTitle;
+        
+        // Collect teaching comments from all rakkas that have taught entries
+        let allComments = '';
+        for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+          const rakka = record.rakka[rakkaNum];
+          if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
+            const commentKey = `${p}_${day}_${rakkaNum}`;
+            const comment = teachingComments[commentKey];
+            if (comment) {
+              allComments += `\nركعة ${rakkaNum}: ${comment}`;
+            }
+          }
+        }
+        
+        const autoComment = allComments ? `${baseTitle}\n\nتفاصيل التعليم:${allComments}` : baseTitle;
         
         console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
         
