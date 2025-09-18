@@ -701,6 +701,7 @@ export default function RecordPrayer() {
         results={results[activeRakka]}
         searchTerm={query}
         onSelectedVersesConfirm={handleSelectedVersesConfirm}
+        onVersePress={onVerseNumberPress}
         onSearchChange={handleSearchChange}
       />
 
