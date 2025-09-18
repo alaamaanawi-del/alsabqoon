@@ -191,15 +191,41 @@ export default function RecordPrayer() {
     return it.ayah >= min && it.ayah <= max;
   };
 
-  const onVerseNumberPress = (item: SearchItem) => {
-    // When user clicks on search result, open the sura viewer at that verse
-    setSelectedSura({
-      number: item.surahNumber,
-      nameAr: item.nameAr,
-      nameEn: item.nameEn,
-      initialVerse: item.ayah
-    });
-    setShowSuraViewer(true);
+  // Handle multiple verse selection from search results
+  const handleSelectedVersesConfirm = (selectedVerses: SearchItem[]) => {
+    if (!record) return;
+    
+    // Convert selected verses to VerseRange objects
+    const ranges: VerseRange[] = selectedVerses.map(item => ({
+      surahNumber: item.surahNumber,
+      surahNameAr: item.nameAr,
+      surahNameEn: item.nameEn || '',
+      fromAyah: item.ayah,
+      toAyah: item.ayah,
+      textAr: item.textAr,
+    }));
+
+    // Update the record with the selected verse ranges
+    const rk = record.rakka[activeRakka];
+    const next = { 
+      ...record, 
+      rakka: { 
+        ...record.rakka, 
+        [activeRakka]: { 
+          ...rk, 
+          ranges: [...(rk.ranges || []), ...ranges]
+        } 
+      } 
+    };
+    
+    setRecord(next);
+    
+    // Clear search results and query
+    setQuery("");
+    setResults({ 1: [], 2: [] });
+    setShowSearchResults(false);
+    
+    showToast(`تم إضافة ${selectedVerses.length} آية للركعة ${activeRakka}`);
   };
 
   const selectWholeSurah = async () => {
