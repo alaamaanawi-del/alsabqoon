@@ -120,6 +120,8 @@ export default function RecordPrayer() {
   const [showSurahSelector, setShowSurahSelector] = useState(false);
   const [showSuraViewer, setShowSuraViewer] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showTeachingComments, setShowTeachingComments] = useState(false);
+  const [teachingComments, setTeachingComments] = useState("");
   const [selectedSura, setSelectedSura] = useState<{
     number: number;
     nameAr: string;
