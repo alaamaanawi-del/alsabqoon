@@ -28,6 +28,7 @@ interface SearchResultsModalProps {
   results: SearchItem[];
   searchTerm: string;
   onVersePress: (item: SearchItem) => void;
+  onSearchChange?: (text: string) => void;
 }
 
 export default function SearchResultsModal({ 
