@@ -609,30 +609,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-  langChipsContainer: {
-    flexDirection: 'row-reverse',
-    gap: 8,
-  },
-  langChip: {
-    backgroundColor: '#2a3f3e',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  langChipActive: {
-    backgroundColor: Colors.warmOrange,
-    borderColor: Colors.warmOrange,
-  },
-  langChipText: {
-    color: Colors.light,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  langChipTextActive: {
-    color: Colors.dark,
-  },
   searchInput: {
     backgroundColor: '#2a3f3e',
     borderRadius: 8,
