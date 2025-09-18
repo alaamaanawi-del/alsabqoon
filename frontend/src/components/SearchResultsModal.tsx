@@ -151,9 +151,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  searchTerm: {
-    color: Colors.light,
+  searchInput: {
+    backgroundColor: '#2a3d3c',
+    borderRadius: 8,
+    padding: 12,
     fontSize: 16,
+    color: Colors.light,
+    textAlign: 'right',
+    marginBottom: 8,
+  },
+  resultCount: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
     textAlign: 'center',
   },
   resultsContainer: {
