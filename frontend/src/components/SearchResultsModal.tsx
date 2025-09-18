@@ -77,42 +77,28 @@ export default function SearchResultsModal({
         </View>
 
         <ScrollView style={styles.resultsContainer} showsVerticalScrollIndicator={true}>
-          {results.map((item, idx) => {
-            const isSelected = isVerseSelected(item);
-            return (
-              <TouchableOpacity
-                key={`${item.surahNumber}-${item.ayah}-${idx}`}
-                style={[
-                  styles.resultRow,
-                  isSelected && styles.resultRowSelected
-                ]}
-                onPress={() => handleVersePress(item)}
-                onLongPress={() => handleLongPress(item)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.resultHeader}>
-                  <Text style={[
-                    styles.verseRef,
-                    isSelected && styles.verseRefSelected
-                  ]}>
-                    {item.nameAr} {item.surahNumber}:{item.ayah}
-                  </Text>
-                  {isSelected && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-                <HighlightedText 
-                  text={item.textAr}
-                  searchTerm={searchTerm}
-                  style={[
-                    styles.arabicText,
-                    isSelected && styles.arabicTextSelected
-                  ]}
-                />
-                {item.en && (
-                  <Text style={styles.englishText}>{item.en}</Text>
-                )}
-              </TouchableOpacity>
-            );
-          })}
+          {results.map((item, idx) => (
+            <TouchableOpacity
+              key={`${item.surahNumber}-${item.ayah}-${idx}`}
+              style={styles.resultRow}
+              onPress={() => handleVersePress(item)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.resultHeader}>
+                <Text style={styles.verseRef}>
+                  {item.nameAr} {item.surahNumber}:{item.ayah}
+                </Text>
+              </View>
+              <HighlightedText 
+                text={item.textAr}
+                searchTerm={searchTerm}
+                style={styles.arabicText}
+              />
+              {item.en && (
+                <Text style={styles.englishText}>{item.en}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
         </ScrollView>
 
         {/* Selection Footer with تم Button */}
