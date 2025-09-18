@@ -62,7 +62,15 @@ export default function SearchResultsModal({
         </View>
 
         <View style={styles.searchInfo}>
-          <Text style={styles.searchTerm}>البحث عن: "{searchTerm}"</Text>
+          <TextInput
+            style={styles.searchInput}
+            value={searchTerm}
+            onChangeText={onSearchChange}
+            placeholder="ابحث في القرآن الكريم..."
+            placeholderTextColor="#888"
+            textAlign="right"
+          />
+          <Text style={styles.resultCount}>النتائج: {results.length}</Text>
         </View>
 
         <ScrollView style={styles.resultsContainer} showsVerticalScrollIndicator={true}>
