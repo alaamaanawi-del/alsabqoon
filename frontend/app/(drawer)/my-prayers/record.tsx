@@ -198,7 +198,7 @@ export default function RecordPrayer() {
     // Convert selected verses to VerseRange objects
     const ranges: VerseRange[] = selectedVerses.map(item => ({
       surahNumber: item.surahNumber,
-      surahNameAr: item.nameAr,
+      nameAr: item.nameAr,
       surahNameEn: item.nameEn || '',
       fromAyah: item.ayah,
       toAyah: item.ayah,
