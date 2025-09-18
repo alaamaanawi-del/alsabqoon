@@ -202,7 +202,6 @@ export default function RecordPrayer() {
       nameEn: item.nameEn || '',
       fromAyah: item.ayah,
       toAyah: item.ayah,
-      textAr: item.textAr,
     }));
 
     // Update the record with the selected verse ranges
