@@ -116,7 +116,7 @@ export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: Selected
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.headerTitle}>الآيات المختارة ({ranges.length})</Text>
+        <Text style={styles.headerTitle}>الآيات المختارة ({getTotalVerseCount()})</Text>
       </View>
 
       <ScrollView 
