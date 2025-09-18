@@ -130,6 +130,10 @@ export default function RecordPrayer() {
   // Range selection state - per rakka
   const [rangeStart, setRangeStart] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
   const [rangeEnd, setRangeEnd] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
+  
+  // Teaching comments state
+  const [showTeachingComments, setShowTeachingComments] = useState(false);
+  const [teachingComments, setTeachingComments] = useState("");
 
   const bilingualParam = useMemo(() => (
     lang === "ar_tafseer" ? "tafseer" : 
@@ -441,18 +445,51 @@ export default function RecordPrayer() {
             />
             
             {/* Always show count field for teaching question - TEMPORARY FIX */}
-            <View style={styles.countRow}>
-              <Text style={styles.countLabel}>كم شخص علمت؟</Text>
-              <TextInput
-                placeholder="أدخل العدد"
-                placeholderTextColor="#888"
-                value={String((record && record.rakka[activeRakka]) ? record.rakka[activeRakka].taughtCount || 0 : 0)}
-                onChangeText={setTaughtCount}
-                keyboardType="number-pad"
-                style={styles.countInput}
-                textAlign="center"
-              />
-            </View>
+            {record && record.rakka[activeRakka] && record.rakka[activeRakka].questions.taught && (
+              <View style={styles.teachingSection}>
+                <View style={styles.countRow}>
+                  <Text style={styles.countLabel}>كم شخص علمت؟</Text>
+                  <TextInput
+                    placeholder="أدخل العدد"
+                    placeholderTextColor="#888"
+                    value={String((record && record.rakka[activeRakka]) ? record.rakka[activeRakka].taughtCount || 0 : 0)}
+                    onChangeText={setTaughtCount}
+                    keyboardType="number-pad"
+                    style={styles.countInput}
+                    textAlign="center"
+                  />
+                </View>
+                
+                {/* Add Comment Button */}
+                <TouchableOpacity 
+                  style={styles.addCommentButton}
+                  onPress={() => setShowTeachingComments(!showTeachingComments)}
+                >
+                  <Text style={styles.addCommentButtonText}>
+                    أضف ملاحظات (ماذا علمته، أيه، حديث، موعظة إلخ)
+                  </Text>
+                  <Text style={styles.expandIcon}>
+                    {showTeachingComments ? '▲' : '▼'}
+                  </Text>
+                </TouchableOpacity>
+                
+                {/* Expandable Comment Field */}
+                {showTeachingComments && (
+                  <View style={styles.commentSection}>
+                    <TextInput
+                      style={styles.commentInput}
+                      value={teachingComments}
+                      onChangeText={setTeachingComments}
+                      placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
+                      placeholderTextColor="#888"
+                      multiline
+                      numberOfLines={4}
+                      textAlignVertical="top"
+                    />
+                  </View>
+                )}
+              </View>
+            )}
           </View>
         )}
 
@@ -824,5 +861,50 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     minHeight: 80,
     textAlignVertical: 'top',
+  },
+  teachingSection: {
+    backgroundColor: '#2a3f3e',
+    borderRadius: 8,
+    marginTop: 8,
+    padding: 12,
+  },
+  addCommentButton: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#1d2a29',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  addCommentButtonText: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+  },
+  expandIcon: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  commentSection: {
+    marginTop: 8,
+  },
+  commentInput: {
+    backgroundColor: '#1d2a29',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    color: Colors.light,
+    fontSize: 16,
+    textAlign: 'right',
+    minHeight: 100,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 138, 88, 0.3)',
   },
 });
