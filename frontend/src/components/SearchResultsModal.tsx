@@ -45,16 +45,8 @@ export default function SearchResultsModal({
   const [selectedVerses, setSelectedVerses] = useState<SearchItem[]>([]);
   
   const handleVersePress = (item: SearchItem) => {
-    // Toggle verse selection instead of immediately opening sura viewer
-    const isSelected = selectedVerses.some(v => v.surahNumber === item.surahNumber && v.ayah === item.ayah);
-    
-    if (isSelected) {
-      // Remove from selection
-      setSelectedVerses(prev => prev.filter(v => !(v.surahNumber === item.surahNumber && v.ayah === item.ayah)));
-    } else {
-      // Add to selection
-      setSelectedVerses(prev => [...prev, item]);
-    }
+    // Direct click opens sura viewer at that verse
+    onVersePress(item);
   };
 
   const handleConfirmSelection = () => {
