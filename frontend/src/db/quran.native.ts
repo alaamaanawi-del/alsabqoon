@@ -148,3 +148,21 @@ export async function getSurahRange(surahNumber: number): Promise<{ fromAyah: nu
   if (!row || !row.max) return null;
   return { fromAyah: 1, toAyah: row.max };
 }
+
+export async function getSurahVerses(surahNumber: number): Promise<any[]> {
+  const database = await getDb();
+  const rows = await database.getAllAsync<any>(
+    `SELECT a.ayah, a.textAr, a.en, a.es
+     FROM ayahs a 
+     WHERE a.surahNumber = ?
+     ORDER BY a.ayah`,
+    [surahNumber]
+  );
+  return rows.map(row => ({
+    ayah: row.ayah,
+    textAr: row.textAr || '',
+    en: row.en || null,
+    es: row.es || null,
+    tafseer: null // Add tafseer support later if needed
+  }));
+}
