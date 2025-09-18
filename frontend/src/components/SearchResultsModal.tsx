@@ -258,4 +258,23 @@ const styles = StyleSheet.create({
     color: '#A6D3CF',
     fontSize: 14,
   },
+  resultRowSelected: {
+    backgroundColor: 'rgba(255, 138, 88, 0.15)',
+    borderColor: Colors.warmOrange,
+    borderWidth: 2,
+  },
+  verseRefSelected: {
+    color: '#fff',
+    fontWeight: '700',
+  },
+  arabicTextSelected: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  checkmark: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
 });
