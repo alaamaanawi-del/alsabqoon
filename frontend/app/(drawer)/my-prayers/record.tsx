@@ -307,7 +307,6 @@ export default function RecordPrayer() {
           surahNameEn: surah.nameEn,
           fromAyah: verse.ayah,
           toAyah: verse.ayah,
-          textAr: verse.textAr,
         }));
 
         // Update the record with the selected verse ranges
@@ -373,7 +372,6 @@ export default function RecordPrayer() {
         nameEn: selectedSura!.nameEn,
         fromAyah: verse.ayah,
         toAyah: verse.ayah,
-        textAr: verse.textAr,
       }));
 
       // Update the record with the selected verse ranges
