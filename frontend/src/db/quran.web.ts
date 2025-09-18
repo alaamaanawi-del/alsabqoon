@@ -87,3 +87,16 @@ export async function getSurahRange(surahNumber: number) {
   const max = Math.max(...surah.ayahs.map((a: any) => a.ayah));
   return { fromAyah: 1, toAyah: max };
 }
+
+export async function getSurahVerses(surahNumber: number) {
+  const surah = (seed as any).surahs.find((s: any) => s.number === surahNumber);
+  if (!surah) return [];
+  
+  return surah.ayahs.map((ayah: any) => ({
+    ayah: ayah.ayah,
+    textAr: ayah.textAr || ayah.text || '',
+    en: ayah.en || null,
+    es: ayah.es || null,
+    tafseer: ayah.tafseer || null
+  }));
+}
