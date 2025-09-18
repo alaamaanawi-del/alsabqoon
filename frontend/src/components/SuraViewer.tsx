@@ -241,32 +241,40 @@ export default function SuraViewer({
             <Text style={styles.loadingText}>جارٍ التحميل...</Text>
           </View>
         ) : (
-          <ScrollView style={styles.versesContainer} showsVerticalScrollIndicator={true}>
+          <ScrollView 
+            ref={scrollViewRef}
+            style={styles.versesContainer} 
+            showsVerticalScrollIndicator={true}
+          >
             {verses.map((verse) => (
-              <TouchableOpacity
+              <View
                 key={verse.ayah}
-                style={[
-                  styles.verseItem,
-                  isVerseInRange(verse.ayah) && styles.verseItemSelected
-                ]}
-                onPress={() => handleVersePress(verse.ayah)}
-                activeOpacity={0.7}
+                ref={(ref) => { verseRefs.current[verse.ayah] = ref; }}
               >
-                <View style={styles.verseHeader}>
+                <TouchableOpacity
+                  style={[
+                    styles.verseItem,
+                    isVerseInRange(verse.ayah) && styles.verseItemSelected
+                  ]}
+                  onPress={() => handleVersePress(verse.ayah)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.verseHeader}>
+                    <Text style={[
+                      styles.verseNumber,
+                      isVerseInRange(verse.ayah) && styles.verseNumberSelected
+                    ]}>
+                      {verse.ayah}
+                    </Text>
+                  </View>
                   <Text style={[
-                    styles.verseNumber,
-                    isVerseInRange(verse.ayah) && styles.verseNumberSelected
+                    styles.verseText,
+                    isVerseInRange(verse.ayah) && styles.verseTextSelected
                   ]}>
-                    {verse.ayah}
+                    {verse.textAr}
                   </Text>
-                </View>
-                <Text style={[
-                  styles.verseText,
-                  isVerseInRange(verse.ayah) && styles.verseTextSelected
-                ]}>
-                  {verse.textAr}
-                </Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             ))}
           </ScrollView>
         )}
