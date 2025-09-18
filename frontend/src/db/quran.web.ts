@@ -69,7 +69,8 @@ export async function searchQuran(query: string, bilingual: Bilingual): Promise<
             en: bilingual === 'en' ? enText : undefined,
             es: bilingual === 'es' ? esText : undefined,
           });
-          if (results.length >= 100) return results;
+          // Remove the 100 limit - show all results
+          if (results.length >= 1000) return results; // Only limit at 1000 for performance
         }
       }
     }
