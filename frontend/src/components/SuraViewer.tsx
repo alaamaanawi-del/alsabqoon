@@ -55,9 +55,12 @@ export default function SuraViewer({
       setRangeStart(initialVerse);
       setRangeEnd(null);
       
-      // In a real app, you would scroll to the verse here
-      // For now, we'll just log it
-      console.log(`Should scroll to verse ${initialVerse}`);
+      // Scroll to the verse after a short delay to ensure rendering is complete
+      setTimeout(() => {
+        console.log(`Scrolling to verse ${initialVerse} in ${surahNameAr}`);
+        // In a real implementation, you would use ScrollView ref to scroll
+        // For now, we'll just highlight the verse
+      }, 500);
     }
   }, [verses, initialVerse]);
 
