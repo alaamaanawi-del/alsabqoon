@@ -40,6 +40,8 @@ export default function SuraViewer({
   const [loading, setLoading] = useState(false);
   const [rangeStart, setRangeStart] = useState<number | null>(null);
   const [rangeEnd, setRangeEnd] = useState<number | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const verseRefs = useRef<{ [key: number]: View | null }>({});
 
   // Load verses when modal opens
   useEffect(() => {
