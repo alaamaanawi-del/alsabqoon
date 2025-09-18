@@ -380,20 +380,6 @@ export default function RecordPrayer() {
               <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
             </TouchableOpacity>
 
-            <View style={styles.langChipsContainer}>
-              <TouchableOpacity 
-                style={[styles.langChip, lang === "ar" && styles.langChipActive]}
-                onPress={() => setLang("ar")}
-              >
-                <Text style={[styles.langChipText, lang === "ar" && styles.langChipTextActive]}>عربي</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.langChip, lang === "ar_tafseer" && styles.langChipActive]}
-                onPress={() => setLang("ar_tafseer")}
-              >
-                <Text style={[styles.langChipText, lang === "ar_tafseer" && styles.langChipTextActive]}>تفسير</Text>
-              </TouchableOpacity>
-            </View>
           </View>
 
           <TextInput
