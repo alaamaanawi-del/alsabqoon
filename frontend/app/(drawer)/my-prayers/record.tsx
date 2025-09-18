@@ -530,31 +530,40 @@ export default function RecordPrayer() {
                 {/* Add Comment Button */}
                 <TouchableOpacity 
                   style={styles.addCommentButton}
-                  onPress={() => setShowTeachingComments(!showTeachingComments)}
+                  onPress={() => {
+                    const key = `${p}_${day}_${activeRakka}`;
+                    setShowTeachingComments(prev => ({ ...prev, [key]: !prev[key] }));
+                  }}
                 >
                   <Text style={styles.addCommentButtonText}>
                     أضف ملاحظات (ماذا علمته، أيه، حديث، موعظة إلخ)
                   </Text>
                   <Text style={styles.expandIcon}>
-                    {showTeachingComments ? '▲' : '▼'}
+                    {(() => {
+                      const key = `${p}_${day}_${activeRakka}`;
+                      return showTeachingComments[key] ? '▲' : '▼';
+                    })()}
                   </Text>
                 </TouchableOpacity>
                 
                 {/* Expandable Comment Field */}
-                {showTeachingComments && (
-                  <View style={styles.commentSection}>
-                    <TextInput
-                      style={styles.commentInput}
-                      value={teachingComments}
-                      onChangeText={setTeachingComments}
-                      placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
-                      placeholderTextColor="#888"
-                      multiline
-                      numberOfLines={4}
-                      textAlignVertical="top"
-                    />
-                  </View>
-                )}
+                {(() => {
+                  const key = `${p}_${day}_${activeRakka}`;
+                  return showTeachingComments[key] && (
+                    <View style={styles.commentSection}>
+                      <TextInput
+                        style={styles.commentInput}
+                        value={teachingComments[key] || ''}
+                        onChangeText={(text) => setTeachingComments(prev => ({ ...prev, [key]: text }))}
+                        placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
+                        placeholderTextColor="#888"
+                        multiline
+                        numberOfLines={4}
+                        textAlignVertical="top"
+                      />
+                    </View>
+                  );
+                })()}
               </View>
             )}
           </View>
