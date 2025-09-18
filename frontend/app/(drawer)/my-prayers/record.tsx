@@ -191,6 +191,18 @@ export default function RecordPrayer() {
     return it.ayah >= min && it.ayah <= max;
   };
 
+  const onVerseNumberPress = (item: SearchItem) => {
+    // When user long-presses on a verse number from search results, open the SuraViewer at that verse
+    setSelectedSura({
+      number: item.surahNumber,
+      nameAr: item.nameAr,
+      nameEn: item.nameEn || "",
+      initialVerse: item.ayah
+    });
+    setShowSuraViewer(true);
+    setShowSearchResults(false);
+  };
+
   // Handle multiple verse selection from search results
   const handleSelectedVersesConfirm = (selectedVerses: SearchItem[]) => {
     if (!record) return;
@@ -199,7 +211,7 @@ export default function RecordPrayer() {
     const ranges: VerseRange[] = selectedVerses.map(item => ({
       surahNumber: item.surahNumber,
       nameAr: item.nameAr,
-      nameEn: item.nameEn || '',
+      nameEn: item.nameEn || "",
       fromAyah: item.ayah,
       toAyah: item.ayah,
     }));
