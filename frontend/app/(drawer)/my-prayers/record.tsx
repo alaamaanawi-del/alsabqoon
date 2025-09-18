@@ -134,8 +134,6 @@ export default function RecordPrayer() {
   const [rangeEnd, setRangeEnd] = useState<Record<RakkaIndex, SearchItem | null>>({ 1: null, 2: null });
   
   // Teaching comments state
-  const [showTeachingComments, setShowTeachingComments] = useState(false);
-  const [teachingComments, setTeachingComments] = useState("");
 
   const bilingualParam = useMemo(() => (
     lang === "ar_tafseer" ? "tafseer" : 
