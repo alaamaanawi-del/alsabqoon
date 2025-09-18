@@ -67,14 +67,25 @@ export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: Selected
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>الآيات المختارة ({ranges.length})</Text>
-        {ranges.length > 1 && (
-          <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)} style={styles.toggleButton}>
-            <Text style={styles.toggleText}>
-              {isExpanded ? 'طي ↑' : 'توسيع ↓'}
+        <View style={styles.headerRight}>
+          <TouchableOpacity 
+            onPress={() => setShowTafseer(!showTafseer)}
+            style={[styles.actionButton, showTafseer && styles.actionButtonActive]}
+          >
+            <Text style={[styles.actionButtonText, showTafseer && styles.actionButtonTextActive]}>
+              تفسير
             </Text>
           </TouchableOpacity>
-        )}
+          <TouchableOpacity 
+            onPress={() => setIsExpanded(!isExpanded)}
+            style={styles.actionButton}
+          >
+            <Text style={styles.actionButtonText}>
+              {isExpanded ? 'طي' : 'توسيع'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.headerTitle}>الآيات المختارة ({ranges.length})</Text>
       </View>
 
       <ScrollView 
