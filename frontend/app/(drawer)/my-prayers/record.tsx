@@ -400,7 +400,7 @@ export default function RecordPrayer() {
             placeholder="ابحث في القرآن..."
             placeholderTextColor="#888"
             value={query}
-            onChangeText={setQuery}
+            onChangeText={handleSearchChange}
             style={styles.searchInput}
             textAlign="right"
           />
