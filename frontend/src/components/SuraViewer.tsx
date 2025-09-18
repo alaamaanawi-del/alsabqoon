@@ -72,38 +72,40 @@ export default function SuraViewer({
         ? await import("../db/quran.web") 
         : await import("../db/quran.native");
       
-      // Get the complete sura range first
-      const range = await mod.getSurahRange(surahNumber);
+      // Load actual verses from the database
+      const verses = await mod.getSurahVerses(surahNumber);
       
-      if (range) {
-        // Load all verses for the sura from the database
-        const allVerses: Verse[] = [];
-        
-        // For demonstration, create verses based on the sura range
-        // In real implementation, this would query the actual Quran database
-        for (let i = range.fromAyah; i <= range.toAyah; i++) {
-          allVerses.push({
-            ayah: i,
-            textAr: `بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ - آية ${i} من ${surahNameAr} (نص تجريبي)`
-          });
-        }
-        
-        setVerses(allVerses);
-        console.log(`Loaded ${allVerses.length} verses for ${surahNameAr}`);
+      if (verses && verses.length > 0) {
+        setVerses(verses);
+        console.log(`Loaded ${verses.length} actual verses for ${surahNameAr}`);
       } else {
-        // Fallback for small suras like Al-Fatiha (7 verses)
-        const defaultVerses: Verse[] = [];
-        const maxVerses = surahNumber === 1 ? 7 : (surahNumber === 112 ? 4 : 10); // Al-Fatiha, Al-Ikhlas, or default
-        
-        for (let i = 1; i <= maxVerses; i++) {
-          defaultVerses.push({
-            ayah: i,
-            textAr: `آية ${i} من ${surahNameAr} - ${surahNameEn} (نص تجريبي للآية رقم ${i})`
-          });
+        // Fallback for suras that might not be in the database
+        const range = await mod.getSurahRange(surahNumber);
+        if (range) {
+          const fallbackVerses: Verse[] = [];
+          for (let i = range.fromAyah; i <= range.toAyah; i++) {
+            fallbackVerses.push({
+              ayah: i,
+              textAr: `آية ${i} من ${surahNameAr} - يتم تحميل النص من قاعدة البيانات`
+            });
+          }
+          setVerses(fallbackVerses);
+          console.log(`Loaded ${fallbackVerses.length} fallback verses for ${surahNameAr}`);
+        } else {
+          // Final fallback for small suras
+          const defaultVerses: Verse[] = [];
+          const maxVerses = surahNumber === 1 ? 7 : (surahNumber === 112 ? 4 : 10);
+          
+          for (let i = 1; i <= maxVerses; i++) {
+            defaultVerses.push({
+              ayah: i,
+              textAr: `آية ${i} من ${surahNameAr} - ${surahNameEn} (يتم تحميل النص من قاعدة البيانات)`
+            });
+          }
+          
+          setVerses(defaultVerses);
+          console.log(`Loaded default ${defaultVerses.length} verses for ${surahNameAr}`);
         }
-        
-        setVerses(defaultVerses);
-        console.log(`Loaded default ${defaultVerses.length} verses for ${surahNameAr}`);
       }
     } catch (error) {
       console.error('Error loading sura verses:', error);
@@ -114,7 +116,7 @@ export default function SuraViewer({
       for (let i = 1; i <= 10; i++) {
         fallbackVerses.push({
           ayah: i,
-          textAr: `آية ${i} من ${surahNameAr} (نص احتياطي)`
+          textAr: `آية ${i} من ${surahNameAr} - خطأ في التحميل`
         });
       }
       setVerses(fallbackVerses);
