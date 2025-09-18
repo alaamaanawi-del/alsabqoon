@@ -101,27 +101,10 @@ export default function SearchResultsModal({
           ))}
         </ScrollView>
 
-        {/* Selection Footer with تم Button */}
-        {selectedVerses.length > 0 && (
-          <View style={styles.selectionFooter}>
-            <Text style={styles.selectedCount}>
-              تم اختيار {selectedVerses.length} آية
-            </Text>
-            <TouchableOpacity 
-              style={styles.confirmButton}
-              onPress={handleConfirmSelection}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.confirmButtonText}>تم</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
         {results.length === 0 && searchTerm && (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>لم يتم العثور على نتائج</Text>
             <Text style={styles.emptySubtext}>جرب كلمات بحث أخرى</Text>
-            <Text style={styles.instructionText}>اضغط طويلاً لفتح السورة</Text>
           </View>
         )}
       </SafeAreaView>
