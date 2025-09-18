@@ -146,21 +146,33 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255, 138, 88, 0.2)',
   },
-  title: {
+  headerTitle: {
     color: Colors.warmOrange,
     fontSize: 14,
     fontWeight: '700',
   },
-  toggleButton: {
+  headerRight: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 8,
+  },
+  actionButton: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: 'rgba(255, 138, 88, 0.2)',
     borderRadius: 6,
   },
-  toggleText: {
+  actionButtonActive: {
+    backgroundColor: 'rgba(255, 138, 88, 0.4)',
+  },
+  actionButtonText: {
     color: Colors.warmOrange,
     fontSize: 12,
     fontWeight: '600',
+  },
+  actionButtonTextActive: {
+    color: '#fff',
+    fontWeight: '700',
   },
   scrollContainer: {
     paddingHorizontal: 12,
