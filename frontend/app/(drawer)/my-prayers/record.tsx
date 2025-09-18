@@ -427,7 +427,7 @@ export default function RecordPrayer() {
 
   const handleDone = async () => {
     if (!record) {
-      router.replace('/(drawer)/my-prayers');
+      router.replace(`/(drawer)/my-prayers?date=${day}`);
       return;
     }
 
@@ -492,16 +492,16 @@ export default function RecordPrayer() {
           Alert.alert(
             'تم الحفظ',
             `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
-            [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
+            [{ text: 'موافق', onPress: () => router.replace(`/(drawer)/my-prayers?date=${day}`) }]
           );
         } else {
           showToast('تم حفظ الصلاة بنجاح');
-          router.replace('/(drawer)/my-prayers');
+          router.replace(`/(drawer)/my-prayers?date=${day}`);
         }
       } else {
         // Fallback - return to prayers
         console.log('❌ Unknown rakka, returning to prayers');
-        router.replace('/(drawer)/my-prayers');
+        router.replace(`/(drawer)/my-prayers?date=${day}`);
       }
     } catch (error) {
       console.error('Error saving prayer record:', error);
