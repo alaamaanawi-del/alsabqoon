@@ -192,7 +192,8 @@ export default function RecordPrayer() {
   };
 
   const onVerseNumberPress = (item: SearchItem) => {
-    // When user long-presses on a verse number from search results, open the SuraViewer at that verse
+    // When user clicks on a verse from search results, open the SuraViewer at that verse
+    console.log(`Opening sura ${item.nameAr} at verse ${item.ayah}`);
     setSelectedSura({
       number: item.surahNumber,
       nameAr: item.nameAr,
