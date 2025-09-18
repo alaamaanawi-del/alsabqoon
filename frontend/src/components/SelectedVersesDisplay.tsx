@@ -28,6 +28,7 @@ interface SelectedVersesDisplayProps {
 
 export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: SelectedVersesDisplayProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showTafseer, setShowTafseer] = useState(false);
 
   if (ranges.length === 0) {
     return (
