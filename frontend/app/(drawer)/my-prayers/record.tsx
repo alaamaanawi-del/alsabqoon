@@ -300,57 +300,17 @@ export default function RecordPrayer() {
     setShowSuraViewer(true);
   };
 
-  const handleSelectWholeSurah = async (surah: { number: number; nameAr: string; nameEn: string }) => {
-    if (!record) return;
-    
-    try {
-      // Import the appropriate quran module based on platform
-      const mod = Platform.OS === 'web' 
-        ? await import("../../../src/db/quran.web") 
-        : await import("../../../src/db/quran.native");
-      
-      // Get all verses for the whole sura
-      const verses = await mod.getSurahVerses(surah.number);
-      
-      if (verses && verses.length > 0) {
-        // Create verse range objects for all verses in the sura
-        const ranges: VerseRange[] = verses.map(verse => ({
-          surahNumber: surah.number,
-          surahNameAr: surah.nameAr,
-          surahNameEn: surah.nameEn,
-          fromAyah: verse.ayah,
-          toAyah: verse.ayah,
-        }));
-
-        // Update the record with the selected verse ranges
-        const rk = record.rakka[activeRakka];
-        const next = { 
-          ...record, 
-          rakka: { 
-            ...record.rakka, 
-            [activeRakka]: { 
-              ...rk, 
-              ranges: [...(rk.ranges || []), ...ranges]
-            } 
-          } 
-        };
-        
-        setRecord(next);
-        
-        // Clear search results and query
-        setQuery("");
-        setResults(prev => ({ ...prev, [activeRakka]: [] }));
-        setShowSearchResults(false);
-        setShowSurahSelector(false);
-        
-        showToast(`تم إضافة السورة كاملة: ${surah.nameAr} (${verses.length} آية)`);
-      } else {
-        Alert.alert('خطأ', 'لم يتم العثور على آيات هذه السورة');
-      }
-    } catch (error) {
-      console.error('Error loading whole sura:', error);
-      Alert.alert('خطأ', 'حدث خطأ في تحميل السورة');
-    }
+  const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+    // Open sura viewer to allow user to select range or whole sura
+    console.log(`Opening whole sura: ${surah.nameAr}`);
+    setSelectedSura({
+      number: surah.number,
+      nameAr: surah.nameAr,
+      nameEn: surah.nameEn,
+      initialVerse: 1 // Start from verse 1 for whole sura
+    });
+    setShowSuraViewer(true);
+    setShowSurahSelector(false);
   };
 
   // Load initial data
