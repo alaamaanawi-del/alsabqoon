@@ -282,7 +282,7 @@ export default function RecordPrayer() {
       let totalTaughtCount = 0;
       const taughtRakkas = [];
       
-      // Check both rak ka 1 and rakka 2 (using 1-based indexing like the rest of the app)
+      // Check both rakka 1 and rakka 2 (using 1-based indexing like the rest of the app)
       for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
         const rakka = record.rakka[rakkaNum];
         console.log(`🔍 Checking rakka ${rakkaNum}:`, rakka);
@@ -323,15 +323,29 @@ export default function RecordPrayer() {
         await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
         
         console.log('✅ Da\'wah entry created successfully!');
-        
-        Alert.alert(
-          'تم الحفظ',
-          `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
-          [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
-        );
+      }
+
+      // Fixed rakka workflow navigation
+      if (activeRakka === 1) {
+        // After completing rakka 1 → go to rakka 2
+        console.log('🔄 Moving from rakka 1 to rakka 2');
+        setActiveRakka(2);
+        showToast('تم حفظ الركعة الأولى - انتقل إلى الركعة الثانية');
+      } else if (activeRakka === 2) {
+        // After completing rakka 2 → return to prayer list for same date
+        console.log('🔄 Completing rakka 2 - returning to prayer list');
+        if (totalTaughtCount > 0) {
+          Alert.alert(
+            'تم الحفظ',
+            `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
+            [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
+          );
+        } else {
+          router.replace('/(drawer)/my-prayers');
+        }
       } else {
-        console.log('❌ No teaching count found, navigating without creating Da\'wah entry');
-        // Always navigate to main prayers page after completing
+        // Fallback - return to prayers
+        console.log('❌ Unknown rakka, returning to prayers');
         router.replace('/(drawer)/my-prayers');
       }
     } catch (error) {
