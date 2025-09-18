@@ -107,7 +107,6 @@ export default function RecordPrayer() {
   const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Always default to rakka 1
 
   // Clear range selection when switching rakkas to prevent contamination
-  // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
     if (newRakka !== activeRakka) {
       setActiveRakka(newRakka);
