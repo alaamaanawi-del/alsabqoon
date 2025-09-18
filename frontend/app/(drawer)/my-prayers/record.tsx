@@ -340,7 +340,51 @@ export default function RecordPrayer() {
   };
 
 
-  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+  const handleDone = async () => {
+    if (!record) {
+      router.replace('/(drawer)/my-prayers');
+      return;
+    }
+
+    try {
+      // Check if user taught anyone
+      let totalTaughtCount = 0;
+      const taughtRakkas = [];
+      
+      for (let i = 0; i < 2; i++) {
+        const rakka = record.rakka[i];
+        if (rakka && rakka.questions.taught && rakka.taughtCount > 0) {
+          totalTaughtCount += rakka.taughtCount;
+          taughtRakkas.push(i + 1);
+        }
+      }
+
+      // If user taught people, create an entry in Da'wah category (ID 13)
+      if (totalTaughtCount > 0) {
+        const dateStr = getCurrentLocalDateString();
+        const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
+        const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
+        const baseTitle = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
+        const autoComment = teachingComments ? `${baseTitle}\n\nتفاصيل التعليم: ${teachingComments}` : baseTitle;
+        
+        console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
+        
+        await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
+        
+        Alert.alert(
+          'تم الحفظ',
+          `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
+          [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
+        );
+      } else {
+        // Always navigate to main prayers page after completing
+        router.replace('/(drawer)/my-prayers');
+      }
+    } catch (error) {
+      console.error('Error saving prayer record:', error);
+      Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
