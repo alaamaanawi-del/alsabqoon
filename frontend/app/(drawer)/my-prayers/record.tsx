@@ -499,6 +499,7 @@ export default function RecordPrayer() {
         results={results[activeRakka]}
         searchTerm={query}
         onVersePress={onVerseNumberPress}
+        onSearchChange={handleSearchChange}
       />
 
       {/* SurahSelector Modal */}
