@@ -36,7 +36,8 @@ export default function SearchResultsModal({
   onClose, 
   results, 
   searchTerm, 
-  onVersePress 
+  onVersePress,
+  onSearchChange 
 }: SearchResultsModalProps) {
   
   const handleVersePress = (item: SearchItem) => {
