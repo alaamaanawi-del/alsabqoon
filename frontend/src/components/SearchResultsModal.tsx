@@ -30,6 +30,7 @@ interface SearchResultsModalProps {
   searchTerm: string;
   onVersePress: (item: SearchItem) => void;
   onSearchChange?: (text: string) => void;
+  onSelectedVersesConfirm?: (selectedVerses: SearchItem[]) => void;
 }
 
 export default function SearchResultsModal({ 
@@ -38,12 +39,39 @@ export default function SearchResultsModal({
   results, 
   searchTerm, 
   onVersePress,
-  onSearchChange 
+  onSearchChange,
+  onSelectedVersesConfirm
 }: SearchResultsModalProps) {
+  const [selectedVerses, setSelectedVerses] = useState<SearchItem[]>([]);
   
   const handleVersePress = (item: SearchItem) => {
+    // Toggle verse selection instead of immediately opening sura viewer
+    const isSelected = selectedVerses.some(v => v.surahNumber === item.surahNumber && v.ayah === item.ayah);
+    
+    if (isSelected) {
+      // Remove from selection
+      setSelectedVerses(prev => prev.filter(v => !(v.surahNumber === item.surahNumber && v.ayah === item.ayah)));
+    } else {
+      // Add to selection
+      setSelectedVerses(prev => [...prev, item]);
+    }
+  };
+
+  const handleConfirmSelection = () => {
+    if (selectedVerses.length > 0 && onSelectedVersesConfirm) {
+      onSelectedVersesConfirm(selectedVerses);
+      setSelectedVerses([]); // Clear selection
+      onClose(); // Close modal
+    }
+  };
+
+  const handleLongPress = (item: SearchItem) => {
+    // Long press opens sura viewer at that verse
     onVersePress(item);
-    onClose(); // Close modal after selection
+  };
+
+  const isVerseSelected = (item: SearchItem) => {
+    return selectedVerses.some(v => v.surahNumber === item.surahNumber && v.ayah === item.ayah);
   };
 
   return (
