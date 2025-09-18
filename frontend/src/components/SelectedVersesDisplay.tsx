@@ -15,6 +15,8 @@ interface VerseRange {
   nameEn: string;
   fromAyah: number;
   toAyah: number;
+  textAr?: string;
+  surahNameAr?: string;
   verses?: Array<{
     ayah: number;
     textAr: string;
