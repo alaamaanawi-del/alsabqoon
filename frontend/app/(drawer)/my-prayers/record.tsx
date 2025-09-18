@@ -349,11 +349,11 @@ export default function RecordPrayer() {
       let totalTaughtCount = 0;
       const taughtRakkas = [];
       
-      for (let i = 0; i < 2; i++) {
-        const rakka = record.rakka[i];
-        if (rakka && rakka.questions.taught && rakka.taughtCount > 0) {
+      for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+        const rakka = record.rakka[rakkaNum];
+        if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
           totalTaughtCount += rakka.taughtCount;
-          taughtRakkas.push(i + 1);
+          taughtRakkas.push(rakkaNum);
         }
       }
 
@@ -368,14 +368,30 @@ export default function RecordPrayer() {
         console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
         
         await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
-        
-        Alert.alert(
-          'تم الحفظ',
-          `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
-          [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
-        );
+      }
+
+      // FIXED WORKFLOW NAVIGATION
+      if (activeRakka === 1) {
+        // After completing rakka 1 → go to rakka 2
+        console.log('🔄 Moving from rakka 1 to rakka 2');
+        setActiveRakka(2);
+        showToast('تم حفظ الركعة الأولى - انتقل إلى الركعة الثانية');
+      } else if (activeRakka === 2) {
+        // After completing rakka 2 → return to prayer list for same date
+        console.log('🔄 Completing rakka 2 - returning to prayer list');
+        if (totalTaughtCount > 0) {
+          Alert.alert(
+            'تم الحفظ',
+            `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
+            [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
+          );
+        } else {
+          showToast('تم حفظ الصلاة بنجاح');
+          router.replace('/(drawer)/my-prayers');
+        }
       } else {
-        // Always navigate to main prayers page after completing
+        // Fallback - return to prayers
+        console.log('❌ Unknown rakka, returning to prayers');
         router.replace('/(drawer)/my-prayers');
       }
     } catch (error) {
@@ -383,7 +399,6 @@ export default function RecordPrayer() {
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
     }
   };
-
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       {/* Fixed Header */}
