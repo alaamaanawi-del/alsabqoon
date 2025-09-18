@@ -286,6 +286,9 @@ export default function RecordPrayer() {
     return () => clearTimeout(timer);
   }, [record, p, day]);
 
+  // Compute score for progress bar
+  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+
   const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
     if (!record) return;
     
