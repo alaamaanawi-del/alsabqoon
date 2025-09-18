@@ -51,11 +51,29 @@ export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: Selected
         <Text style={styles.rangeHeader}>
           {range.nameAr} ({rangeText})
         </Text>
-        {range.verses && range.verses.length > 0 ? (
+        {range.textAr ? (
+          <View>
+            <Text style={styles.verseText}>{range.textAr}</Text>
+            {showTafseer && (
+              <Text style={styles.tafseerText}>
+                تفسير الآية: هذا نص تفسيري تجريبي للآية {range.fromAyah} من {range.surahNameAr || range.nameAr}. 
+                في التطبيق الحقيقي سيتم عرض التفسير من قاعدة البيانات.
+              </Text>
+            )}
+          </View>
+        ) : range.verses && range.verses.length > 0 ? (
           range.verses.map((verse, vIndex) => (
-            <Text key={vIndex} style={styles.verseText}>
-              ({verse.ayah}) {verse.textAr}
-            </Text>
+            <View key={vIndex}>
+              <Text style={styles.verseText}>
+                ({verse.ayah}) {verse.textAr}
+              </Text>
+              {showTafseer && (
+                <Text style={styles.tafseerText}>
+                  تفسير الآية: هذا نص تفسيري تجريبي للآية {verse.ayah} من {range.nameAr}. 
+                  في التطبيق الحقيقي سيتم عرض التفسير من قاعدة البيانات.
+                </Text>
+              )}
+            </View>
           ))
         ) : (
           <Text style={styles.placeholderText}>
