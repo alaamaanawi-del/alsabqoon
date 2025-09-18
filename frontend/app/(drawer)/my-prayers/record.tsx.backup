@@ -104,12 +104,16 @@ export default function RecordPrayer() {
   }, [focus]);
 
   const [record, setRecord] = useState<PrayerRecord | null>(null);
-  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1);
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Always default to rakka 1
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
     if (newRakka !== activeRakka) {
       setActiveRakka(newRakka);
+      // Clear search keywords when switching rakka
+      setQuery("");
+      setResults(prev => ({ ...prev, [activeRakka]: [], [newRakka]: [] }));
+      setShowSearchResults(false);
     }
   };
 
@@ -120,8 +124,9 @@ export default function RecordPrayer() {
   const [showSurahSelector, setShowSurahSelector] = useState(false);
   const [showSuraViewer, setShowSuraViewer] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [showTeachingComments, setShowTeachingComments] = useState(false);
-  const [teachingComments, setTeachingComments] = useState("");
+  // Teaching comments state - per rakka and prayer specific
+  const [showTeachingComments, setShowTeachingComments] = useState<Record<string, boolean>>({});
+  const [teachingComments, setTeachingComments] = useState<Record<string, string>>({});
   const [selectedSura, setSelectedSura] = useState<{
     number: number;
     nameAr: string;
@@ -187,14 +192,52 @@ export default function RecordPrayer() {
   };
 
   const onVerseNumberPress = (item: SearchItem) => {
-    // When user clicks on search result, open the sura viewer at that verse
+    // When user clicks on a verse from search results, open the SuraViewer at that verse
+    console.log(`Opening sura ${item.nameAr} at verse ${item.ayah}`);
     setSelectedSura({
       number: item.surahNumber,
       nameAr: item.nameAr,
-      nameEn: item.nameEn,
+      nameEn: item.nameEn || "",
       initialVerse: item.ayah
     });
     setShowSuraViewer(true);
+    setShowSearchResults(false);
+  };
+
+  // Handle multiple verse selection from search results
+  const handleSelectedVersesConfirm = (selectedVerses: SearchItem[]) => {
+    if (!record) return;
+    
+    // Convert selected verses to VerseRange objects
+    const ranges: VerseRange[] = selectedVerses.map(item => ({
+      surahNumber: item.surahNumber,
+      nameAr: item.nameAr,
+      nameEn: item.nameEn || "",
+      fromAyah: item.ayah,
+      toAyah: item.ayah,
+    }));
+
+    // Update the record with the selected verse ranges
+    const rk = record.rakka[activeRakka];
+    const next = { 
+      ...record, 
+      rakka: { 
+        ...record.rakka, 
+        [activeRakka]: { 
+          ...rk, 
+          ranges: [...(rk.ranges || []), ...ranges]
+        } 
+      } 
+    };
+    
+    setRecord(next);
+    
+    // Clear search results and query
+    setQuery("");
+    setResults({ 1: [], 2: [] });
+    setShowSearchResults(false);
+    
+    showToast(`تم إضافة ${selectedVerses.length} آية للركعة ${activeRakka}`);
   };
 
   const selectWholeSurah = async () => {
@@ -257,15 +300,57 @@ export default function RecordPrayer() {
     setShowSuraViewer(true);
   };
 
-  const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
-    // Open sura viewer with whole sura pre-selected
-    setSelectedSura({
-      number: surah.number,
-      nameAr: surah.nameAr,
-      nameEn: surah.nameEn,
-      initialVerse: 1
-    });
-    setShowSuraViewer(true);
+  const handleSelectWholeSurah = async (surah: { number: number; nameAr: string; nameEn: string }) => {
+    if (!record) return;
+    
+    try {
+      // Import the appropriate quran module based on platform
+      const mod = Platform.OS === 'web' 
+        ? await import("../../../src/db/quran.web") 
+        : await import("../../../src/db/quran.native");
+      
+      // Get all verses for the whole sura
+      const verses = await mod.getSurahVerses(surah.number);
+      
+      if (verses && verses.length > 0) {
+        // Create verse range objects for all verses in the sura
+        const ranges: VerseRange[] = verses.map(verse => ({
+          surahNumber: surah.number,
+          surahNameAr: surah.nameAr,
+          surahNameEn: surah.nameEn,
+          fromAyah: verse.ayah,
+          toAyah: verse.ayah,
+        }));
+
+        // Update the record with the selected verse ranges
+        const rk = record.rakka[activeRakka];
+        const next = { 
+          ...record, 
+          rakka: { 
+            ...record.rakka, 
+            [activeRakka]: { 
+              ...rk, 
+              ranges: [...(rk.ranges || []), ...ranges]
+            } 
+          } 
+        };
+        
+        setRecord(next);
+        
+        // Clear search results and query
+        setQuery("");
+        setResults(prev => ({ ...prev, [activeRakka]: [] }));
+        setShowSearchResults(false);
+        setShowSurahSelector(false);
+        
+        showToast(`تم إضافة السورة كاملة: ${surah.nameAr} (${verses.length} آية)`);
+      } else {
+        Alert.alert('خطأ', 'لم يتم العثور على آيات هذه السورة');
+      }
+    } catch (error) {
+      console.error('Error loading whole sura:', error);
+      Alert.alert('خطأ', 'حدث خطأ في تحميل السورة');
+    }
   };
 
   // Load initial data
@@ -286,6 +371,9 @@ export default function RecordPrayer() {
     return () => clearTimeout(timer);
   }, [record, p, day]);
 
+  // Compute score for progress bar
+  const sc = record ? computeScore(record) : { r1: 0, r2: 0, total: 0 };
+
   const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
     if (!record) return;
     
@@ -293,11 +381,10 @@ export default function RecordPrayer() {
       // Create verse range objects for the selected verses
       const ranges: VerseRange[] = verses.map(verse => ({
         surahNumber: selectedSura!.number,
-        surahNameAr: selectedSura!.nameAr,
-        surahNameEn: selectedSura!.nameEn,
+        nameAr: selectedSura!.nameAr,
+        nameEn: selectedSura!.nameEn,
         fromAyah: verse.ayah,
         toAyah: verse.ayah,
-        textAr: verse.textAr,
       }));
 
       // Update the record with the selected verse ranges
@@ -340,7 +427,7 @@ export default function RecordPrayer() {
 
   const handleDone = async () => {
     if (!record) {
-      router.replace('/(drawer)/my-prayers');
+      router.replace(`/(drawer)/my-prayers?date=${day}`);
       return;
     }
 
@@ -349,11 +436,11 @@ export default function RecordPrayer() {
       let totalTaughtCount = 0;
       const taughtRakkas = [];
       
-      for (let i = 0; i < 2; i++) {
-        const rakka = record.rakka[i];
-        if (rakka && rakka.questions.taught && rakka.taughtCount > 0) {
+      for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+        const rakka = record.rakka[rakkaNum];
+        if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
           totalTaughtCount += rakka.taughtCount;
-          taughtRakkas.push(i + 1);
+          taughtRakkas.push(rakkaNum);
         }
       }
 
@@ -363,35 +450,72 @@ export default function RecordPrayer() {
         const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
         const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
         const baseTitle = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
-        const autoComment = teachingComments ? `${baseTitle}\n\nتفاصيل التعليم: ${teachingComments}` : baseTitle;
+        
+        // Collect teaching comments from all rakkas that have taught entries
+        let allComments = '';
+        for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+          const rakka = record.rakka[rakkaNum];
+          if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
+            const commentKey = `${p}_${day}_${rakkaNum}`;
+            const comment = teachingComments[commentKey];
+            if (comment) {
+              allComments += `\nركعة ${rakkaNum}: ${comment}`;
+            }
+          }
+        }
+        
+        const autoComment = allComments ? `${baseTitle}\n\nتفاصيل التعليم:${allComments}` : baseTitle;
         
         console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
         
         await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
-        
-        Alert.alert(
-          'تم الحفظ',
-          `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
-          [{ text: 'موافق', onPress: () => router.replace('/(drawer)/my-prayers') }]
-        );
+      }
+
+      // FIXED WORKFLOW NAVIGATION
+      if (activeRakka === 1) {
+        // After completing rakka 1 → go to rakka 2
+        console.log('🔄 Moving from rakka 1 to rakka 2');
+        setActiveRakka(2);
+        // Clear search keywords when moving to next rakka
+        setQuery("");
+        setResults(prev => ({ ...prev, [activeRakka]: [], 2: [] }));
+        setShowSearchResults(false);
+        showToast('تم حفظ الركعة الأولى - انتقل إلى الركعة الثانية');
+      } else if (activeRakka === 2) {
+        // After completing rakka 2 → return to prayer list for same date
+        console.log('🔄 Completing rakka 2 - returning to prayer list');
+        // Clear search keywords when completing prayer
+        setQuery("");
+        setResults({ 1: [], 2: [] });
+        setShowSearchResults(false);
+        if (totalTaughtCount > 0) {
+          Alert.alert(
+            'تم الحفظ',
+            `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
+            [{ text: 'موافق', onPress: () => router.replace(`/(drawer)/my-prayers?date=${day}`) }]
+          );
+        } else {
+          showToast('تم حفظ الصلاة بنجاح');
+          router.replace(`/(drawer)/my-prayers?date=${day}`);
+        }
       } else {
-        // Always navigate to main prayers page after completing
-        router.replace('/(drawer)/my-prayers');
+        // Fallback - return to prayers
+        console.log('❌ Unknown rakka, returning to prayers');
+        router.replace(`/(drawer)/my-prayers?date=${day}`);
       }
     } catch (error) {
       console.error('Error saving prayer record:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
     }
   };
-
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       {/* Fixed Header */}
       <View style={styles.header}>
         <View style={styles.headerInfoRow}>
           <Text style={styles.prayerNameText}>{PRAYERS.find(prayer => prayer.key === p)?.label || p}</Text>
-          <Text style={styles.dayText}>{new Date().toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
-          <Text style={styles.dateText}>{new Date().toLocaleDateString('ar-SA')}</Text>
+          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
+          <Text style={styles.dateText}>{new Date(day).toLocaleDateString('ar-SA')}</Text>
           <View style={styles.progressBarContainer}>
             <TaskProgressBar score={sc.total} showPercentage={true} />
           </View>
@@ -507,31 +631,40 @@ export default function RecordPrayer() {
                 {/* Add Comment Button */}
                 <TouchableOpacity 
                   style={styles.addCommentButton}
-                  onPress={() => setShowTeachingComments(!showTeachingComments)}
+                  onPress={() => {
+                    const key = `${p}_${day}_${activeRakka}`;
+                    setShowTeachingComments(prev => ({ ...prev, [key]: !prev[key] }));
+                  }}
                 >
                   <Text style={styles.addCommentButtonText}>
                     أضف ملاحظات (ماذا علمته، أيه، حديث، موعظة إلخ)
                   </Text>
                   <Text style={styles.expandIcon}>
-                    {showTeachingComments ? '▲' : '▼'}
+                    {(() => {
+                      const key = `${p}_${day}_${activeRakka}`;
+                      return showTeachingComments[key] ? '▲' : '▼';
+                    })()}
                   </Text>
                 </TouchableOpacity>
                 
                 {/* Expandable Comment Field */}
-                {showTeachingComments && (
-                  <View style={styles.commentSection}>
-                    <TextInput
-                      style={styles.commentInput}
-                      value={teachingComments}
-                      onChangeText={setTeachingComments}
-                      placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
-                      placeholderTextColor="#888"
-                      multiline
-                      numberOfLines={4}
-                      textAlignVertical="top"
-                    />
-                  </View>
-                )}
+                {(() => {
+                  const key = `${p}_${day}_${activeRakka}`;
+                  return showTeachingComments[key] && (
+                    <View style={styles.commentSection}>
+                      <TextInput
+                        style={styles.commentInput}
+                        value={teachingComments[key] || ''}
+                        onChangeText={(text) => setTeachingComments(prev => ({ ...prev, [key]: text }))}
+                        placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
+                        placeholderTextColor="#888"
+                        multiline
+                        numberOfLines={4}
+                        textAlignVertical="top"
+                      />
+                    </View>
+                  );
+                })()}
               </View>
             )}
           </View>
