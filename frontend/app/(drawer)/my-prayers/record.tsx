@@ -157,6 +157,12 @@ export default function RecordPrayer() {
       setShowSearchResults(false);
     }
   };
+
+  // Real-time search as user types
+  const handleSearchChange = (text: string) => {
+    setQuery(text);
+    doSearch();
+  };
   useEffect(() => { const t = setTimeout(doSearch, 250); return () => clearTimeout(t); }, [query, bilingualParam, activeRakka]);
 
   const clearRange = () => {
