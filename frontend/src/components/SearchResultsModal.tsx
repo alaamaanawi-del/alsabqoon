@@ -6,7 +6,8 @@ import {
   TouchableOpacity, 
   ScrollView,
   Modal,
-  SafeAreaView
+  SafeAreaView,
+  TextInput
 } from 'react-native';
 import { Colors } from '../theme/colors';
 import HighlightedText from './HighlightedText';
