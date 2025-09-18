@@ -32,6 +32,17 @@ export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: Selected
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTafseer, setShowTafseer] = useState(false);
 
+  const getTotalVerseCount = (): number => {
+    return ranges.reduce((total, range) => {
+      if (range.verses && range.verses.length > 0) {
+        return total + range.verses.length;
+      } else {
+        // For direct textAr entries, count as single verse
+        return total + (range.toAyah - range.fromAyah + 1);
+      }
+    }, 0);
+  };
+
   if (ranges.length === 0) {
     return (
       <View style={styles.emptyContainer}>
