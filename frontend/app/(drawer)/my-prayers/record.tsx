@@ -120,8 +120,9 @@ export default function RecordPrayer() {
   const [showSurahSelector, setShowSurahSelector] = useState(false);
   const [showSuraViewer, setShowSuraViewer] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [showTeachingComments, setShowTeachingComments] = useState(false);
-  const [teachingComments, setTeachingComments] = useState("");
+  // Teaching comments state - per rakka and prayer specific
+  const [showTeachingComments, setShowTeachingComments] = useState<Record<string, boolean>>({});
+  const [teachingComments, setTeachingComments] = useState<Record<string, string>>({});
   const [selectedSura, setSelectedSura] = useState<{
     number: number;
     nameAr: string;
