@@ -397,10 +397,18 @@ export default function RecordPrayer() {
         // After completing rakka 1 → go to rakka 2
         console.log('🔄 Moving from rakka 1 to rakka 2');
         setActiveRakka(2);
+        // Clear search keywords when moving to next rakka
+        setQuery("");
+        setResults(prev => ({ ...prev, [activeRakka]: [], 2: [] }));
+        setShowSearchResults(false);
         showToast('تم حفظ الركعة الأولى - انتقل إلى الركعة الثانية');
       } else if (activeRakka === 2) {
         // After completing rakka 2 → return to prayer list for same date
         console.log('🔄 Completing rakka 2 - returning to prayer list');
+        // Clear search keywords when completing prayer
+        setQuery("");
+        setResults({ 1: [], 2: [] });
+        setShowSearchResults(false);
         if (totalTaughtCount > 0) {
           Alert.alert(
             'تم الحفظ',
