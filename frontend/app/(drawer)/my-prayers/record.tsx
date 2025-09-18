@@ -376,7 +376,10 @@ export default function RecordPrayer() {
         {/* Search Section */}
         <View style={styles.searchSection}>
           <View style={styles.controlsRow}>
-            <TouchableOpacity onPress={selectWholeSurah} style={styles.wholeSurahBtn}>
+            <TouchableOpacity 
+              onPress={() => setShowSurahSelector(true)} 
+              style={styles.wholeSurahBtn}
+            >
               <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
             </TouchableOpacity>
 
