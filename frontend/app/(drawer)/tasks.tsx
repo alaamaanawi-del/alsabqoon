@@ -284,28 +284,9 @@ export default function TasksScreen() {
         </View>
       </View>
 
-      {/* Category Overview */}
-      <View style={styles.categoryOverview}>
-        {Object.entries(stats.byCategory).map(([category, categoryTasks]) => {
-          const completed = categoryTasks.filter(t => t.completed).length;
-          const total = categoryTasks.length;
-          const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-          
-          if (total === 0) return null;
-          
-          return (
-            <View key={category} style={styles.categoryCard}>
-              <View style={[styles.categoryDot, { backgroundColor: getCategoryColor(category as TaskCategory) }]} />
-              <Text style={styles.categoryLabel}>
-                {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
-              </Text>
-              <Text style={styles.categoryCount}>
-                {completed}/{total}
-              </Text>
-            </View>
-          );
-        })}
-      </View>
+      {/* Category Overview - Removed priority labels */}
+
+      {/* Grouping Controls */}
 
       {/* Grouping Controls */}
       <View style={styles.groupingControls}>
