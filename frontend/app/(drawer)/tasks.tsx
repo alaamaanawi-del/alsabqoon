@@ -178,16 +178,10 @@ export default function TasksScreen() {
               <Text style={styles.taskMeta}>
                 {item.prayer} • ر{item.rakka} • {item.date}
               </Text>
-              <View style={styles.taskBadges}>
-                <View style={[styles.categoryBadge, { backgroundColor: categoryColor }]}>
-                  <Text style={styles.categoryText}>
-                    {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
-                  </Text>
-                </View>
-              </View>
+              {/* Removed task badges with priority labels */}
             </View>
 
-            {/* Actions */}
+            {/* Actions - Three controls side by side horizontally */}
             <View style={styles.taskActions}>
               <Link asChild href={{ 
                 pathname: '/(drawer)/my-prayers/record', 
@@ -205,6 +199,13 @@ export default function TasksScreen() {
                 <Text style={styles.completeBtnText}>
                   {item.completed ? '✔' : 'تم'}
                 </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                onPress={() => deleteTask(item.id)} 
+                style={styles.deleteBtn}
+              >
+                <Text style={styles.deleteBtnText}>🗑</Text>
               </TouchableOpacity>
             </View>
           </View>
