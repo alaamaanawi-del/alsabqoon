@@ -207,6 +207,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
         </View>
 
+        {/* TEST BUTTON */}
+        <TouchableOpacity 
+          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
+          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
+        >
+          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
+        </TouchableOpacity>
+
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
