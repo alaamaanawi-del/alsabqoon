@@ -554,22 +554,22 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   
-  // Swipe Actions
-  swipeActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  swipeAction: {
-    width: 60,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  swipeActionText: {
-    color: Colors.light,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  //   // Swipe Actions
+  //   swipeActions: {
+  //     flexDirection: 'row',
+  //     alignItems: 'center',
+  //   },
+  //   swipeAction: {
+  //     width: 60,
+  //     height: '100%',
+  //     justifyContent: 'center',
+  //     alignItems: 'center',
+  //   },
+  //   swipeActionText: {
+  //     color: Colors.light,
+  //     fontSize: 18,
+  //     fontWeight: 'bold',
+  //   },
   
   // Empty State
   emptyState: {
