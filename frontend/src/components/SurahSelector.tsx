@@ -217,20 +217,26 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
 
         <ScrollView style={styles.list} showsVerticalScrollIndicator={true}>
           {filteredSurahs.map((surah) => (
-            <TouchableOpacity 
-              key={surah.number}
-              style={styles.surahItem}
-              onPress={() => handleSelectSurah(surah)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.surahContent}>
+            <View key={surah.number} style={styles.surahItem}>
+              {/* Direct call to onSelectWholeSurah - bypassing Alert */}
+              <TouchableOpacity 
+                style={[styles.surahContent, { backgroundColor: '#2a4a39' }]}
+                onPress={() => {
+                  onSelectWholeSurah(surah);
+                  onClose();
+                }}
+                activeOpacity={0.7}
+              >
                 <Text style={styles.surahNumber}>{surah.number}</Text>
                 <View style={styles.surahNames}>
                   <Text style={styles.surahNameAr}>{surah.nameAr}</Text>
                   <Text style={styles.surahNameEn}>{surah.nameEn}</Text>
+                  <Text style={[styles.surahNameEn, { fontSize: 12, color: '#aaa' }]}>
+                    اضغط لفتح السورة كاملة
+                  </Text>
                 </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           ))}
         </ScrollView>
       </SafeAreaView>
