@@ -48,19 +48,11 @@ export default function TasksScreen() {
   useEffect(() => { refresh(); }, []);
 
   const toggleComplete = async (id: string) => {
-    // Use Alert for debugging
-    Alert.alert('Debug', `✅ تم button pressed for task ID: ${id}`);
-    
     const task = tasks.find(t => t.id === id);
-    if (!task) {
-      Alert.alert('Error', `❌ Task not found for ID: ${id}`);
-      return;
-    }
+    if (!task) return;
 
-    // If unchecking (was completed, now will be incomplete), delete the task
     if (task.completed) {
-      Alert.alert('Debug', `🔄 Task is completed, showing uncheck confirmation`);
-      
+      // Unchecking a completed task - show confirmation
       Alert.alert(
         'إلغاء المهمة',
         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
@@ -79,7 +71,6 @@ export default function TasksScreen() {
                 const next = tasks.filter(t => t.id !== id);
                 setTasks(next);
                 await saveTasks(next);
-                Alert.alert('Success', '✅ Task unchecked and synced with rakka');
                 
               } catch (error) {
                 Alert.alert('Error', `❌ Error unchecking task: ${error}`);
@@ -89,11 +80,23 @@ export default function TasksScreen() {
         ]
       );
     } else {
-      // Just toggle completed status
-      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-      setTasks(next);
-      await saveTasks(next);
-      Alert.alert('Success', '✅ Task marked as complete');
+      // Checking an incomplete task - mark complete AND uncheck in prayer record
+      try {
+        // First mark the task as complete in the UI
+        const next = tasks.map(t => t.id === id ? { ...t, completed: true } : t);
+        setTasks(next);
+        await saveTasks(next);
+        
+        // Then uncheck the task button in the prayer record (bidirectional sync)
+        const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+        prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+        await savePrayerRecord(prayerRecord);
+        
+        Alert.alert('Success', '✅ Task completed and unchecked in prayer record');
+        
+      } catch (error) {
+        Alert.alert('Error', `❌ Error completing task: ${error}`);
+      }
     }
   };
 
