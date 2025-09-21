@@ -53,24 +53,33 @@ export default function SuraViewer({
   // Scroll to initial verse when verses are loaded
   useEffect(() => {
     if (verses.length > 0 && initialVerse) {
+      console.log(`🎯 Setting up verse highlighting and scrolling for verse ${initialVerse}`);
+      
       // Highlight the initial verse (including verse 1)
       setRangeStart(initialVerse);
       setRangeEnd(null);
       
       // Scroll to the verse after a short delay to ensure rendering is complete
       setTimeout(() => {
-        console.log(`Scrolling to verse ${initialVerse} in ${surahNameAr}`);
+        console.log(`📜 Attempting to scroll to verse ${initialVerse} in ${surahNameAr}`);
+        console.log(`📝 Available verse refs:`, Object.keys(verseRefs.current));
+        
         if (scrollViewRef.current && verseRefs.current[initialVerse]) {
+          console.log(`✅ Found ref for verse ${initialVerse}, measuring layout...`);
           verseRefs.current[initialVerse]?.measureLayout(
             scrollViewRef.current as any,
             (x, y) => {
+              console.log(`📍 Scrolling to position: x=${x}, y=${y}`);
               scrollViewRef.current?.scrollTo({ y: Math.max(0, y - 100), animated: true });
             },
-            () => console.log('Failed to measure verse layout')
+            (error) => console.log(`❌ Failed to measure verse layout:`, error)
           );
         } else if (initialVerse === 1) {
           // If it's verse 1 and no ref, just scroll to top
+          console.log(`📍 Scrolling to top for verse 1`);
           scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+        } else {
+          console.log(`❌ No ref found for verse ${initialVerse}`);
         }
       }, 500);
     }
