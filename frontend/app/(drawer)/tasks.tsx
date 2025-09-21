@@ -515,6 +515,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
+  deleteBtn: {
+    backgroundColor: '#ff4444',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  deleteBtnText: {
+    color: Colors.light,
+    fontSize: 12,
+    fontWeight: '700',
+  },
   
   // Swipe Actions
   swipeActions: {
