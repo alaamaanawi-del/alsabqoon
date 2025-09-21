@@ -270,7 +270,8 @@ export default function TasksScreen() {
 
               <TouchableOpacity 
                 onPress={() => deleteTask(item.id)} 
-                style={styles.deleteBtn}
+                style={[styles.deleteBtn, { zIndex: 1000 }]}
+                activeOpacity={0.7}
               >
                 <Text style={styles.deleteBtnText}>🗑</Text>
               </TouchableOpacity>
