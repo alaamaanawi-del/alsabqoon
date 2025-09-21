@@ -92,8 +92,8 @@ export async function getSurahVerses(surahNumber: number) {
   if (!surah) return [];
   
   return surah.ayahs.map((ayah: any) => ({
-    ayah: ayah.ayah,
-    textAr: ayah.textAr || ayah.text || '',
+    ayah: ayah.ayah_number, // Fix: use ayah_number from the data
+    textAr: ayah.text || '',  // Fix: use text field from the data
     en: ayah.en || null,
     es: ayah.es || null,
     tafseer: ayah.tafseer || null
