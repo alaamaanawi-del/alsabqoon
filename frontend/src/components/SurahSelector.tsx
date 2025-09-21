@@ -194,65 +194,52 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
 
   if (!visible) return null;
 
-  console.log('🕌 SurahSelector rendering - visible:', visible);
-
-  // Create test functions in the same scope as onClose
-  const testFunction1 = () => {
-    console.log('🔥 TEST FUNCTION 1 WORKS!');
-    Alert.alert('Success!', 'Test Function 1 Works!');
-  };
-
-  const testFunction2 = () => {
-    console.log('🔥 TEST FUNCTION 2 WORKS!');
-    Alert.alert('Success!', 'Test Function 2 Works!');
-  };
-
-  const testSuraFunction = () => {
-    console.log('🕌 SURA FUNCTION WORKS!');
-    onSelectSurah({ number: 1, nameAr: 'الفاتحة', nameEn: 'Al-Fatiha' });
-  };
-
   return (
-    <View style={{ 
-      position: 'absolute', 
-      top: 0, 
-      left: 0, 
-      right: 0, 
-      bottom: 0, 
-      backgroundColor: Colors.dark, 
-      zIndex: 9999 
-    }}>
-      {/* Header with WORKING close button AND test buttons using same pattern */}
-      <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
-        
-        {/* WORKING CLOSE BUTTON */}
-        <TouchableOpacity onPress={onClose} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: 'white' }}>إغلاق</Text>
-        </TouchableOpacity>
-        
-        {/* TEST USING SAME PATTERN AS onClose */}
-        <TouchableOpacity onPress={testFunction1} style={{ backgroundColor: 'green', padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: 'white' }}>TEST1</Text>
-        </TouchableOpacity>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={onClose}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>إغلاق</Text>
+          </TouchableOpacity>
+          <Text style={styles.title}>اختر السورة</Text>
+        </View>
 
-        {/* ANOTHER TEST FUNCTION */}
-        <TouchableOpacity onPress={testFunction2} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: 'white' }}>TEST2</Text>
-        </TouchableOpacity>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="ابحث عن السورة..."
+            placeholderTextColor="#888"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            textAlign="right"
+          />
+        </View>
 
-      </View>
-
-      {/* Content area with sura function test */}
-      <View style={{ padding: 20 }}>
-        <TouchableOpacity onPress={testSuraFunction} style={{ backgroundColor: 'orange', padding: 30, borderRadius: 10, marginBottom: 20 }}>
-          <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>TEST SURA FUNCTION</Text>
-        </TouchableOpacity>
-
-        <Text style={{ color: 'white', fontSize: 16, marginBottom: 10 }}>
-          If these buttons work, the issue was inline functions vs defined functions!
-        </Text>
-      </View>
-    </View>
+        <ScrollView style={styles.list} showsVerticalScrollIndicator={true}>
+          {filteredSurahs.map((surah) => (
+            <TouchableOpacity 
+              key={surah.number}
+              style={styles.surahItem}
+              onPress={() => handleSelectSurah(surah)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.surahContent}>
+                <Text style={styles.surahNumber}>{surah.number}</Text>
+                <View style={styles.surahNames}>
+                  <Text style={styles.surahNameAr}>{surah.nameAr}</Text>
+                  <Text style={styles.surahNameEn}>{surah.nameEn}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    </Modal>
   );
 }
 
