@@ -48,11 +48,20 @@ export default function TasksScreen() {
   useEffect(() => { refresh(); }, []);
 
   const toggleComplete = async (id: string) => {
+    console.log('✅ تم button pressed for task ID:', id);
+    
     const task = tasks.find(t => t.id === id);
-    if (!task) return;
+    if (!task) {
+      console.log('❌ Task not found for ID:', id);
+      return;
+    }
+
+    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
 
     // If unchecking (was completed, now will be incomplete), delete the task
     if (task.completed) {
+      console.log('🔄 Task is completed, showing uncheck confirmation');
+      
       Alert.alert(
         'إلغاء المهمة',
         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
@@ -61,24 +70,44 @@ export default function TasksScreen() {
           { 
             text: 'موافق', 
             onPress: async () => {
-              // Load the prayer record and uncheck the task button
-              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
-              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
-              await savePrayerRecord(prayerRecord);
+              console.log('🔄 User confirmed unchecking, deleting task');
               
-              // Remove from tasks list
-              const next = tasks.filter(t => t.id !== id);
-              setTasks(next);
-              await saveTasks(next);
+              try {
+                // Load the prayer record and uncheck the task button
+                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
+                
+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+                console.log('✏️ Unchecked task button in prayer record (from تم button)');
+                
+                await savePrayerRecord(prayerRecord);
+                console.log('💾 Saved prayer record (from تم button)');
+                
+                // Remove from tasks list
+                const next = tasks.filter(t => t.id !== id);
+                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
+                
+                setTasks(next);
+                await saveTasks(next);
+                console.log('✅ Task unchecked and deleted successfully');
+                
+              } catch (error) {
+                console.error('❌ Error unchecking task:', error);
+                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
+              }
             }
           }
         ]
       );
     } else {
       // Just toggle completed status
+      console.log('✅ Task is incomplete, marking as complete');
+      
       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
       setTasks(next);
       await saveTasks(next);
+      console.log('✅ Task marked as complete successfully');
     }
   };
 
