@@ -1,1484 +1,1501 @@
-diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
-index cc74b62..eecb59c 100644
---- a/frontend/app/(drawer)/my-prayers/record.tsx
-+++ b/frontend/app/(drawer)/my-prayers/record.tsx
-@@ -104,7 +104,15 @@ export default function RecordPrayer() {
-   }, [focus]);
- 
-   const [record, setRecord] = useState<PrayerRecord | null>(null);
--  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1); // Use focusRakka if available, otherwise default to rakka 1
-+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Start with default 1
-+  
-+  // Set activeRakka based on focusRakka when component loads or focus changes
-+  useEffect(() => {
-+    if (focusRakka) {
-+      console.log(`🎯 Setting activeRakka to ${focusRakka} based on focus parameter`);
-+      setActiveRakka(focusRakka);
-+    }
-+  }, [focusRakka]);
- 
-   // Clear range selection when switching rakkas to prevent contamination
-   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
+diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+index 376c971..d5d911e 100644
+--- a/frontend/app/(drawer)/tasks.tsx
++++ b/frontend/app/(drawer)/tasks.tsx
+@@ -9,6 +9,7 @@ import {
+   ScrollView,
+   Alert,
+   Pressable,
++  Button,
+   Dimensions 
+ } from 'react-native';
+ import { Colors } from '../../src/theme/colors';
 diff --git a/model.patch b/model.patch
-index 7f7df82..e69de29 100644
+index 9836eb6..e69de29 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,1458 +0,0 @@
--diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
--index 5e3c1db..376c971 100644
----- a/frontend/app/(drawer)/tasks.tsx
--+++ b/frontend/app/(drawer)/tasks.tsx
--@@ -276,16 +276,13 @@ export default function TasksScreen() {
--                 </Text>
--               </TouchableOpacity>
+@@ -1,1484 +0,0 @@
+-diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
+-index cc74b62..eecb59c 100644
+---- a/frontend/app/(drawer)/my-prayers/record.tsx
+-+++ b/frontend/app/(drawer)/my-prayers/record.tsx
+-@@ -104,7 +104,15 @@ export default function RecordPrayer() {
+-   }, [focus]);
 - 
---              <Pressable 
---                onPress={() => deleteTask(item.id)} 
---                style={({ pressed }) => [
---                  styles.deleteBtn, 
---                  { 
---                    opacity: pressed ? 0.5 : 1,
---                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
---                  }
---                ]}
---                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
--+<Pressable 
--+                onPress={() => {
--+                  Alert.alert('Debug', `Delete button pressed for task: ${item.id}`);
--+                  deleteTask(item.id);
--+                }}
--+                style={styles.deleteBtn}
--+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
--               >
--                 <Text style={styles.deleteBtnText}>🗑</Text>
--               </Pressable>
--diff --git a/frontend/app/(drawer)/tasks.tsx.backup b/frontend/app/(drawer)/tasks.tsx.backup
--new file mode 100644
--index 0000000..5e3c1db
----- /dev/null
--+++ b/frontend/app/(drawer)/tasks.tsx.backup
--@@ -0,0 +1,602 @@
--+import React, { useEffect, useState, useMemo } from 'react';
--+import { 
--+  View, 
--+  Text, 
--+  StyleSheet, 
--+  TouchableOpacity, 
--+  FlatList, 
--+  Image, 
--+  ScrollView,
--+  Alert,
--+  Pressable,
--+  Dimensions 
--+} from 'react-native';
--+import { Colors } from '../../src/theme/colors';
--+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
--+import { Link } from 'expo-router';
--+import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
--+import TaskProgressBar from '../../src/components/TaskProgressBar';
--+import { Swipeable } from 'react-native-gesture-handler';
--+
--+type GroupingType = 'date' | 'prayer' | 'type';
--+type TaskCategory = 'high' | 'medium' | 'low';
--+
--+const getTaskCategory = (question: string): TaskCategory => {
--+  if (question.includes('علّمت')) return 'high'; // taught - highest priority
--+  if (question.includes('اتبعت')) return 'high'; // followed - high priority
--+  if (question.includes('دعوت')) return 'medium'; // dua - medium priority
--+  return 'low'; // understood - lowest priority
--+};
--+
--+const getCategoryColor = (category: TaskCategory) => {
--+  switch (category) {
--+    case 'high': return '#FF4444';
--+    case 'medium': return Colors.warmOrange;
--+    case 'low': return Colors.greenTeal;
--+  }
--+};
--+
--+export default function TasksScreen() {
--+  const [tasks, setTasks] = useState<TaskItem[]>([]);
--+  const [grouping, setGrouping] = useState<GroupingType>('date');
--+  const { icons } = usePrayerIcons();
--+
--+  const refresh = async () => {
--+    const list = await loadTasks();
--+    setTasks(list);
--+  };
--+
--+  useEffect(() => { refresh(); }, []);
--+
--+  const toggleComplete = async (id: string) => {
--+    const task = tasks.find(t => t.id === id);
--+    if (!task) return;
--+
--+    if (task.completed) {
--+      // Unchecking a completed task - show confirmation
--+      Alert.alert(
--+        'إلغاء المهمة',
--+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
--+        [
--+          { text: 'إلغاء', style: 'cancel' },
--+          { 
--+            text: 'موافق', 
--+            onPress: async () => {
--+              try {
--+                // Load the prayer record and uncheck the task button
--+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--+                await savePrayerRecord(prayerRecord);
--+                
--+                // Remove from tasks list
--+                const next = tasks.filter(t => t.id !== id);
--+                setTasks(next);
--+                await saveTasks(next);
--+                
--+              } catch (error) {
--+                Alert.alert('Error', `❌ Error unchecking task: ${error}`);
--+              }
--+            }
--+          }
--+        ]
--+      );
--+    } else {
--+      // Checking an incomplete task - mark complete AND uncheck in prayer record
--+      try {
--+        // First mark the task as complete in the UI
--+        const next = tasks.map(t => t.id === id ? { ...t, completed: true } : t);
--+        setTasks(next);
--+        await saveTasks(next);
--+        
--+        // Then uncheck the task button in the prayer record (bidirectional sync)
--+        const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--+        prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--+        await savePrayerRecord(prayerRecord);
--+        
--+        Alert.alert('Success', '✅ Task completed and unchecked in prayer record');
--+        
--+      } catch (error) {
--+        Alert.alert('Error', `❌ Error completing task: ${error}`);
--+      }
+-   const [record, setRecord] = useState<PrayerRecord | null>(null);
+--  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1); // Use focusRakka if available, otherwise default to rakka 1
+-+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Start with default 1
+-+  
+-+  // Set activeRakka based on focusRakka when component loads or focus changes
+-+  useEffect(() => {
+-+    if (focusRakka) {
+-+      console.log(`🎯 Setting activeRakka to ${focusRakka} based on focus parameter`);
+-+      setActiveRakka(focusRakka);
 -+    }
--+  };
--+
--+
--+  const deleteTask = async (id: string) => {
--+    // Use Alert instead of console.log for debugging
--+    Alert.alert('Debug', `🗑 Delete button pressed for task ID: ${id}`);
--+    
--+    Alert.alert(
--+      'حذف المهمة',
--+      'هل تريد حذف هذه المهمة نهائياً؟',
--+      [
--+        { text: 'إلغاء', style: 'cancel' },
--+        { 
--+          text: 'حذف', 
--+          style: 'destructive',
--+          onPress: async () => {
--+            Alert.alert('Debug', `🗑 User confirmed deletion for task ID: ${id}`);
--+            
--+            try {
--+              // Find the task to get its details
--+              const task = tasks.find(t => t.id === id);
--+              
--+              if (task) {
--+                // Load the prayer record and uncheck the task button
--+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--+                await savePrayerRecord(prayerRecord);
--+                Alert.alert('Debug', '✅ Unchecked task in prayer record');
--+              }
--+              
--+              // Remove from tasks list
--+              const next = tasks.filter(t => t.id !== id);
--+              setTasks(next);
--+              await saveTasks(next);
--+              Alert.alert('Success', '✅ Task deleted successfully');
--+              
--+            } catch (error) {
--+              Alert.alert('Error', `❌ Error deleting task: ${error}`);
--+            }
--+          }
--+        }
--+      ]
--+    );
--+  };
--+
--+  // Group tasks based on selected grouping type
--+  const groupedTasks = useMemo(() => {
--+    const groups: Record<string, TaskItem[]> = {};
--+    
--+    tasks.forEach(task => {
--+      let key: string;
--+      switch (grouping) {
--+        case 'date':
--+          key = task.date;
--+          break;
--+        case 'prayer':
--+          key = task.prayer;
--+          break;
--+        case 'type':
--+          key = task.questionLabel;
--+          break;
--+      }
--+      
--+      if (!groups[key]) {
--+        groups[key] = [];
--+      }
--+      groups[key].push(task);
--+    });
--+
--+    // Sort tasks within each group by category priority
--+    Object.keys(groups).forEach(key => {
--+      groups[key].sort((a, b) => {
--+        const categoryA = getTaskCategory(a.questionLabel);
--+        const categoryB = getTaskCategory(b.questionLabel);
--+        const priorities = { high: 3, medium: 2, low: 1 };
--+        return priorities[categoryB] - priorities[categoryA];
--+      });
--+    });
--+
--+    return groups;
--+  }, [tasks, grouping]);
--+
--+  // Calculate completion stats
--+  const stats = useMemo(() => {
--+    const total = tasks.length;
--+    const completed = tasks.filter(t => t.completed).length;
--+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
--+    
--+    const byCategory = {
--+      high: tasks.filter(t => getTaskCategory(t.questionLabel) === 'high'),
--+      medium: tasks.filter(t => getTaskCategory(t.questionLabel) === 'medium'),
--+      low: tasks.filter(t => getTaskCategory(t.questionLabel) === 'low'),
--+    };
--+    
--+    return { total, completed, percentage, byCategory };
--+  }, [tasks]);
--+
--+  const renderSwipeActions = (taskId: string) => (
--+    <View style={styles.swipeActions}>
--+      <TouchableOpacity 
--+        style={[styles.swipeAction, { backgroundColor: '#3ddc84' }]}
--+        onPress={() => toggleComplete(taskId)}
--+      >
--+        <Text style={styles.swipeActionText}>✓</Text>
--+      </TouchableOpacity>
--+      <TouchableOpacity 
--+        style={[styles.swipeAction, { backgroundColor: '#FF4444' }]}
--+        onPress={() => deleteTask(taskId)}
--+      >
--+        <Text style={styles.swipeActionText}>🗑</Text>
--+      </TouchableOpacity>
--+    </View>
--+  );
--+
--+  const renderTask = (item: TaskItem) => {
--+    const category = getTaskCategory(item.questionLabel);
--+    const categoryColor = getCategoryColor(category);
--+    const prayerIcon = icons?.[item.prayer as keyof typeof icons];
--+
--+    return (
--+      <Swipeable
--+        key={item.id}
--+        renderRightActions={() => renderSwipeActions(item.id)}
--+        rightThreshold={40}
--+      >
--+        <View style={[styles.taskCard, item.completed && styles.completedTask]}>
--+          {/* Removed Priority Indicator */}
--+          
--+          <View style={styles.taskContent}>
--+            {/* Prayer Icon */}
--+            <View style={styles.taskIconContainer}>
--+              {prayerIcon ? (
--+                <Image 
--+                  source={{ uri: `data:image/png;base64,${prayerIcon}` }} 
--+                  style={styles.taskIcon}
--+                  resizeMode="contain"
--+                />
--+              ) : (
--+                <View style={styles.placeholderTaskIcon} />
--+              )}
--+            </View>
--+
--+            {/* Task Details */}
--+            <View style={styles.taskDetails}>
--+              <Text style={[styles.taskTitle, item.completed && styles.completedText]}>
--+                {item.questionLabel}
--+              </Text>
--+              <Text style={styles.taskMeta}>
--+                {item.prayer} • ر{item.rakka} • {item.date}
--+              </Text>
--+              {/* Removed task badges with priority labels */}
--+            </View>
--+
--+            {/* Actions - Three controls side by side horizontally */}
--+            <View style={styles.taskActions}>
--+              <Link asChild href={{ 
--+                pathname: '/(drawer)/my-prayers/record', 
--+                params: { 
--+                  prayer: item.prayer, 
--+                  date: item.date,
--+                  focus: `${item.rakka}:${item.question}` 
--+                } 
--+              }}>
--+                <TouchableOpacity style={styles.openBtn}>
--+                  <Text style={styles.openBtnText}>فتح</Text>
--+                </TouchableOpacity>
--+              </Link>
--+              
--+              <TouchableOpacity 
--+                onPress={() => toggleComplete(item.id)} 
--+                style={[styles.completeBtn, item.completed && styles.completedBtn]}
--+              >
--+                <Text style={styles.completeBtnText}>
--+                  {item.completed ? '✔' : 'تم'}
--+                </Text>
--+              </TouchableOpacity>
--+
--+              <Pressable 
--+                onPress={() => deleteTask(item.id)} 
--+                style={({ pressed }) => [
--+                  styles.deleteBtn, 
--+                  { 
--+                    opacity: pressed ? 0.5 : 1,
--+                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
--+                  }
--+                ]}
--+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
--+              >
--+                <Text style={styles.deleteBtnText}>🗑</Text>
--+              </Pressable>
--+            </View>
--+          </View>
--+        </View>
--+      </Swipeable>
--+    );
--+  };
--+
--+  const renderEmptyState = () => (
--+    <View style={styles.emptyState}>
--+      <Text style={styles.emptyStateIcon}>📝</Text>
--+      <Text style={styles.emptyStateTitle}>لا توجد مهام</Text>
--+      <Text style={styles.emptyStateMessage}>
--+        ستظهر المهام هنا عند تسجيل الصلوات وإضافة الأسئلة كمهام
--+      </Text>
--+    </View>
--+  );
--+
--+  if (tasks.length === 0) {
--+    return (
--+      <View style={styles.container}>
--+        <Text style={styles.header}>المهام</Text>
--+        {renderEmptyState()}
--+      </View>
--+    );
--+  }
--+
--+  return (
--+    <View style={styles.container}>
--+      {/* Header with Stats */}
--+      <View style={styles.headerContainer}>
--+        <Text style={styles.header}>المهام</Text>
--+        <View style={styles.statsContainer}>
--+          <Text style={styles.statsText}>
--+            {stats.completed} من {stats.total} مكتملة
--+          </Text>
--+          <TaskProgressBar score={stats.percentage} showPercentage={true} />
--+        </View>
--+      </View>
--+
--+      {/* Category Overview - Removed priority labels */}
--+
--+      {/* Grouping Controls */}
--+      <View style={styles.groupingControls}>
--+        {(['date', 'prayer', 'type'] as GroupingType[]).map(type => (
--+          <TouchableOpacity
--+            key={type}
--+            style={[styles.groupingBtn, grouping === type && styles.activeGroupingBtn]}
--+            onPress={() => setGrouping(type)}
--+          >
--+            <Text style={[styles.groupingBtnText, grouping === type && styles.activeGroupingText]}>
--+              {type === 'date' ? 'التاريخ' : type === 'prayer' ? 'الصلاة' : 'النوع'}
--+            </Text>
--+          </TouchableOpacity>
--+        ))}
--+      </View>
--+
--+      {/* Grouped Tasks List */}
--+      <ScrollView style={styles.tasksContainer} showsVerticalScrollIndicator={false}>
--+        {Object.entries(groupedTasks).map(([groupKey, groupTasks]) => (
--+          <View key={groupKey} style={styles.taskGroup}>
--+            <Text style={styles.groupHeader}>{groupKey}</Text>
--+            {groupTasks.map(renderTask)}
--+          </View>
--+        ))}
--+      </ScrollView>
--+    </View>
--+  );
--+}
--+
--+const styles = StyleSheet.create({
--+  container: { 
--+    flex: 1, 
--+    backgroundColor: Colors.dark 
--+  },
--+  
--+  // Header & Stats
--+  headerContainer: {
--+    padding: 16,
--+    borderBottomWidth: 1,
--+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
--+  },
--+  header: { 
--+    color: Colors.light, 
--+    fontSize: 24, 
--+    fontWeight: '800', 
--+    textAlign: 'right',
--+    marginBottom: 12,
--+  },
--+  statsContainer: {
--+    flexDirection: 'row',
--+    alignItems: 'center',
--+    gap: 12,
--+  },
--+  statsText: {
--+    color: Colors.warmOrange,
--+    fontSize: 14,
--+    fontWeight: '600',
--+    minWidth: 80,
--+  },
--+  
--+  // Grouping Controls
--+  groupingControls: {
--+    flexDirection: 'row',
--+    paddingHorizontal: 16,
--+    paddingBottom: 12,
--+    gap: 8,
--+  },
--+  groupingBtn: {
--+    flex: 1,
--+    backgroundColor: '#1a2626',
--+    borderRadius: 8,
--+    paddingVertical: 10,
--+    alignItems: 'center',
--+  },
--+  activeGroupingBtn: {
--+    backgroundColor: Colors.greenTeal,
--+  },
--+  groupingBtnText: {
--+    color: '#A6D3CF',
--+    fontSize: 14,
--+    fontWeight: '600',
--+  },
--+  activeGroupingText: {
--+    color: Colors.light,
--+  },
--+  
--+  // Tasks Container
--+  tasksContainer: {
--+    flex: 1,
--+  },
--+  taskGroup: {
--+    marginBottom: 20,
--+  },
--+  groupHeader: {
--+    color: Colors.warmOrange,
--+    fontSize: 16,
--+    fontWeight: '800',
--+    textAlign: 'right',
--+    paddingHorizontal: 16,
--+    paddingVertical: 8,
--+    backgroundColor: 'rgba(255, 138, 88, 0.1)',
--+    marginBottom: 8,
--+  },
--+  
--+  // Task Cards
--+  taskCard: {
--+    flexDirection: 'row',
--+    backgroundColor: '#1d2a29',
--+    marginHorizontal: 16,
--+    marginBottom: 8,
--+    borderRadius: 12,
--+    overflow: 'hidden',
--+  },
--+  completedTask: {
--+    opacity: 0.7,
--+    backgroundColor: '#1a2421',
--+  },
--+  priorityIndicator: {
--+    width: 4,
--+  },
--+  taskContent: {
--+    flex: 1,
--+    flexDirection: 'row',
--+    padding: 12,
--+    alignItems: 'center',
--+    gap: 12,
--+  },
--+  
--+  // Task Icon
--+  taskIconContainer: {
--+    width: 36,
--+    height: 36,
--+    justifyContent: 'center',
--+    alignItems: 'center',
--+  },
--+  taskIcon: {
--+    width: 28,
--+    height: 28,
--+  },
--+  placeholderTaskIcon: {
--+    width: 28,
--+    height: 28,
--+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
--+    borderRadius: 14,
--+  },
--+  
--+  // Task Details
--+  taskDetails: {
--+    flex: 1,
--+    gap: 4,
--+  },
--+  taskTitle: {
--+    color: Colors.light,
--+    fontSize: 16,
--+    fontWeight: '700',
--+    textAlign: 'right',
--+  },
--+  completedText: {
--+    textDecorationLine: 'line-through',
--+    color: '#A6D3CF',
--+  },
--+  taskMeta: {
--+    color: '#A6D3CF',
--+    fontSize: 12,
--+    textAlign: 'right',
--+  },
--+  taskBadges: {
--+    flexDirection: 'row',
--+    justifyContent: 'flex-end',
--+    marginTop: 4,
--+  },
--+  categoryBadge: {
--+    paddingHorizontal: 6,
--+    paddingVertical: 2,
--+    borderRadius: 4,
--+  },
--+  categoryText: {
--+    color: Colors.light,
--+    fontSize: 10,
--+    fontWeight: '600',
--+  },
--+  
--+  // Task Actions
--+  taskActions: {
--+    flexDirection: 'row',
--+    gap: 8,
--+    alignItems: 'center',
--+  },
--+  openBtn: {
--+    backgroundColor: Colors.warmOrange,
--+    paddingHorizontal: 12,
--+    paddingVertical: 6,
--+    borderRadius: 6,
--+  },
--+  openBtnText: {
--+    color: Colors.dark,
--+    fontSize: 12,
--+    fontWeight: '700',
--+  },
--+  completeBtn: {
--+    backgroundColor: '#555',
--+    paddingHorizontal: 12,
--+    paddingVertical: 6,
--+    borderRadius: 6,
--+    minWidth: 40,
--+    alignItems: 'center',
--+  },
--+  completedBtn: {
--+    backgroundColor: '#3ddc84',
--+  },
--+  completeBtnText: {
--+    color: Colors.light,
--+    fontSize: 12,
--+    fontWeight: '700',
--+  },
--+  deleteBtn: {
--+    backgroundColor: '#ff4444',
--+    paddingHorizontal: 12,
--+    paddingVertical: 6,
--+    borderRadius: 6,
--+    minWidth: 40,
--+    alignItems: 'center',
--+  },
--+  deleteBtnText: {
--+    color: Colors.light,
--+    fontSize: 12,
--+    fontWeight: '700',
--+  },
--+  
--+  // Swipe Actions
--+  swipeActions: {
--+    flexDirection: 'row',
--+    alignItems: 'center',
--+  },
--+  swipeAction: {
--+    width: 60,
--+    height: '100%',
--+    justifyContent: 'center',
--+    alignItems: 'center',
--+  },
--+  swipeActionText: {
--+    color: Colors.light,
--+    fontSize: 18,
--+    fontWeight: 'bold',
--+  },
--+  
--+  // Empty State
--+  emptyState: {
--+    flex: 1,
--+    justifyContent: 'center',
--+    alignItems: 'center',
--+    paddingHorizontal: 32,
--+  },
--+  emptyStateIcon: {
--+    fontSize: 64,
--+    marginBottom: 16,
--+  },
--+  emptyStateTitle: {
--+    color: Colors.light,
--+    fontSize: 20,
--+    fontWeight: '800',
--+    textAlign: 'center',
--+    marginBottom: 8,
--+  },
--+  emptyStateMessage: {
--+    color: '#A6D3CF',
--+    fontSize: 16,
--+    textAlign: 'center',
--+    lineHeight: 24,
--+  },
--+});
--\ No newline at end of file
+-+  }, [focusRakka]);
+- 
+-   // Clear range selection when switching rakkas to prevent contamination
+-   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
 -diff --git a/model.patch b/model.patch
--index 7fb3590..4839e4f 100644
+-index 7f7df82..e69de29 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,816 +0,0 @@
---diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
---index e4e3ae3..cc74b62 100644
------ a/frontend/app/(drawer)/my-prayers/record.tsx
---+++ b/frontend/app/(drawer)/my-prayers/record.tsx
---@@ -476,8 +476,8 @@ export default function RecordPrayer() {
---       <View style={styles.header}>
---         <View style={styles.headerInfoRow}>
---           <Text style={styles.prayerNameText}>{PRAYERS.find(prayer => prayer.key === p)?.label || p}</Text>
----          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
----          <Text style={styles.dateText}>{new Date(day).toLocaleDateString('ar-SA')}</Text>
---+          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('en-US', { weekday: 'long' })}</Text>
---+          <Text style={styles.dateText}>{new Date(day).toLocaleDateString('en-GB')}</Text>
---           <View style={styles.progressBarContainer}>
---             <TaskProgressBar score={sc.total} showPercentage={true} />
---           </View>
+-@@ -1,1458 +0,0 @@
+--diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+--index 5e3c1db..376c971 100644
+----- a/frontend/app/(drawer)/tasks.tsx
+--+++ b/frontend/app/(drawer)/tasks.tsx
+--@@ -276,16 +276,13 @@ export default function TasksScreen() {
+--                 </Text>
+--               </TouchableOpacity>
+-- 
+---              <Pressable 
+---                onPress={() => deleteTask(item.id)} 
+---                style={({ pressed }) => [
+---                  styles.deleteBtn, 
+---                  { 
+---                    opacity: pressed ? 0.5 : 1,
+---                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
+---                  }
+---                ]}
+---                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+--+<Pressable 
+--+                onPress={() => {
+--+                  Alert.alert('Debug', `Delete button pressed for task: ${item.id}`);
+--+                  deleteTask(item.id);
+--+                }}
+--+                style={styles.deleteBtn}
+--+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+--               >
+--                 <Text style={styles.deleteBtnText}>🗑</Text>
+--               </Pressable>
+--diff --git a/frontend/app/(drawer)/tasks.tsx.backup b/frontend/app/(drawer)/tasks.tsx.backup
+--new file mode 100644
+--index 0000000..5e3c1db
+----- /dev/null
+--+++ b/frontend/app/(drawer)/tasks.tsx.backup
+--@@ -0,0 +1,602 @@
+--+import React, { useEffect, useState, useMemo } from 'react';
+--+import { 
+--+  View, 
+--+  Text, 
+--+  StyleSheet, 
+--+  TouchableOpacity, 
+--+  FlatList, 
+--+  Image, 
+--+  ScrollView,
+--+  Alert,
+--+  Pressable,
+--+  Dimensions 
+--+} from 'react-native';
+--+import { Colors } from '../../src/theme/colors';
+--+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
+--+import { Link } from 'expo-router';
+--+import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
+--+import TaskProgressBar from '../../src/components/TaskProgressBar';
+--+import { Swipeable } from 'react-native-gesture-handler';
+--+
+--+type GroupingType = 'date' | 'prayer' | 'type';
+--+type TaskCategory = 'high' | 'medium' | 'low';
+--+
+--+const getTaskCategory = (question: string): TaskCategory => {
+--+  if (question.includes('علّمت')) return 'high'; // taught - highest priority
+--+  if (question.includes('اتبعت')) return 'high'; // followed - high priority
+--+  if (question.includes('دعوت')) return 'medium'; // dua - medium priority
+--+  return 'low'; // understood - lowest priority
+--+};
+--+
+--+const getCategoryColor = (category: TaskCategory) => {
+--+  switch (category) {
+--+    case 'high': return '#FF4444';
+--+    case 'medium': return Colors.warmOrange;
+--+    case 'low': return Colors.greenTeal;
+--+  }
+--+};
+--+
+--+export default function TasksScreen() {
+--+  const [tasks, setTasks] = useState<TaskItem[]>([]);
+--+  const [grouping, setGrouping] = useState<GroupingType>('date');
+--+  const { icons } = usePrayerIcons();
+--+
+--+  const refresh = async () => {
+--+    const list = await loadTasks();
+--+    setTasks(list);
+--+  };
+--+
+--+  useEffect(() => { refresh(); }, []);
+--+
+--+  const toggleComplete = async (id: string) => {
+--+    const task = tasks.find(t => t.id === id);
+--+    if (!task) return;
+--+
+--+    if (task.completed) {
+--+      // Unchecking a completed task - show confirmation
+--+      Alert.alert(
+--+        'إلغاء المهمة',
+--+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+--+        [
+--+          { text: 'إلغاء', style: 'cancel' },
+--+          { 
+--+            text: 'موافق', 
+--+            onPress: async () => {
+--+              try {
+--+                // Load the prayer record and uncheck the task button
+--+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--+                await savePrayerRecord(prayerRecord);
+--+                
+--+                // Remove from tasks list
+--+                const next = tasks.filter(t => t.id !== id);
+--+                setTasks(next);
+--+                await saveTasks(next);
+--+                
+--+              } catch (error) {
+--+                Alert.alert('Error', `❌ Error unchecking task: ${error}`);
+--+              }
+--+            }
+--+          }
+--+        ]
+--+      );
+--+    } else {
+--+      // Checking an incomplete task - mark complete AND uncheck in prayer record
+--+      try {
+--+        // First mark the task as complete in the UI
+--+        const next = tasks.map(t => t.id === id ? { ...t, completed: true } : t);
+--+        setTasks(next);
+--+        await saveTasks(next);
+--+        
+--+        // Then uncheck the task button in the prayer record (bidirectional sync)
+--+        const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--+        prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--+        await savePrayerRecord(prayerRecord);
+--+        
+--+        Alert.alert('Success', '✅ Task completed and unchecked in prayer record');
+--+        
+--+      } catch (error) {
+--+        Alert.alert('Error', `❌ Error completing task: ${error}`);
+--+      }
+--+    }
+--+  };
+--+
+--+
+--+  const deleteTask = async (id: string) => {
+--+    // Use Alert instead of console.log for debugging
+--+    Alert.alert('Debug', `🗑 Delete button pressed for task ID: ${id}`);
+--+    
+--+    Alert.alert(
+--+      'حذف المهمة',
+--+      'هل تريد حذف هذه المهمة نهائياً؟',
+--+      [
+--+        { text: 'إلغاء', style: 'cancel' },
+--+        { 
+--+          text: 'حذف', 
+--+          style: 'destructive',
+--+          onPress: async () => {
+--+            Alert.alert('Debug', `🗑 User confirmed deletion for task ID: ${id}`);
+--+            
+--+            try {
+--+              // Find the task to get its details
+--+              const task = tasks.find(t => t.id === id);
+--+              
+--+              if (task) {
+--+                // Load the prayer record and uncheck the task button
+--+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--+                await savePrayerRecord(prayerRecord);
+--+                Alert.alert('Debug', '✅ Unchecked task in prayer record');
+--+              }
+--+              
+--+              // Remove from tasks list
+--+              const next = tasks.filter(t => t.id !== id);
+--+              setTasks(next);
+--+              await saveTasks(next);
+--+              Alert.alert('Success', '✅ Task deleted successfully');
+--+              
+--+            } catch (error) {
+--+              Alert.alert('Error', `❌ Error deleting task: ${error}`);
+--+            }
+--+          }
+--+        }
+--+      ]
+--+    );
+--+  };
+--+
+--+  // Group tasks based on selected grouping type
+--+  const groupedTasks = useMemo(() => {
+--+    const groups: Record<string, TaskItem[]> = {};
+--+    
+--+    tasks.forEach(task => {
+--+      let key: string;
+--+      switch (grouping) {
+--+        case 'date':
+--+          key = task.date;
+--+          break;
+--+        case 'prayer':
+--+          key = task.prayer;
+--+          break;
+--+        case 'type':
+--+          key = task.questionLabel;
+--+          break;
+--+      }
+--+      
+--+      if (!groups[key]) {
+--+        groups[key] = [];
+--+      }
+--+      groups[key].push(task);
+--+    });
+--+
+--+    // Sort tasks within each group by category priority
+--+    Object.keys(groups).forEach(key => {
+--+      groups[key].sort((a, b) => {
+--+        const categoryA = getTaskCategory(a.questionLabel);
+--+        const categoryB = getTaskCategory(b.questionLabel);
+--+        const priorities = { high: 3, medium: 2, low: 1 };
+--+        return priorities[categoryB] - priorities[categoryA];
+--+      });
+--+    });
+--+
+--+    return groups;
+--+  }, [tasks, grouping]);
+--+
+--+  // Calculate completion stats
+--+  const stats = useMemo(() => {
+--+    const total = tasks.length;
+--+    const completed = tasks.filter(t => t.completed).length;
+--+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+--+    
+--+    const byCategory = {
+--+      high: tasks.filter(t => getTaskCategory(t.questionLabel) === 'high'),
+--+      medium: tasks.filter(t => getTaskCategory(t.questionLabel) === 'medium'),
+--+      low: tasks.filter(t => getTaskCategory(t.questionLabel) === 'low'),
+--+    };
+--+    
+--+    return { total, completed, percentage, byCategory };
+--+  }, [tasks]);
+--+
+--+  const renderSwipeActions = (taskId: string) => (
+--+    <View style={styles.swipeActions}>
+--+      <TouchableOpacity 
+--+        style={[styles.swipeAction, { backgroundColor: '#3ddc84' }]}
+--+        onPress={() => toggleComplete(taskId)}
+--+      >
+--+        <Text style={styles.swipeActionText}>✓</Text>
+--+      </TouchableOpacity>
+--+      <TouchableOpacity 
+--+        style={[styles.swipeAction, { backgroundColor: '#FF4444' }]}
+--+        onPress={() => deleteTask(taskId)}
+--+      >
+--+        <Text style={styles.swipeActionText}>🗑</Text>
+--+      </TouchableOpacity>
+--+    </View>
+--+  );
+--+
+--+  const renderTask = (item: TaskItem) => {
+--+    const category = getTaskCategory(item.questionLabel);
+--+    const categoryColor = getCategoryColor(category);
+--+    const prayerIcon = icons?.[item.prayer as keyof typeof icons];
+--+
+--+    return (
+--+      <Swipeable
+--+        key={item.id}
+--+        renderRightActions={() => renderSwipeActions(item.id)}
+--+        rightThreshold={40}
+--+      >
+--+        <View style={[styles.taskCard, item.completed && styles.completedTask]}>
+--+          {/* Removed Priority Indicator */}
+--+          
+--+          <View style={styles.taskContent}>
+--+            {/* Prayer Icon */}
+--+            <View style={styles.taskIconContainer}>
+--+              {prayerIcon ? (
+--+                <Image 
+--+                  source={{ uri: `data:image/png;base64,${prayerIcon}` }} 
+--+                  style={styles.taskIcon}
+--+                  resizeMode="contain"
+--+                />
+--+              ) : (
+--+                <View style={styles.placeholderTaskIcon} />
+--+              )}
+--+            </View>
+--+
+--+            {/* Task Details */}
+--+            <View style={styles.taskDetails}>
+--+              <Text style={[styles.taskTitle, item.completed && styles.completedText]}>
+--+                {item.questionLabel}
+--+              </Text>
+--+              <Text style={styles.taskMeta}>
+--+                {item.prayer} • ر{item.rakka} • {item.date}
+--+              </Text>
+--+              {/* Removed task badges with priority labels */}
+--+            </View>
+--+
+--+            {/* Actions - Three controls side by side horizontally */}
+--+            <View style={styles.taskActions}>
+--+              <Link asChild href={{ 
+--+                pathname: '/(drawer)/my-prayers/record', 
+--+                params: { 
+--+                  prayer: item.prayer, 
+--+                  date: item.date,
+--+                  focus: `${item.rakka}:${item.question}` 
+--+                } 
+--+              }}>
+--+                <TouchableOpacity style={styles.openBtn}>
+--+                  <Text style={styles.openBtnText}>فتح</Text>
+--+                </TouchableOpacity>
+--+              </Link>
+--+              
+--+              <TouchableOpacity 
+--+                onPress={() => toggleComplete(item.id)} 
+--+                style={[styles.completeBtn, item.completed && styles.completedBtn]}
+--+              >
+--+                <Text style={styles.completeBtnText}>
+--+                  {item.completed ? '✔' : 'تم'}
+--+                </Text>
+--+              </TouchableOpacity>
+--+
+--+              <Pressable 
+--+                onPress={() => deleteTask(item.id)} 
+--+                style={({ pressed }) => [
+--+                  styles.deleteBtn, 
+--+                  { 
+--+                    opacity: pressed ? 0.5 : 1,
+--+                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
+--+                  }
+--+                ]}
+--+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+--+              >
+--+                <Text style={styles.deleteBtnText}>🗑</Text>
+--+              </Pressable>
+--+            </View>
+--+          </View>
+--+        </View>
+--+      </Swipeable>
+--+    );
+--+  };
+--+
+--+  const renderEmptyState = () => (
+--+    <View style={styles.emptyState}>
+--+      <Text style={styles.emptyStateIcon}>📝</Text>
+--+      <Text style={styles.emptyStateTitle}>لا توجد مهام</Text>
+--+      <Text style={styles.emptyStateMessage}>
+--+        ستظهر المهام هنا عند تسجيل الصلوات وإضافة الأسئلة كمهام
+--+      </Text>
+--+    </View>
+--+  );
+--+
+--+  if (tasks.length === 0) {
+--+    return (
+--+      <View style={styles.container}>
+--+        <Text style={styles.header}>المهام</Text>
+--+        {renderEmptyState()}
+--+      </View>
+--+    );
+--+  }
+--+
+--+  return (
+--+    <View style={styles.container}>
+--+      {/* Header with Stats */}
+--+      <View style={styles.headerContainer}>
+--+        <Text style={styles.header}>المهام</Text>
+--+        <View style={styles.statsContainer}>
+--+          <Text style={styles.statsText}>
+--+            {stats.completed} من {stats.total} مكتملة
+--+          </Text>
+--+          <TaskProgressBar score={stats.percentage} showPercentage={true} />
+--+        </View>
+--+      </View>
+--+
+--+      {/* Category Overview - Removed priority labels */}
+--+
+--+      {/* Grouping Controls */}
+--+      <View style={styles.groupingControls}>
+--+        {(['date', 'prayer', 'type'] as GroupingType[]).map(type => (
+--+          <TouchableOpacity
+--+            key={type}
+--+            style={[styles.groupingBtn, grouping === type && styles.activeGroupingBtn]}
+--+            onPress={() => setGrouping(type)}
+--+          >
+--+            <Text style={[styles.groupingBtnText, grouping === type && styles.activeGroupingText]}>
+--+              {type === 'date' ? 'التاريخ' : type === 'prayer' ? 'الصلاة' : 'النوع'}
+--+            </Text>
+--+          </TouchableOpacity>
+--+        ))}
+--+      </View>
+--+
+--+      {/* Grouped Tasks List */}
+--+      <ScrollView style={styles.tasksContainer} showsVerticalScrollIndicator={false}>
+--+        {Object.entries(groupedTasks).map(([groupKey, groupTasks]) => (
+--+          <View key={groupKey} style={styles.taskGroup}>
+--+            <Text style={styles.groupHeader}>{groupKey}</Text>
+--+            {groupTasks.map(renderTask)}
+--+          </View>
+--+        ))}
+--+      </ScrollView>
+--+    </View>
+--+  );
+--+}
+--+
+--+const styles = StyleSheet.create({
+--+  container: { 
+--+    flex: 1, 
+--+    backgroundColor: Colors.dark 
+--+  },
+--+  
+--+  // Header & Stats
+--+  headerContainer: {
+--+    padding: 16,
+--+    borderBottomWidth: 1,
+--+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+--+  },
+--+  header: { 
+--+    color: Colors.light, 
+--+    fontSize: 24, 
+--+    fontWeight: '800', 
+--+    textAlign: 'right',
+--+    marginBottom: 12,
+--+  },
+--+  statsContainer: {
+--+    flexDirection: 'row',
+--+    alignItems: 'center',
+--+    gap: 12,
+--+  },
+--+  statsText: {
+--+    color: Colors.warmOrange,
+--+    fontSize: 14,
+--+    fontWeight: '600',
+--+    minWidth: 80,
+--+  },
+--+  
+--+  // Grouping Controls
+--+  groupingControls: {
+--+    flexDirection: 'row',
+--+    paddingHorizontal: 16,
+--+    paddingBottom: 12,
+--+    gap: 8,
+--+  },
+--+  groupingBtn: {
+--+    flex: 1,
+--+    backgroundColor: '#1a2626',
+--+    borderRadius: 8,
+--+    paddingVertical: 10,
+--+    alignItems: 'center',
+--+  },
+--+  activeGroupingBtn: {
+--+    backgroundColor: Colors.greenTeal,
+--+  },
+--+  groupingBtnText: {
+--+    color: '#A6D3CF',
+--+    fontSize: 14,
+--+    fontWeight: '600',
+--+  },
+--+  activeGroupingText: {
+--+    color: Colors.light,
+--+  },
+--+  
+--+  // Tasks Container
+--+  tasksContainer: {
+--+    flex: 1,
+--+  },
+--+  taskGroup: {
+--+    marginBottom: 20,
+--+  },
+--+  groupHeader: {
+--+    color: Colors.warmOrange,
+--+    fontSize: 16,
+--+    fontWeight: '800',
+--+    textAlign: 'right',
+--+    paddingHorizontal: 16,
+--+    paddingVertical: 8,
+--+    backgroundColor: 'rgba(255, 138, 88, 0.1)',
+--+    marginBottom: 8,
+--+  },
+--+  
+--+  // Task Cards
+--+  taskCard: {
+--+    flexDirection: 'row',
+--+    backgroundColor: '#1d2a29',
+--+    marginHorizontal: 16,
+--+    marginBottom: 8,
+--+    borderRadius: 12,
+--+    overflow: 'hidden',
+--+  },
+--+  completedTask: {
+--+    opacity: 0.7,
+--+    backgroundColor: '#1a2421',
+--+  },
+--+  priorityIndicator: {
+--+    width: 4,
+--+  },
+--+  taskContent: {
+--+    flex: 1,
+--+    flexDirection: 'row',
+--+    padding: 12,
+--+    alignItems: 'center',
+--+    gap: 12,
+--+  },
+--+  
+--+  // Task Icon
+--+  taskIconContainer: {
+--+    width: 36,
+--+    height: 36,
+--+    justifyContent: 'center',
+--+    alignItems: 'center',
+--+  },
+--+  taskIcon: {
+--+    width: 28,
+--+    height: 28,
+--+  },
+--+  placeholderTaskIcon: {
+--+    width: 28,
+--+    height: 28,
+--+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+--+    borderRadius: 14,
+--+  },
+--+  
+--+  // Task Details
+--+  taskDetails: {
+--+    flex: 1,
+--+    gap: 4,
+--+  },
+--+  taskTitle: {
+--+    color: Colors.light,
+--+    fontSize: 16,
+--+    fontWeight: '700',
+--+    textAlign: 'right',
+--+  },
+--+  completedText: {
+--+    textDecorationLine: 'line-through',
+--+    color: '#A6D3CF',
+--+  },
+--+  taskMeta: {
+--+    color: '#A6D3CF',
+--+    fontSize: 12,
+--+    textAlign: 'right',
+--+  },
+--+  taskBadges: {
+--+    flexDirection: 'row',
+--+    justifyContent: 'flex-end',
+--+    marginTop: 4,
+--+  },
+--+  categoryBadge: {
+--+    paddingHorizontal: 6,
+--+    paddingVertical: 2,
+--+    borderRadius: 4,
+--+  },
+--+  categoryText: {
+--+    color: Colors.light,
+--+    fontSize: 10,
+--+    fontWeight: '600',
+--+  },
+--+  
+--+  // Task Actions
+--+  taskActions: {
+--+    flexDirection: 'row',
+--+    gap: 8,
+--+    alignItems: 'center',
+--+  },
+--+  openBtn: {
+--+    backgroundColor: Colors.warmOrange,
+--+    paddingHorizontal: 12,
+--+    paddingVertical: 6,
+--+    borderRadius: 6,
+--+  },
+--+  openBtnText: {
+--+    color: Colors.dark,
+--+    fontSize: 12,
+--+    fontWeight: '700',
+--+  },
+--+  completeBtn: {
+--+    backgroundColor: '#555',
+--+    paddingHorizontal: 12,
+--+    paddingVertical: 6,
+--+    borderRadius: 6,
+--+    minWidth: 40,
+--+    alignItems: 'center',
+--+  },
+--+  completedBtn: {
+--+    backgroundColor: '#3ddc84',
+--+  },
+--+  completeBtnText: {
+--+    color: Colors.light,
+--+    fontSize: 12,
+--+    fontWeight: '700',
+--+  },
+--+  deleteBtn: {
+--+    backgroundColor: '#ff4444',
+--+    paddingHorizontal: 12,
+--+    paddingVertical: 6,
+--+    borderRadius: 6,
+--+    minWidth: 40,
+--+    alignItems: 'center',
+--+  },
+--+  deleteBtnText: {
+--+    color: Colors.light,
+--+    fontSize: 12,
+--+    fontWeight: '700',
+--+  },
+--+  
+--+  // Swipe Actions
+--+  swipeActions: {
+--+    flexDirection: 'row',
+--+    alignItems: 'center',
+--+  },
+--+  swipeAction: {
+--+    width: 60,
+--+    height: '100%',
+--+    justifyContent: 'center',
+--+    alignItems: 'center',
+--+  },
+--+  swipeActionText: {
+--+    color: Colors.light,
+--+    fontSize: 18,
+--+    fontWeight: 'bold',
+--+  },
+--+  
+--+  // Empty State
+--+  emptyState: {
+--+    flex: 1,
+--+    justifyContent: 'center',
+--+    alignItems: 'center',
+--+    paddingHorizontal: 32,
+--+  },
+--+  emptyStateIcon: {
+--+    fontSize: 64,
+--+    marginBottom: 16,
+--+  },
+--+  emptyStateTitle: {
+--+    color: Colors.light,
+--+    fontSize: 20,
+--+    fontWeight: '800',
+--+    textAlign: 'center',
+--+    marginBottom: 8,
+--+  },
+--+  emptyStateMessage: {
+--+    color: '#A6D3CF',
+--+    fontSize: 16,
+--+    textAlign: 'center',
+--+    lineHeight: 24,
+--+  },
+--+});
+--\ No newline at end of file
 --diff --git a/model.patch b/model.patch
---index bb947df..e69de29 100644
+--index 7fb3590..4839e4f 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,796 +0,0 @@
+--@@ -1,816 +0,0 @@
 ---diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
----index 9cb0d1a..e4e3ae3 100644
+---index e4e3ae3..cc74b62 100644
 ------ a/frontend/app/(drawer)/my-prayers/record.tsx
 ---+++ b/frontend/app/(drawer)/my-prayers/record.tsx
----@@ -104,7 +104,7 @@ export default function RecordPrayer() {
----   }, [focus]);
---- 
----   const [record, setRecord] = useState<PrayerRecord | null>(null);
-----  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Always default to rakka 1
----+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1); // Use focusRakka if available, otherwise default to rakka 1
---- 
----   // Clear range selection when switching rakkas to prevent contamination
----   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
+---@@ -476,8 +476,8 @@ export default function RecordPrayer() {
+---       <View style={styles.header}>
+---         <View style={styles.headerInfoRow}>
+---           <Text style={styles.prayerNameText}>{PRAYERS.find(prayer => prayer.key === p)?.label || p}</Text>
+----          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
+----          <Text style={styles.dateText}>{new Date(day).toLocaleDateString('ar-SA')}</Text>
+---+          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('en-US', { weekday: 'long' })}</Text>
+---+          <Text style={styles.dateText}>{new Date(day).toLocaleDateString('en-GB')}</Text>
+---           <View style={styles.progressBarContainer}>
+---             <TaskProgressBar score={sc.total} showPercentage={true} />
+---           </View>
 ---diff --git a/model.patch b/model.patch
----index 90537dd..e69de29 100644
+---index bb947df..e69de29 100644
 ------ a/model.patch
 ---+++ b/model.patch
----@@ -1,778 +0,0 @@
-----diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-----index a67cde7..5e3c1db 100644
-------- a/frontend/app/(drawer)/tasks.tsx
-----+++ b/frontend/app/(drawer)/tasks.tsx
-----@@ -276,13 +276,19 @@ export default function TasksScreen() {
-----                 </Text>
-----               </TouchableOpacity>
+---@@ -1,796 +0,0 @@
+----diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
+----index 9cb0d1a..e4e3ae3 100644
+------- a/frontend/app/(drawer)/my-prayers/record.tsx
+----+++ b/frontend/app/(drawer)/my-prayers/record.tsx
+----@@ -104,7 +104,7 @@ export default function RecordPrayer() {
+----   }, [focus]);
 ---- 
------              <TouchableOpacity 
-----+              <Pressable 
-----                 onPress={() => deleteTask(item.id)} 
------                style={[styles.deleteBtn, { zIndex: 1000 }]}
------                activeOpacity={0.7}
-----+                style={({ pressed }) => [
-----+                  styles.deleteBtn, 
-----+                  { 
-----+                    opacity: pressed ? 0.5 : 1,
-----+                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
-----+                  }
-----+                ]}
-----+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-----               >
-----                 <Text style={styles.deleteBtnText}>🗑</Text>
------              </TouchableOpacity>
-----+              </Pressable>
-----             </View>
-----           </View>
-----         </View>
+----   const [record, setRecord] = useState<PrayerRecord | null>(null);
+-----  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Always default to rakka 1
+----+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1); // Use focusRakka if available, otherwise default to rakka 1
+---- 
+----   // Clear range selection when switching rakkas to prevent contamination
+----   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
 ----diff --git a/model.patch b/model.patch
-----index 6e9cee7..e69de29 100644
+----index 90537dd..e69de29 100644
 ------- a/model.patch
 ----+++ b/model.patch
-----@@ -1,745 +0,0 @@
+----@@ -1,778 +0,0 @@
 -----diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
------index b7945a0..a67cde7 100644
+-----index a67cde7..5e3c1db 100644
 -------- a/frontend/app/(drawer)/tasks.tsx
 -----+++ b/frontend/app/(drawer)/tasks.tsx
------@@ -8,6 +8,7 @@ import {
------   Image, 
------   ScrollView,
------   Alert,
------+  Pressable,
------   Dimensions 
------ } from 'react-native';
------ import { Colors } from '../../src/theme/colors';
+-----@@ -276,13 +276,19 @@ export default function TasksScreen() {
+-----                 </Text>
+-----               </TouchableOpacity>
+----- 
+------              <TouchableOpacity 
+-----+              <Pressable 
+-----                 onPress={() => deleteTask(item.id)} 
+------                style={[styles.deleteBtn, { zIndex: 1000 }]}
+------                activeOpacity={0.7}
+-----+                style={({ pressed }) => [
+-----+                  styles.deleteBtn, 
+-----+                  { 
+-----+                    opacity: pressed ? 0.5 : 1,
+-----+                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
+-----+                  }
+-----+                ]}
+-----+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+-----               >
+-----                 <Text style={styles.deleteBtnText}>🗑</Text>
+------              </TouchableOpacity>
+-----+              </Pressable>
+-----             </View>
+-----           </View>
+-----         </View>
 -----diff --git a/model.patch b/model.patch
------index bf7313f..e69de29 100644
+-----index 6e9cee7..e69de29 100644
 -------- a/model.patch
 -----+++ b/model.patch
------@@ -1,728 +0,0 @@
+-----@@ -1,745 +0,0 @@
 ------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-------index 30142d0..b7945a0 100644
+------index b7945a0..a67cde7 100644
 --------- a/frontend/app/(drawer)/tasks.tsx
 ------+++ b/frontend/app/(drawer)/tasks.tsx
-------@@ -255,7 +255,11 @@ export default function TasksScreen() {
-------             <View style={styles.taskActions}>
-------               <Link asChild href={{ 
-------                 pathname: '/(drawer)/my-prayers/record', 
--------                params: { prayer: item.prayer, focus: `${item.rakka}:${item.question}` } 
-------+                params: { 
-------+                  prayer: item.prayer, 
-------+                  date: item.date,
-------+                  focus: `${item.rakka}:${item.question}` 
-------+                } 
-------               }}>
-------                 <TouchableOpacity style={styles.openBtn}>
-------                   <Text style={styles.openBtnText}>فتح</Text>
+------@@ -8,6 +8,7 @@ import {
+------   Image, 
+------   ScrollView,
+------   Alert,
+------+  Pressable,
+------   Dimensions 
+------ } from 'react-native';
+------ import { Colors } from '../../src/theme/colors';
 ------diff --git a/model.patch b/model.patch
-------index 98d8e9a..e69de29 100644
+------index bf7313f..e69de29 100644
 --------- a/model.patch
 ------+++ b/model.patch
-------@@ -1,706 +0,0 @@
+------@@ -1,728 +0,0 @@
 -------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
--------index b2f3887..30142d0 100644
+-------index 30142d0..b7945a0 100644
 ---------- a/frontend/app/(drawer)/tasks.tsx
 -------+++ b/frontend/app/(drawer)/tasks.tsx
--------@@ -48,19 +48,11 @@ export default function TasksScreen() {
--------   useEffect(() => { refresh(); }, []);
-------- 
--------   const toggleComplete = async (id: string) => {
---------    // Use Alert for debugging
---------    Alert.alert('Debug', `✅ تم button pressed for task ID: ${id}`);
---------    
--------     const task = tasks.find(t => t.id === id);
---------    if (!task) {
---------      Alert.alert('Error', `❌ Task not found for ID: ${id}`);
---------      return;
---------    }
--------+    if (!task) return;
-------- 
---------    // If unchecking (was completed, now will be incomplete), delete the task
--------     if (task.completed) {
---------      Alert.alert('Debug', `🔄 Task is completed, showing uncheck confirmation`);
---------      
--------+      // Unchecking a completed task - show confirmation
--------       Alert.alert(
--------         'إلغاء المهمة',
--------         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
--------@@ -79,7 +71,6 @@ export default function TasksScreen() {
--------                 const next = tasks.filter(t => t.id !== id);
--------                 setTasks(next);
--------                 await saveTasks(next);
---------                Alert.alert('Success', '✅ Task unchecked and synced with rakka');
--------                 
--------               } catch (error) {
--------                 Alert.alert('Error', `❌ Error unchecking task: ${error}`);
--------@@ -89,11 +80,23 @@ export default function TasksScreen() {
--------         ]
--------       );
--------     } else {
---------      // Just toggle completed status
---------      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
---------      setTasks(next);
---------      await saveTasks(next);
---------      Alert.alert('Success', '✅ Task marked as complete');
--------+      // Checking an incomplete task - mark complete AND uncheck in prayer record
--------+      try {
--------+        // First mark the task as complete in the UI
--------+        const next = tasks.map(t => t.id === id ? { ...t, completed: true } : t);
--------+        setTasks(next);
--------+        await saveTasks(next);
--------+        
--------+        // Then uncheck the task button in the prayer record (bidirectional sync)
--------+        const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--------+        prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--------+        await savePrayerRecord(prayerRecord);
--------+        
--------+        Alert.alert('Success', '✅ Task completed and unchecked in prayer record');
--------+        
--------+      } catch (error) {
--------+        Alert.alert('Error', `❌ Error completing task: ${error}`);
--------+      }
--------     }
--------   };
-------- 
+-------@@ -255,7 +255,11 @@ export default function TasksScreen() {
+-------             <View style={styles.taskActions}>
+-------               <Link asChild href={{ 
+-------                 pathname: '/(drawer)/my-prayers/record', 
+--------                params: { prayer: item.prayer, focus: `${item.rakka}:${item.question}` } 
+-------+                params: { 
+-------+                  prayer: item.prayer, 
+-------+                  date: item.date,
+-------+                  focus: `${item.rakka}:${item.question}` 
+-------+                } 
+-------               }}>
+-------                 <TouchableOpacity style={styles.openBtn}>
+-------                   <Text style={styles.openBtnText}>فتح</Text>
 -------diff --git a/model.patch b/model.patch
--------index 0d1d07c..e69de29 100644
+-------index 98d8e9a..e69de29 100644
 ---------- a/model.patch
 -------+++ b/model.patch
--------@@ -1,638 +0,0 @@
+-------@@ -1,706 +0,0 @@
 --------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
---------index 17824e6..b2f3887 100644
+--------index b2f3887..30142d0 100644
 ----------- a/frontend/app/(drawer)/tasks.tsx
 --------+++ b/frontend/app/(drawer)/tasks.tsx
---------@@ -270,7 +270,8 @@ export default function TasksScreen() {
+--------@@ -48,19 +48,11 @@ export default function TasksScreen() {
+--------   useEffect(() => { refresh(); }, []);
 -------- 
---------               <TouchableOpacity 
---------                 onPress={() => deleteTask(item.id)} 
----------                style={styles.deleteBtn}
---------+                style={[styles.deleteBtn, { zIndex: 1000 }]}
---------+                activeOpacity={0.7}
---------               >
---------                 <Text style={styles.deleteBtnText}>🗑</Text>
---------               </TouchableOpacity>
+--------   const toggleComplete = async (id: string) => {
+---------    // Use Alert for debugging
+---------    Alert.alert('Debug', `✅ تم button pressed for task ID: ${id}`);
+---------    
+--------     const task = tasks.find(t => t.id === id);
+---------    if (!task) {
+---------      Alert.alert('Error', `❌ Task not found for ID: ${id}`);
+---------      return;
+---------    }
+--------+    if (!task) return;
+-------- 
+---------    // If unchecking (was completed, now will be incomplete), delete the task
+--------     if (task.completed) {
+---------      Alert.alert('Debug', `🔄 Task is completed, showing uncheck confirmation`);
+---------      
+--------+      // Unchecking a completed task - show confirmation
+--------       Alert.alert(
+--------         'إلغاء المهمة',
+--------         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+--------@@ -79,7 +71,6 @@ export default function TasksScreen() {
+--------                 const next = tasks.filter(t => t.id !== id);
+--------                 setTasks(next);
+--------                 await saveTasks(next);
+---------                Alert.alert('Success', '✅ Task unchecked and synced with rakka');
+--------                 
+--------               } catch (error) {
+--------                 Alert.alert('Error', `❌ Error unchecking task: ${error}`);
+--------@@ -89,11 +80,23 @@ export default function TasksScreen() {
+--------         ]
+--------       );
+--------     } else {
+---------      // Just toggle completed status
+---------      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+---------      setTasks(next);
+---------      await saveTasks(next);
+---------      Alert.alert('Success', '✅ Task marked as complete');
+--------+      // Checking an incomplete task - mark complete AND uncheck in prayer record
+--------+      try {
+--------+        // First mark the task as complete in the UI
+--------+        const next = tasks.map(t => t.id === id ? { ...t, completed: true } : t);
+--------+        setTasks(next);
+--------+        await saveTasks(next);
+--------+        
+--------+        // Then uncheck the task button in the prayer record (bidirectional sync)
+--------+        const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--------+        prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--------+        await savePrayerRecord(prayerRecord);
+--------+        
+--------+        Alert.alert('Success', '✅ Task completed and unchecked in prayer record');
+--------+        
+--------+      } catch (error) {
+--------+        Alert.alert('Error', `❌ Error completing task: ${error}`);
+--------+      }
+--------     }
+--------   };
+-------- 
 --------diff --git a/model.patch b/model.patch
---------index e1ea303..e69de29 100644
+--------index 0d1d07c..e69de29 100644
 ----------- a/model.patch
 --------+++ b/model.patch
---------@@ -1,619 +0,0 @@
+--------@@ -1,638 +0,0 @@
 ---------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
----------index a80802a..17824e6 100644
+---------index 17824e6..b2f3887 100644
 ------------ a/frontend/app/(drawer)/tasks.tsx
 ---------+++ b/frontend/app/(drawer)/tasks.tsx
----------@@ -48,19 +48,18 @@ export default function TasksScreen() {
----------   useEffect(() => { refresh(); }, []);
+---------@@ -270,7 +270,8 @@ export default function TasksScreen() {
 --------- 
----------   const toggleComplete = async (id: string) => {
-----------    console.log('✅ تم button pressed for task ID:', id);
----------+    // Use Alert for debugging
----------+    Alert.alert('Debug', `✅ تم button pressed for task ID: ${id}`);
----------     
----------     const task = tasks.find(t => t.id === id);
----------     if (!task) {
-----------      console.log('❌ Task not found for ID:', id);
----------+      Alert.alert('Error', `❌ Task not found for ID: ${id}`);
----------       return;
----------     }
---------- 
-----------    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
-----------
----------     // If unchecking (was completed, now will be incomplete), delete the task
----------     if (task.completed) {
-----------      console.log('🔄 Task is completed, showing uncheck confirmation');
----------+      Alert.alert('Debug', `🔄 Task is completed, showing uncheck confirmation`);
----------       
----------       Alert.alert(
----------         'إلغاء المهمة',
----------@@ -70,31 +69,20 @@ export default function TasksScreen() {
----------           { 
----------             text: 'موافق', 
----------             onPress: async () => {
-----------              console.log('🔄 User confirmed unchecking, deleting task');
-----------              
----------               try {
----------                 // Load the prayer record and uncheck the task button
-----------                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
----------                 const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
-----------                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
-----------                
----------                 prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
-----------                console.log('✏️ Unchecked task button in prayer record (from تم button)');
-----------                
----------                 await savePrayerRecord(prayerRecord);
-----------                console.log('💾 Saved prayer record (from تم button)');
----------                 
----------                 // Remove from tasks list
----------                 const next = tasks.filter(t => t.id !== id);
-----------                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
-----------                
----------                 setTasks(next);
----------                 await saveTasks(next);
-----------                console.log('✅ Task unchecked and deleted successfully');
----------+                Alert.alert('Success', '✅ Task unchecked and synced with rakka');
----------                 
----------               } catch (error) {
-----------                console.error('❌ Error unchecking task:', error);
-----------                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
----------+                Alert.alert('Error', `❌ Error unchecking task: ${error}`);
----------               }
----------             }
----------           }
----------@@ -102,12 +90,10 @@ export default function TasksScreen() {
----------       );
----------     } else {
----------       // Just toggle completed status
-----------      console.log('✅ Task is incomplete, marking as complete');
-----------      
----------       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
----------       setTasks(next);
----------       await saveTasks(next);
-----------      console.log('✅ Task marked as complete successfully');
----------+      Alert.alert('Success', '✅ Task marked as complete');
----------     }
----------   };
---------- 
+---------               <TouchableOpacity 
+---------                 onPress={() => deleteTask(item.id)} 
+----------                style={styles.deleteBtn}
+---------+                style={[styles.deleteBtn, { zIndex: 1000 }]}
+---------+                activeOpacity={0.7}
+---------               >
+---------                 <Text style={styles.deleteBtnText}>🗑</Text>
+---------               </TouchableOpacity>
 ---------diff --git a/model.patch b/model.patch
----------index a733cc5..e69de29 100644
+---------index e1ea303..e69de29 100644
 ------------ a/model.patch
 ---------+++ b/model.patch
----------@@ -1,538 +0,0 @@
+---------@@ -1,619 +0,0 @@
 ----------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-----------index dbe1e4b..a80802a 100644
+----------index a80802a..17824e6 100644
 ------------- a/frontend/app/(drawer)/tasks.tsx
 ----------+++ b/frontend/app/(drawer)/tasks.tsx
-----------@@ -113,7 +113,8 @@ export default function TasksScreen() {
+----------@@ -48,19 +48,18 @@ export default function TasksScreen() {
+----------   useEffect(() => { refresh(); }, []);
 ---------- 
----------- 
-----------   const deleteTask = async (id: string) => {
------------    console.log('🗑 Delete button pressed for task ID:', id);
-----------+    // Use Alert instead of console.log for debugging
-----------+    Alert.alert('Debug', `🗑 Delete button pressed for task ID: ${id}`);
+----------   const toggleComplete = async (id: string) => {
+-----------    console.log('✅ تم button pressed for task ID:', id);
+----------+    // Use Alert for debugging
+----------+    Alert.alert('Debug', `✅ تم button pressed for task ID: ${id}`);
 ----------     
-----------     Alert.alert(
-----------       'حذف المهمة',
-----------@@ -124,37 +125,28 @@ export default function TasksScreen() {
-----------           text: 'حذف', 
-----------           style: 'destructive',
-----------           onPress: async () => {
------------            console.log('🗑 User confirmed deletion for task ID:', id);
-----------+            Alert.alert('Debug', `🗑 User confirmed deletion for task ID: ${id}`);
-----------             
-----------             try {
-----------               // Find the task to get its details
-----------               const task = tasks.find(t => t.id === id);
------------              console.log('🔍 Found task:', task);
-----------               
-----------               if (task) {
+----------     const task = tasks.find(t => t.id === id);
+----------     if (!task) {
+-----------      console.log('❌ Task not found for ID:', id);
+----------+      Alert.alert('Error', `❌ Task not found for ID: ${id}`);
+----------       return;
+----------     }
+---------- 
+-----------    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
+-----------
+----------     // If unchecking (was completed, now will be incomplete), delete the task
+----------     if (task.completed) {
+-----------      console.log('🔄 Task is completed, showing uncheck confirmation');
+----------+      Alert.alert('Debug', `🔄 Task is completed, showing uncheck confirmation`);
+----------       
+----------       Alert.alert(
+----------         'إلغاء المهمة',
+----------@@ -70,31 +69,20 @@ export default function TasksScreen() {
+----------           { 
+----------             text: 'موافق', 
+----------             onPress: async () => {
+-----------              console.log('🔄 User confirmed unchecking, deleting task');
+-----------              
+----------               try {
 ----------                 // Load the prayer record and uncheck the task button
------------                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+-----------                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
 ----------                 const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
------------                console.log('📖 Loaded prayer record:', prayerRecord);
+-----------                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
 -----------                
 ----------                 prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
------------                console.log('✏️ Unchecked task button in prayer record');
+-----------                console.log('✏️ Unchecked task button in prayer record (from تم button)');
 -----------                
 ----------                 await savePrayerRecord(prayerRecord);
------------                console.log('💾 Saved prayer record');
-----------+                Alert.alert('Debug', '✅ Unchecked task in prayer record');
+-----------                console.log('💾 Saved prayer record (from تم button)');
+----------                 
+----------                 // Remove from tasks list
+----------                 const next = tasks.filter(t => t.id !== id);
+-----------                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
+-----------                
+----------                 setTasks(next);
+----------                 await saveTasks(next);
+-----------                console.log('✅ Task unchecked and deleted successfully');
+----------+                Alert.alert('Success', '✅ Task unchecked and synced with rakka');
+----------                 
+----------               } catch (error) {
+-----------                console.error('❌ Error unchecking task:', error);
+-----------                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
+----------+                Alert.alert('Error', `❌ Error unchecking task: ${error}`);
 ----------               }
-----------               
-----------               // Remove from tasks list
-----------               const next = tasks.filter(t => t.id !== id);
------------              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
------------              
-----------               setTasks(next);
-----------               await saveTasks(next);
------------              console.log('✅ Task deleted successfully');
-----------+              Alert.alert('Success', '✅ Task deleted successfully');
-----------               
-----------             } catch (error) {
------------              console.error('❌ Error deleting task:', error);
------------              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
-----------+              Alert.alert('Error', `❌ Error deleting task: ${error}`);
 ----------             }
 ----------           }
-----------         }
+----------@@ -102,12 +90,10 @@ export default function TasksScreen() {
+----------       );
+----------     } else {
+----------       // Just toggle completed status
+-----------      console.log('✅ Task is incomplete, marking as complete');
+-----------      
+----------       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+----------       setTasks(next);
+----------       await saveTasks(next);
+-----------      console.log('✅ Task marked as complete successfully');
+----------+      Alert.alert('Success', '✅ Task marked as complete');
+----------     }
+----------   };
+---------- 
 ----------diff --git a/model.patch b/model.patch
-----------index c41506e..e69de29 100644
+----------index a733cc5..e69de29 100644
 ------------- a/model.patch
 ----------+++ b/model.patch
-----------@@ -1,477 +0,0 @@
+----------@@ -1,538 +0,0 @@
 -----------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
------------index 93859fe..dbe1e4b 100644
+-----------index dbe1e4b..a80802a 100644
 -------------- a/frontend/app/(drawer)/tasks.tsx
 -----------+++ b/frontend/app/(drawer)/tasks.tsx
------------@@ -48,11 +48,20 @@ export default function TasksScreen() {
------------   useEffect(() => { refresh(); }, []);
+-----------@@ -113,7 +113,8 @@ export default function TasksScreen() {
 ----------- 
------------   const toggleComplete = async (id: string) => {
------------+    console.log('✅ تم button pressed for task ID:', id);
------------+    
------------     const task = tasks.find(t => t.id === id);
-------------    if (!task) return;
------------+    if (!task) {
------------+      console.log('❌ Task not found for ID:', id);
------------+      return;
------------+    }
------------+
------------+    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
 ----------- 
------------     // If unchecking (was completed, now will be incomplete), delete the task
------------     if (task.completed) {
------------+      console.log('🔄 Task is completed, showing uncheck confirmation');
------------+      
------------       Alert.alert(
------------         'إلغاء المهمة',
------------         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
------------@@ -61,24 +70,44 @@ export default function TasksScreen() {
------------           { 
------------             text: 'موافق', 
------------             onPress: async () => {
-------------              // Load the prayer record and uncheck the task button
-------------              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
-------------              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
-------------              await savePrayerRecord(prayerRecord);
------------+              console.log('🔄 User confirmed unchecking, deleting task');
+-----------   const deleteTask = async (id: string) => {
+------------    console.log('🗑 Delete button pressed for task ID:', id);
+-----------+    // Use Alert instead of console.log for debugging
+-----------+    Alert.alert('Debug', `🗑 Delete button pressed for task ID: ${id}`);
+-----------     
+-----------     Alert.alert(
+-----------       'حذف المهمة',
+-----------@@ -124,37 +125,28 @@ export default function TasksScreen() {
+-----------           text: 'حذف', 
+-----------           style: 'destructive',
+-----------           onPress: async () => {
+------------            console.log('🗑 User confirmed deletion for task ID:', id);
+-----------+            Alert.alert('Debug', `🗑 User confirmed deletion for task ID: ${id}`);
+-----------             
+-----------             try {
+-----------               // Find the task to get its details
+-----------               const task = tasks.find(t => t.id === id);
+------------              console.log('🔍 Found task:', task);
 -----------               
-------------              // Remove from tasks list
-------------              const next = tasks.filter(t => t.id !== id);
-------------              setTasks(next);
-------------              await saveTasks(next);
------------+              try {
------------+                // Load the prayer record and uncheck the task button
------------+                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
------------+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
------------+                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
------------+                
------------+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
------------+                console.log('✏️ Unchecked task button in prayer record (from تم button)');
------------+                
------------+                await savePrayerRecord(prayerRecord);
------------+                console.log('💾 Saved prayer record (from تم button)');
------------+                
------------+                // Remove from tasks list
------------+                const next = tasks.filter(t => t.id !== id);
------------+                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
------------+                
------------+                setTasks(next);
------------+                await saveTasks(next);
------------+                console.log('✅ Task unchecked and deleted successfully');
------------+                
------------+              } catch (error) {
------------+                console.error('❌ Error unchecking task:', error);
------------+                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
------------+              }
+-----------               if (task) {
+-----------                 // Load the prayer record and uncheck the task button
+------------                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+-----------                 const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+------------                console.log('📖 Loaded prayer record:', prayerRecord);
+------------                
+-----------                 prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+------------                console.log('✏️ Unchecked task button in prayer record');
+------------                
+-----------                 await savePrayerRecord(prayerRecord);
+------------                console.log('💾 Saved prayer record');
+-----------+                Alert.alert('Debug', '✅ Unchecked task in prayer record');
+-----------               }
+-----------               
+-----------               // Remove from tasks list
+-----------               const next = tasks.filter(t => t.id !== id);
+------------              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
+------------              
+-----------               setTasks(next);
+-----------               await saveTasks(next);
+------------              console.log('✅ Task deleted successfully');
+-----------+              Alert.alert('Success', '✅ Task deleted successfully');
+-----------               
+-----------             } catch (error) {
+------------              console.error('❌ Error deleting task:', error);
+------------              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
+-----------+              Alert.alert('Error', `❌ Error deleting task: ${error}`);
 -----------             }
 -----------           }
------------         ]
------------       );
------------     } else {
------------       // Just toggle completed status
------------+      console.log('✅ Task is incomplete, marking as complete');
------------+      
------------       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
------------       setTasks(next);
------------       await saveTasks(next);
------------+      console.log('✅ Task marked as complete successfully');
------------     }
------------   };
------------ 
+-----------         }
 -----------diff --git a/model.patch b/model.patch
------------index 75c5ca6..e69de29 100644
+-----------index c41506e..e69de29 100644
 -------------- a/model.patch
 -----------+++ b/model.patch
------------@@ -1,393 +0,0 @@
+-----------@@ -1,477 +0,0 @@
 ------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-------------index a8c1dda..93859fe 100644
+------------index 93859fe..dbe1e4b 100644
 --------------- a/frontend/app/(drawer)/tasks.tsx
 ------------+++ b/frontend/app/(drawer)/tasks.tsx
-------------@@ -82,7 +82,10 @@ export default function TasksScreen() {
-------------     }
-------------   };
+------------@@ -48,11 +48,20 @@ export default function TasksScreen() {
+------------   useEffect(() => { refresh(); }, []);
 ------------ 
-------------+
-------------   const deleteTask = async (id: string) => {
-------------+    console.log('🗑 Delete button pressed for task ID:', id);
+------------   const toggleComplete = async (id: string) => {
+------------+    console.log('✅ تم button pressed for task ID:', id);
 ------------+    
-------------     Alert.alert(
-------------       'حذف المهمة',
-------------       'هل تريد حذف هذه المهمة نهائياً؟',
-------------@@ -92,19 +95,38 @@ export default function TasksScreen() {
-------------           text: 'حذف', 
-------------           style: 'destructive',
-------------           onPress: async () => {
--------------            // Find the task to get its details
--------------            const task = tasks.find(t => t.id === id);
--------------            if (task) {
+------------     const task = tasks.find(t => t.id === id);
+-------------    if (!task) return;
+------------+    if (!task) {
+------------+      console.log('❌ Task not found for ID:', id);
+------------+      return;
+------------+    }
+------------+
+------------+    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
+------------ 
+------------     // If unchecking (was completed, now will be incomplete), delete the task
+------------     if (task.completed) {
+------------+      console.log('🔄 Task is completed, showing uncheck confirmation');
+------------+      
+------------       Alert.alert(
+------------         'إلغاء المهمة',
+------------         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+------------@@ -61,24 +70,44 @@ export default function TasksScreen() {
+------------           { 
+------------             text: 'موافق', 
+------------             onPress: async () => {
 -------------              // Load the prayer record and uncheck the task button
 -------------              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
 -------------              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
 -------------              await savePrayerRecord(prayerRecord);
--------------            }
-------------+            console.log('🗑 User confirmed deletion for task ID:', id);
-------------             
--------------            // Remove from tasks list
--------------            const next = tasks.filter(t => t.id !== id);
--------------            setTasks(next);
--------------            await saveTasks(next);
-------------+            try {
-------------+              // Find the task to get its details
-------------+              const task = tasks.find(t => t.id === id);
-------------+              console.log('🔍 Found task:', task);
-------------+              
-------------+              if (task) {
+------------+              console.log('🔄 User confirmed unchecking, deleting task');
+------------               
+-------------              // Remove from tasks list
+-------------              const next = tasks.filter(t => t.id !== id);
+-------------              setTasks(next);
+-------------              await saveTasks(next);
+------------+              try {
 ------------+                // Load the prayer record and uncheck the task button
-------------+                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+------------+                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
 ------------+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
-------------+                console.log('📖 Loaded prayer record:', prayerRecord);
+------------+                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
 ------------+                
 ------------+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
-------------+                console.log('✏️ Unchecked task button in prayer record');
+------------+                console.log('✏️ Unchecked task button in prayer record (from تم button)');
 ------------+                
 ------------+                await savePrayerRecord(prayerRecord);
-------------+                console.log('💾 Saved prayer record');
+------------+                console.log('💾 Saved prayer record (from تم button)');
+------------+                
+------------+                // Remove from tasks list
+------------+                const next = tasks.filter(t => t.id !== id);
+------------+                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
+------------+                
+------------+                setTasks(next);
+------------+                await saveTasks(next);
+------------+                console.log('✅ Task unchecked and deleted successfully');
+------------+                
+------------+              } catch (error) {
+------------+                console.error('❌ Error unchecking task:', error);
+------------+                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
 ------------+              }
-------------+              
-------------+              // Remove from tasks list
-------------+              const next = tasks.filter(t => t.id !== id);
-------------+              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
-------------+              
-------------+              setTasks(next);
-------------+              await saveTasks(next);
-------------+              console.log('✅ Task deleted successfully');
-------------+              
-------------+            } catch (error) {
-------------+              console.error('❌ Error deleting task:', error);
-------------+              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
-------------+            }
+------------             }
 ------------           }
-------------         }
-------------       ]
+------------         ]
+------------       );
+------------     } else {
+------------       // Just toggle completed status
+------------+      console.log('✅ Task is incomplete, marking as complete');
+------------+      
+------------       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+------------       setTasks(next);
+------------       await saveTasks(next);
+------------+      console.log('✅ Task marked as complete successfully');
+------------     }
+------------   };
+------------ 
 ------------diff --git a/model.patch b/model.patch
-------------index 577d7d0..e69de29 100644
+------------index 75c5ca6..e69de29 100644
 --------------- a/model.patch
 ------------+++ b/model.patch
-------------@@ -1,322 +0,0 @@
+------------@@ -1,393 +0,0 @@
 -------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
--------------index f87f546..a8c1dda 100644
+-------------index a8c1dda..93859fe 100644
 ---------------- a/frontend/app/(drawer)/tasks.tsx
 -------------+++ b/frontend/app/(drawer)/tasks.tsx
--------------@@ -284,28 +284,7 @@ export default function TasksScreen() {
--------------         </View>
--------------       </View>
+-------------@@ -82,7 +82,10 @@ export default function TasksScreen() {
+-------------     }
+-------------   };
 ------------- 
---------------      {/* Category Overview */}
---------------      <View style={styles.categoryOverview}>
---------------        {Object.entries(stats.byCategory).map(([category, categoryTasks]) => {
---------------          const completed = categoryTasks.filter(t => t.completed).length;
---------------          const total = categoryTasks.length;
---------------          const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
---------------          
---------------          if (total === 0) return null;
---------------          
---------------          return (
---------------            <View key={category} style={styles.categoryCard}>
---------------              <View style={[styles.categoryDot, { backgroundColor: getCategoryColor(category as TaskCategory) }]} />
---------------              <Text style={styles.categoryLabel}>
---------------                {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
---------------              </Text>
---------------              <Text style={styles.categoryCount}>
---------------                {completed}/{total}
---------------              </Text>
---------------            </View>
---------------          );
---------------        })}
---------------      </View>
--------------+      {/* Category Overview - Removed priority labels */}
-------------- 
--------------       {/* Grouping Controls */}
--------------       <View style={styles.groupingControls}>
--------------@@ -366,39 +345,6 @@ const styles = StyleSheet.create({
--------------     minWidth: 80,
--------------   },
--------------   
---------------  // Category Overview
---------------  categoryOverview: {
---------------    flexDirection: 'row',
---------------    paddingHorizontal: 16,
---------------    paddingVertical: 12,
---------------    gap: 12,
---------------  },
---------------  categoryCard: {
---------------    flex: 1,
---------------    flexDirection: 'row',
---------------    alignItems: 'center',
---------------    backgroundColor: '#1a2626',
---------------    borderRadius: 8,
---------------    padding: 8,
---------------    gap: 6,
---------------  },
---------------  categoryDot: {
---------------    width: 8,
---------------    height: 8,
---------------    borderRadius: 4,
---------------  },
---------------  categoryLabel: {
---------------    flex: 1,
---------------    color: Colors.light,
---------------    fontSize: 12,
---------------    fontWeight: '600',
---------------  },
---------------  categoryCount: {
---------------    color: '#A6D3CF',
---------------    fontSize: 11,
---------------    fontWeight: '500',
---------------  },
---------------  
--------------   // Grouping Controls
--------------   groupingControls: {
--------------     flexDirection: 'row',
+-------------+
+-------------   const deleteTask = async (id: string) => {
+-------------+    console.log('🗑 Delete button pressed for task ID:', id);
+-------------+    
+-------------     Alert.alert(
+-------------       'حذف المهمة',
+-------------       'هل تريد حذف هذه المهمة نهائياً؟',
+-------------@@ -92,19 +95,38 @@ export default function TasksScreen() {
+-------------           text: 'حذف', 
+-------------           style: 'destructive',
+-------------           onPress: async () => {
+--------------            // Find the task to get its details
+--------------            const task = tasks.find(t => t.id === id);
+--------------            if (task) {
+--------------              // Load the prayer record and uncheck the task button
+--------------              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--------------              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--------------              await savePrayerRecord(prayerRecord);
+--------------            }
+-------------+            console.log('🗑 User confirmed deletion for task ID:', id);
+-------------             
+--------------            // Remove from tasks list
+--------------            const next = tasks.filter(t => t.id !== id);
+--------------            setTasks(next);
+--------------            await saveTasks(next);
+-------------+            try {
+-------------+              // Find the task to get its details
+-------------+              const task = tasks.find(t => t.id === id);
+-------------+              console.log('🔍 Found task:', task);
+-------------+              
+-------------+              if (task) {
+-------------+                // Load the prayer record and uncheck the task button
+-------------+                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+-------------+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+-------------+                console.log('📖 Loaded prayer record:', prayerRecord);
+-------------+                
+-------------+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+-------------+                console.log('✏️ Unchecked task button in prayer record');
+-------------+                
+-------------+                await savePrayerRecord(prayerRecord);
+-------------+                console.log('💾 Saved prayer record');
+-------------+              }
+-------------+              
+-------------+              // Remove from tasks list
+-------------+              const next = tasks.filter(t => t.id !== id);
+-------------+              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
+-------------+              
+-------------+              setTasks(next);
+-------------+              await saveTasks(next);
+-------------+              console.log('✅ Task deleted successfully');
+-------------+              
+-------------+            } catch (error) {
+-------------+              console.error('❌ Error deleting task:', error);
+-------------+              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
+-------------+            }
+-------------           }
+-------------         }
+-------------       ]
 -------------diff --git a/model.patch b/model.patch
--------------index e367ff3..e69de29 100644
+-------------index 577d7d0..e69de29 100644
 ---------------- a/model.patch
 -------------+++ b/model.patch
--------------@@ -1,243 +0,0 @@
+-------------@@ -1,322 +0,0 @@
 --------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
---------------index aec3901..f87f546 100644
+--------------index f87f546..a8c1dda 100644
 ----------------- a/frontend/app/(drawer)/tasks.tsx
 --------------+++ b/frontend/app/(drawer)/tasks.tsx
---------------@@ -11,7 +11,7 @@ import {
---------------   Dimensions 
--------------- } from 'react-native';
--------------- import { Colors } from '../../src/theme/colors';
----------------import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
---------------+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
--------------- import { Link } from 'expo-router';
--------------- import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
--------------- import TaskProgressBar from '../../src/components/TaskProgressBar';
---------------@@ -48,9 +48,38 @@ export default function TasksScreen() {
---------------   useEffect(() => { refresh(); }, []);
+--------------@@ -284,28 +284,7 @@ export default function TasksScreen() {
+--------------         </View>
+--------------       </View>
 -------------- 
---------------   const toggleComplete = async (id: string) => {
----------------    const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
----------------    setTasks(next);
----------------    await saveTasks(next);
---------------+    const task = tasks.find(t => t.id === id);
---------------+    if (!task) return;
---------------+
---------------+    // If unchecking (was completed, now will be incomplete), delete the task
---------------+    if (task.completed) {
---------------+      Alert.alert(
---------------+        'إلغاء المهمة',
---------------+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
---------------+        [
---------------+          { text: 'إلغاء', style: 'cancel' },
---------------+          { 
---------------+            text: 'موافق', 
---------------+            onPress: async () => {
---------------+              // Load the prayer record and uncheck the task button
---------------+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
---------------+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
---------------+              await savePrayerRecord(prayerRecord);
---------------+              
---------------+              // Remove from tasks list
---------------+              const next = tasks.filter(t => t.id !== id);
---------------+              setTasks(next);
---------------+              await saveTasks(next);
---------------+            }
---------------+          }
---------------+        ]
---------------+      );
---------------+    } else {
---------------+      // Just toggle completed status
---------------+      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
---------------+      setTasks(next);
---------------+      await saveTasks(next);
---------------+    }
---------------   };
+---------------      {/* Category Overview */}
+---------------      <View style={styles.categoryOverview}>
+---------------        {Object.entries(stats.byCategory).map(([category, categoryTasks]) => {
+---------------          const completed = categoryTasks.filter(t => t.completed).length;
+---------------          const total = categoryTasks.length;
+---------------          const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+---------------          
+---------------          if (total === 0) return null;
+---------------          
+---------------          return (
+---------------            <View key={category} style={styles.categoryCard}>
+---------------              <View style={[styles.categoryDot, { backgroundColor: getCategoryColor(category as TaskCategory) }]} />
+---------------              <Text style={styles.categoryLabel}>
+---------------                {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
+---------------              </Text>
+---------------              <Text style={styles.categoryCount}>
+---------------                {completed}/{total}
+---------------              </Text>
+---------------            </View>
+---------------          );
+---------------        })}
+---------------      </View>
+--------------+      {/* Category Overview - Removed priority labels */}
 -------------- 
---------------   const deleteTask = async (id: string) => {
---------------@@ -63,6 +92,16 @@ export default function TasksScreen() {
---------------           text: 'حذف', 
---------------           style: 'destructive',
---------------           onPress: async () => {
---------------+            // Find the task to get its details
---------------+            const task = tasks.find(t => t.id === id);
---------------+            if (task) {
---------------+              // Load the prayer record and uncheck the task button
---------------+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
---------------+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
---------------+              await savePrayerRecord(prayerRecord);
---------------+            }
---------------+            
---------------+            // Remove from tasks list
---------------             const next = tasks.filter(t => t.id !== id);
---------------             setTasks(next);
---------------             await saveTasks(next);
+--------------       {/* Grouping Controls */}
+--------------       <View style={styles.groupingControls}>
+--------------@@ -366,39 +345,6 @@ const styles = StyleSheet.create({
+--------------     minWidth: 80,
+--------------   },
+--------------   
+---------------  // Category Overview
+---------------  categoryOverview: {
+---------------    flexDirection: 'row',
+---------------    paddingHorizontal: 16,
+---------------    paddingVertical: 12,
+---------------    gap: 12,
+---------------  },
+---------------  categoryCard: {
+---------------    flex: 1,
+---------------    flexDirection: 'row',
+---------------    alignItems: 'center',
+---------------    backgroundColor: '#1a2626',
+---------------    borderRadius: 8,
+---------------    padding: 8,
+---------------    gap: 6,
+---------------  },
+---------------  categoryDot: {
+---------------    width: 8,
+---------------    height: 8,
+---------------    borderRadius: 4,
+---------------  },
+---------------  categoryLabel: {
+---------------    flex: 1,
+---------------    color: Colors.light,
+---------------    fontSize: 12,
+---------------    fontWeight: '600',
+---------------  },
+---------------  categoryCount: {
+---------------    color: '#A6D3CF',
+---------------    fontSize: 11,
+---------------    fontWeight: '500',
+---------------  },
+---------------  
+--------------   // Grouping Controls
+--------------   groupingControls: {
+--------------     flexDirection: 'row',
 --------------diff --git a/model.patch b/model.patch
---------------index 3a031ff..e69de29 100644
+--------------index e367ff3..e69de29 100644
 ----------------- a/model.patch
 --------------+++ b/model.patch
---------------@@ -1,166 +0,0 @@
+--------------@@ -1,243 +0,0 @@
 ---------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
----------------index 982cb65..aec3901 100644
+---------------index aec3901..f87f546 100644
 ------------------ a/frontend/app/(drawer)/tasks.tsx
 ---------------+++ b/frontend/app/(drawer)/tasks.tsx
----------------@@ -153,8 +153,7 @@ export default function TasksScreen() {
----------------         rightThreshold={40}
----------------       >
----------------         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
-----------------          {/* Priority Indicator */}
-----------------          <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
----------------+          {/* Removed Priority Indicator */}
----------------           
----------------           <View style={styles.taskContent}>
----------------             {/* Prayer Icon */}
+---------------@@ -11,7 +11,7 @@ import {
+---------------   Dimensions 
+--------------- } from 'react-native';
+--------------- import { Colors } from '../../src/theme/colors';
+----------------import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
+---------------+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
+--------------- import { Link } from 'expo-router';
+--------------- import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
+--------------- import TaskProgressBar from '../../src/components/TaskProgressBar';
+---------------@@ -48,9 +48,38 @@ export default function TasksScreen() {
+---------------   useEffect(() => { refresh(); }, []);
+--------------- 
+---------------   const toggleComplete = async (id: string) => {
+----------------    const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+----------------    setTasks(next);
+----------------    await saveTasks(next);
+---------------+    const task = tasks.find(t => t.id === id);
+---------------+    if (!task) return;
+---------------+
+---------------+    // If unchecking (was completed, now will be incomplete), delete the task
+---------------+    if (task.completed) {
+---------------+      Alert.alert(
+---------------+        'إلغاء المهمة',
+---------------+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+---------------+        [
+---------------+          { text: 'إلغاء', style: 'cancel' },
+---------------+          { 
+---------------+            text: 'موافق', 
+---------------+            onPress: async () => {
+---------------+              // Load the prayer record and uncheck the task button
+---------------+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+---------------+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+---------------+              await savePrayerRecord(prayerRecord);
+---------------+              
+---------------+              // Remove from tasks list
+---------------+              const next = tasks.filter(t => t.id !== id);
+---------------+              setTasks(next);
+---------------+              await saveTasks(next);
+---------------+            }
+---------------+          }
+---------------+        ]
+---------------+      );
+---------------+    } else {
+---------------+      // Just toggle completed status
+---------------+      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+---------------+      setTasks(next);
+---------------+      await saveTasks(next);
+---------------+    }
+---------------   };
+--------------- 
+---------------   const deleteTask = async (id: string) => {
+---------------@@ -63,6 +92,16 @@ export default function TasksScreen() {
+---------------           text: 'حذف', 
+---------------           style: 'destructive',
+---------------           onPress: async () => {
+---------------+            // Find the task to get its details
+---------------+            const task = tasks.find(t => t.id === id);
+---------------+            if (task) {
+---------------+              // Load the prayer record and uncheck the task button
+---------------+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+---------------+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+---------------+              await savePrayerRecord(prayerRecord);
+---------------+            }
+---------------+            
+---------------+            // Remove from tasks list
+---------------             const next = tasks.filter(t => t.id !== id);
+---------------             setTasks(next);
+---------------             await saveTasks(next);
 ---------------diff --git a/model.patch b/model.patch
----------------index d47b8ea..e69de29 100644
+---------------index 3a031ff..e69de29 100644
 ------------------ a/model.patch
 ---------------+++ b/model.patch
----------------@@ -1,147 +0,0 @@
+---------------@@ -1,166 +0,0 @@
+----------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+----------------index 982cb65..aec3901 100644
+------------------- a/frontend/app/(drawer)/tasks.tsx
+----------------+++ b/frontend/app/(drawer)/tasks.tsx
+----------------@@ -153,8 +153,7 @@ export default function TasksScreen() {
+----------------         rightThreshold={40}
+----------------       >
+----------------         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
+-----------------          {/* Priority Indicator */}
+-----------------          <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
+----------------+          {/* Removed Priority Indicator */}
+----------------           
+----------------           <View style={styles.taskContent}>
+----------------             {/* Prayer Icon */}
 ----------------diff --git a/model.patch b/model.patch
-----------------index 52ad936..e69de29 100644
+----------------index d47b8ea..e69de29 100644
 ------------------- a/model.patch
 ----------------+++ b/model.patch
-----------------@@ -1,142 +0,0 @@
------------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
------------------index 1f11024..982cb65 100644
--------------------- a/frontend/app/(drawer)/tasks.tsx
------------------+++ b/frontend/app/(drawer)/tasks.tsx
------------------@@ -178,16 +178,10 @@ export default function TasksScreen() {
------------------               <Text style={styles.taskMeta}>
------------------                 {item.prayer} • ر{item.rakka} • {item.date}
------------------               </Text>
-------------------              <View style={styles.taskBadges}>
-------------------                <View style={[styles.categoryBadge, { backgroundColor: categoryColor }]}>
-------------------                  <Text style={styles.categoryText}>
-------------------                    {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
-------------------                  </Text>
-------------------                </View>
-------------------              </View>
------------------+              {/* Removed task badges with priority labels */}
------------------             </View>
------------------ 
-------------------            {/* Actions */}
------------------+            {/* Actions - Three controls side by side horizontally */}
------------------             <View style={styles.taskActions}>
------------------               <Link asChild href={{ 
------------------                 pathname: '/(drawer)/my-prayers/record', 
------------------@@ -206,6 +200,13 @@ export default function TasksScreen() {
------------------                   {item.completed ? '✔' : 'تم'}
------------------                 </Text>
------------------               </TouchableOpacity>
------------------+
------------------+              <TouchableOpacity 
------------------+                onPress={() => deleteTask(item.id)} 
------------------+                style={styles.deleteBtn}
------------------+              >
------------------+                <Text style={styles.deleteBtnText}>🗑</Text>
------------------+              </TouchableOpacity>
------------------             </View>
------------------           </View>
------------------         </View>
------------------@@ -515,6 +516,19 @@ const styles = StyleSheet.create({
------------------     fontSize: 12,
------------------     fontWeight: '700',
------------------   },
------------------+  deleteBtn: {
------------------+    backgroundColor: '#ff4444',
------------------+    paddingHorizontal: 12,
------------------+    paddingVertical: 6,
------------------+    borderRadius: 6,
------------------+    minWidth: 40,
------------------+    alignItems: 'center',
------------------+  },
------------------+  deleteBtnText: {
------------------+    color: Colors.light,
------------------+    fontSize: 12,
------------------+    fontWeight: '700',
------------------+  },
------------------   
------------------   // Swipe Actions
------------------   swipeActions: {
+----------------@@ -1,147 +0,0 @@
 -----------------diff --git a/model.patch b/model.patch
------------------index b8298ee..e69de29 100644
+-----------------index 52ad936..e69de29 100644
 -------------------- a/model.patch
 -----------------+++ b/model.patch
------------------@@ -1,80 +0,0 @@
-------------------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
-------------------index 7825ef4..0a1a36c 100644
---------------------- a/frontend/src/components/SurahSelector.tsx
-------------------+++ b/frontend/src/components/SurahSelector.tsx
-------------------@@ -207,6 +207,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
-------------------           <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
-------------------         </View>
+-----------------@@ -1,142 +0,0 @@
+------------------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+------------------index 1f11024..982cb65 100644
+--------------------- a/frontend/app/(drawer)/tasks.tsx
+------------------+++ b/frontend/app/(drawer)/tasks.tsx
+------------------@@ -178,16 +178,10 @@ export default function TasksScreen() {
+------------------               <Text style={styles.taskMeta}>
+------------------                 {item.prayer} • ر{item.rakka} • {item.date}
+------------------               </Text>
+-------------------              <View style={styles.taskBadges}>
+-------------------                <View style={[styles.categoryBadge, { backgroundColor: categoryColor }]}>
+-------------------                  <Text style={styles.categoryText}>
+-------------------                    {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
+-------------------                  </Text>
+-------------------                </View>
+-------------------              </View>
+------------------+              {/* Removed task badges with priority labels */}
+------------------             </View>
 ------------------ 
-------------------+        {/* TEST BUTTON */}
-------------------+        <TouchableOpacity 
-------------------+          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
-------------------+          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
-------------------+        >
-------------------+          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
-------------------+        </TouchableOpacity>
+-------------------            {/* Actions */}
+------------------+            {/* Actions - Three controls side by side horizontally */}
+------------------             <View style={styles.taskActions}>
+------------------               <Link asChild href={{ 
+------------------                 pathname: '/(drawer)/my-prayers/record', 
+------------------@@ -206,6 +200,13 @@ export default function TasksScreen() {
+------------------                   {item.completed ? '✔' : 'تم'}
+------------------                 </Text>
+------------------               </TouchableOpacity>
 ------------------+
-------------------         <View style={styles.searchContainer}>
-------------------           <TextInput
-------------------             style={styles.searchInput}
+------------------+              <TouchableOpacity 
+------------------+                onPress={() => deleteTask(item.id)} 
+------------------+                style={styles.deleteBtn}
+------------------+              >
+------------------+                <Text style={styles.deleteBtnText}>🗑</Text>
+------------------+              </TouchableOpacity>
+------------------             </View>
+------------------           </View>
+------------------         </View>
+------------------@@ -515,6 +516,19 @@ const styles = StyleSheet.create({
+------------------     fontSize: 12,
+------------------     fontWeight: '700',
+------------------   },
+------------------+  deleteBtn: {
+------------------+    backgroundColor: '#ff4444',
+------------------+    paddingHorizontal: 12,
+------------------+    paddingVertical: 6,
+------------------+    borderRadius: 6,
+------------------+    minWidth: 40,
+------------------+    alignItems: 'center',
+------------------+  },
+------------------+  deleteBtnText: {
+------------------+    color: Colors.light,
+------------------+    fontSize: 12,
+------------------+    fontWeight: '700',
+------------------+  },
+------------------   
+------------------   // Swipe Actions
+------------------   swipeActions: {
 ------------------diff --git a/model.patch b/model.patch
-------------------index 63f79e3..e69de29 100644
+------------------index b8298ee..e69de29 100644
 --------------------- a/model.patch
 ------------------+++ b/model.patch
-------------------@@ -1,56 +0,0 @@
+------------------@@ -1,80 +0,0 @@
 -------------------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
--------------------index 4077add..2a9d60f 100644
+-------------------index 7825ef4..0a1a36c 100644
 ---------------------- a/frontend/src/components/SurahSelector.tsx
 -------------------+++ b/frontend/src/components/SurahSelector.tsx
--------------------@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
--------------------   const [searchQuery, setSearchQuery] = useState('');
--------------------   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
+-------------------@@ -207,6 +207,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+-------------------           <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
+-------------------         </View>
 ------------------- 
--------------------+  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
+-------------------+        {/* TEST BUTTON */}
+-------------------+        <TouchableOpacity 
+-------------------+          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
+-------------------+          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
+-------------------+        >
+-------------------+          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
+-------------------+        </TouchableOpacity>
 -------------------+
--------------------   useEffect(() => {
--------------------     if (!searchQuery.trim()) {
--------------------       setFilteredSurahs(ALL_SURAHS);
--------------------+      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
--------------------       return;
--------------------     }
-------------------- 
--------------------@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
--------------------       surah.nameEn.toLowerCase().includes(query) ||
--------------------       surah.number.toString().includes(query)
--------------------     );
--------------------+    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
--------------------     setFilteredSurahs(filtered);
--------------------   }, [searchQuery]);
-------------------- 
+-------------------         <View style={styles.searchContainer}>
+-------------------           <TextInput
+-------------------             style={styles.searchInput}
 -------------------diff --git a/model.patch b/model.patch
--------------------index 2f216fa..e69de29 100644
+-------------------index 63f79e3..e69de29 100644
 ---------------------- a/model.patch
 -------------------+++ b/model.patch
--------------------@@ -1,26 +0,0 @@
---------------------diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
---------------------index b6dc703..9cb0d1a 100644
------------------------ a/frontend/app/(drawer)/my-prayers/record.tsx
---------------------+++ b/frontend/app/(drawer)/my-prayers/record.tsx
---------------------@@ -291,6 +291,7 @@ export default function RecordPrayer() {
---------------------   // SurahSelector handlers
---------------------   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
---------------------     // Open sura viewer for range selection
---------------------+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
---------------------     setSelectedSura({
---------------------       number: surah.number,
---------------------       nameAr: surah.nameAr,
---------------------@@ -298,11 +299,12 @@ export default function RecordPrayer() {
---------------------       initialVerse: 1
---------------------     });
---------------------     setShowSuraViewer(true);
---------------------+    setShowSurahSelector(false);
---------------------   };
+-------------------@@ -1,56 +0,0 @@
+--------------------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
+--------------------index 4077add..2a9d60f 100644
+----------------------- a/frontend/src/components/SurahSelector.tsx
+--------------------+++ b/frontend/src/components/SurahSelector.tsx
+--------------------@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+--------------------   const [searchQuery, setSearchQuery] = useState('');
+--------------------   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
 -------------------- 
---------------------   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
---------------------     // Open sura viewer to allow user to select range or whole sura
----------------------    console.log(`Opening whole sura: ${surah.nameAr}`);
---------------------+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
---------------------     setSelectedSura({
---------------------       number: surah.number,
---------------------       nameAr: surah.nameAr,
+--------------------+  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
+--------------------+
+--------------------   useEffect(() => {
+--------------------     if (!searchQuery.trim()) {
+--------------------       setFilteredSurahs(ALL_SURAHS);
+--------------------+      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
+--------------------       return;
+--------------------     }
+-------------------- 
+--------------------@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+--------------------       surah.nameEn.toLowerCase().includes(query) ||
+--------------------       surah.number.toString().includes(query)
+--------------------     );
+--------------------+    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
+--------------------     setFilteredSurahs(filtered);
+--------------------   }, [searchQuery]);
+-------------------- 
+--------------------diff --git a/model.patch b/model.patch
+--------------------index 2f216fa..e69de29 100644
+----------------------- a/model.patch
+--------------------+++ b/model.patch
+--------------------@@ -1,26 +0,0 @@
+---------------------diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
+---------------------index b6dc703..9cb0d1a 100644
+------------------------ a/frontend/app/(drawer)/my-prayers/record.tsx
+---------------------+++ b/frontend/app/(drawer)/my-prayers/record.tsx
+---------------------@@ -291,6 +291,7 @@ export default function RecordPrayer() {
+---------------------   // SurahSelector handlers
+---------------------   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+---------------------     // Open sura viewer for range selection
+---------------------+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
+---------------------     setSelectedSura({
+---------------------       number: surah.number,
+---------------------       nameAr: surah.nameAr,
+---------------------@@ -298,11 +299,12 @@ export default function RecordPrayer() {
+---------------------       initialVerse: 1
+---------------------     });
+---------------------     setShowSuraViewer(true);
+---------------------+    setShowSurahSelector(false);
+---------------------   };
+--------------------- 
+---------------------   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+---------------------     // Open sura viewer to allow user to select range or whole sura
+----------------------    console.log(`Opening whole sura: ${surah.nameAr}`);
+---------------------+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
+---------------------     setSelectedSura({
+---------------------       number: surah.number,
+---------------------       nameAr: surah.nameAr,
