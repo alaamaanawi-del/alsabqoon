@@ -290,7 +290,7 @@ export default function TasksScreen() {
             </View>
           </View>
         </View>
-      </Swipeable>
+      </View>
     );
   };
 
