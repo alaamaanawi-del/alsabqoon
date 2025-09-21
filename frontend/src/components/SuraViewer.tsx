@@ -87,10 +87,15 @@ export default function SuraViewer({
       // Load actual verses from the database
       const verses = await mod.getSurahVerses(surahNumber);
       
+      console.log(`🔍 Loading verses for Surah ${surahNumber} (${surahNameAr})`);
+      console.log(`📖 Retrieved ${verses.length} verses`);
+      
       if (verses && verses.length > 0) {
+        console.log(`📝 First verse structure:`, verses[0]);
         setVerses(verses);
-        console.log(`Loaded ${verses.length} actual verses for ${surahNameAr}`);
+        console.log(`✅ Loaded ${verses.length} actual verses for ${surahNameAr}`);
       } else {
+        console.log(`❌ No verses found for surah ${surahNumber}`);
         // Fallback for suras that might not be in the database
         const range = await mod.getSurahRange(surahNumber);
         if (range) {
@@ -102,25 +107,11 @@ export default function SuraViewer({
             });
           }
           setVerses(fallbackVerses);
-          console.log(`Loaded ${fallbackVerses.length} fallback verses for ${surahNameAr}`);
-        } else {
-          // Final fallback for small suras
-          const defaultVerses: Verse[] = [];
-          const maxVerses = surahNumber === 1 ? 7 : (surahNumber === 112 ? 4 : 10);
-          
-          for (let i = 1; i <= maxVerses; i++) {
-            defaultVerses.push({
-              ayah: i,
-              textAr: `آية ${i} من ${surahNameAr} - ${surahNameEn} (يتم تحميل النص من قاعدة البيانات)`
-            });
-          }
-          
-          setVerses(defaultVerses);
-          console.log(`Loaded default ${defaultVerses.length} verses for ${surahNameAr}`);
+          console.log(`📋 Loaded ${fallbackVerses.length} fallback verses for ${surahNameAr}`);
         }
       }
     } catch (error) {
-      console.error('Error loading sura verses:', error);
+      console.error('❌ Error loading sura verses:', error);
       Alert.alert('خطأ', 'حدث خطأ في تحميل آيات السورة');
       
       // Fallback verses
