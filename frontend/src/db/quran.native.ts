@@ -135,8 +135,7 @@ export async function searchQuran(query: string, bilingual: Bilingual) {
             CASE WHEN ?='es' THEN a.es END as es
        FROM ayahs a
        JOIN surahs s ON s.number=a.surahNumber
-      WHERE ${allWhere}
-      LIMIT 100`,
+      WHERE ${allWhere}`,
     [bilingual, bilingual, ...params, ...transParams]
   );
   return rows as SearchItem[];
