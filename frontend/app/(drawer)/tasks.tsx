@@ -92,6 +92,16 @@ export default function TasksScreen() {
           text: 'حذف', 
           style: 'destructive',
           onPress: async () => {
+            // Find the task to get its details
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+              // Load the prayer record and uncheck the task button
+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+              await savePrayerRecord(prayerRecord);
+            }
+            
+            // Remove from tasks list
             const next = tasks.filter(t => t.id !== id);
             setTasks(next);
             await saveTasks(next);
