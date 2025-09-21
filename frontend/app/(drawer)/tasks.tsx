@@ -197,22 +197,22 @@ export default function TasksScreen() {
     return { total, completed, percentage, byCategory };
   }, [tasks]);
 
-  const renderSwipeActions = (taskId: string) => (
-    <View style={styles.swipeActions}>
-      <TouchableOpacity 
-        style={[styles.swipeAction, { backgroundColor: '#3ddc84' }]}
-        onPress={() => toggleComplete(taskId)}
-      >
-        <Text style={styles.swipeActionText}>✓</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={[styles.swipeAction, { backgroundColor: '#FF4444' }]}
-        onPress={() => deleteTask(taskId)}
-      >
-        <Text style={styles.swipeActionText}>🗑</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  //   const renderSwipeActions = (taskId: string) => (
+  //     <View style={styles.swipeActions}>
+  //       <TouchableOpacity 
+  //         style={[styles.swipeAction, { backgroundColor: '#3ddc84' }]}
+  //         onPress={() => toggleComplete(taskId)}
+  //       >
+  //         <Text style={styles.swipeActionText}>✓</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity 
+  //         style={[styles.swipeAction, { backgroundColor: '#FF4444' }]}
+  //         onPress={() => deleteTask(taskId)}
+  //       >
+  //         <Text style={styles.swipeActionText}>🗑</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
 
   const renderTask = (item: TaskItem) => {
     const category = getTaskCategory(item.questionLabel);
