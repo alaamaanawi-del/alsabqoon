@@ -161,21 +161,17 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
   }, [searchQuery]);
 
   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
-    console.log(`🕌 Sura selected: ${surah.nameAr} (${surah.number})`);
-    
     Alert.alert(
       `${surah.nameAr} - ${surah.nameEn}`,
       'اختر طريقة التحديد',
       [
         {
           text: 'إلغاء',
-          style: 'cancel',
-          onPress: () => console.log('❌ User cancelled sura selection')
+          style: 'cancel'
         },
         {
           text: 'السورة كاملة',
           onPress: () => {
-            console.log('✅ User selected whole sura:', surah.nameAr);
             onSelectWholeSurah(surah);
             onClose();
           }
@@ -183,7 +179,6 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
         {
           text: 'تحديد نطاق',
           onPress: () => {
-            console.log('✅ User selected range for sura:', surah.nameAr);
             onSelectSurah(surah);
             onClose();
           }
