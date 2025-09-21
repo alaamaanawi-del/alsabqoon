@@ -138,24 +138,32 @@ export default function SuraViewer({
   };
 
   const handleVersePress = (verseNumber: number) => {
+    console.log(`🎯 Verse ${verseNumber} pressed`);
+    console.log(`📊 Current selection: rangeStart=${rangeStart}, rangeEnd=${rangeEnd}`);
+    
     if (!rangeStart) {
       // First selection - set as start
+      console.log(`✅ Setting verse ${verseNumber} as range start`);
       setRangeStart(verseNumber);
       setRangeEnd(null);
     } else if (!rangeEnd) {
       // Second selection - set as end
       if (verseNumber === rangeStart) {
         // Same verse clicked - select single verse
+        console.log(`🎯 Same verse clicked, selecting single verse ${verseNumber}`);
         setRangeEnd(verseNumber);
       } else if (verseNumber > rangeStart) {
+        console.log(`📈 Setting verse ${verseNumber} as range end (${rangeStart}-${verseNumber})`);
         setRangeEnd(verseNumber);
       } else {
         // Clicked earlier verse - make it the new start
+        console.log(`📉 Setting verse ${verseNumber} as new start, ${rangeStart} as end`);
         setRangeEnd(rangeStart);
         setRangeStart(verseNumber);
       }
     } else {
       // Range already selected - start new selection
+      console.log(`🔄 Range already selected, starting new selection with verse ${verseNumber}`);
       setRangeStart(verseNumber);
       setRangeEnd(null);
     }
