@@ -192,62 +192,64 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
     );
   };
 
+  if (!visible) return null;
+
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="fullScreen"
-      onRequestClose={onClose}
-      transparent={false}
-    >
-      <View style={{ flex: 1, backgroundColor: Colors.dark }}>
-        {/* Header */}
-        <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
-          <TouchableOpacity onPress={onClose} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
-            <Text style={{ color: 'white' }}>إغلاق</Text>
-          </TouchableOpacity>
-          <Text style={{ color: Colors.light, fontSize: 18, fontWeight: 'bold' }}>اختر السورة</Text>
-        </View>
-
-        {/* SIMPLE TEST AREA */}
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#333' }}>
-          
-          {/* TEST BUTTON 1 */}
-          <TouchableOpacity 
-            style={{ backgroundColor: 'red', padding: 30, margin: 20, borderRadius: 10 }}
-            onPress={() => {
-              console.log('🔥 TEST BUTTON 1 WORKS!');
-              Alert.alert('Success!', 'Test Button 1 Works!');
-            }}
-          >
-            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>TEST BUTTON 1</Text>
-          </TouchableOpacity>
-
-          {/* TEST BUTTON 2 */}
-          <TouchableOpacity 
-            style={{ backgroundColor: 'blue', padding: 30, margin: 20, borderRadius: 10 }}
-            onPress={() => {
-              console.log('🔥 TEST BUTTON 2 WORKS!');
-              Alert.alert('Success!', 'Test Button 2 Works!');
-            }}
-          >
-            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>TEST BUTTON 2</Text>
-          </TouchableOpacity>
-
-          {/* SIMPLE SURA TEST */}
-          <TouchableOpacity 
-            style={{ backgroundColor: 'green', padding: 30, margin: 20, borderRadius: 10 }}
-            onPress={() => {
-              console.log('🕌 SURA TEST WORKS! Opening Al-Fatiha');
-              handleSelectSurah({ number: 1, nameAr: 'الفاتحة', nameEn: 'Al-Fatiha' });
-            }}
-          >
-            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>SURA TEST - الفاتحة</Text>
-          </TouchableOpacity>
-
-        </View>
+    <View style={{ 
+      position: 'absolute', 
+      top: 0, 
+      left: 0, 
+      right: 0, 
+      bottom: 0, 
+      backgroundColor: Colors.dark, 
+      zIndex: 9999 
+    }}>
+      {/* Header */}
+      <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
+        <TouchableOpacity onPress={onClose} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
+          <Text style={{ color: 'white' }}>إغلاق</Text>
+        </TouchableOpacity>
+        <Text style={{ color: Colors.light, fontSize: 18, fontWeight: 'bold' }}>اختر السورة</Text>
       </View>
-    </Modal>
+
+      {/* SIMPLE TEST AREA */}
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#333' }}>
+        
+        {/* TEST BUTTON 1 */}
+        <TouchableOpacity 
+          style={{ backgroundColor: 'red', padding: 30, margin: 20, borderRadius: 10 }}
+          onPress={() => {
+            console.log('🔥 NO MODAL - TEST BUTTON 1 WORKS!');
+            Alert.alert('Success!', 'No Modal - Test Button 1 Works!');
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>NO MODAL - TEST 1</Text>
+        </TouchableOpacity>
+
+        {/* TEST BUTTON 2 */}
+        <TouchableOpacity 
+          style={{ backgroundColor: 'blue', padding: 30, margin: 20, borderRadius: 10 }}
+          onPress={() => {
+            console.log('🔥 NO MODAL - TEST BUTTON 2 WORKS!');
+            Alert.alert('Success!', 'No Modal - Test Button 2 Works!');
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>NO MODAL - TEST 2</Text>
+        </TouchableOpacity>
+
+        {/* SIMPLE SURA TEST */}
+        <TouchableOpacity 
+          style={{ backgroundColor: 'green', padding: 30, margin: 20, borderRadius: 10 }}
+          onPress={() => {
+            console.log('🕌 NO MODAL - SURA TEST WORKS! Opening Al-Fatiha');
+            handleSelectSurah({ number: 1, nameAr: 'الفاتحة', nameEn: 'Al-Fatiha' });
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>NO MODAL - الفاتحة</Text>
+        </TouchableOpacity>
+
+      </View>
+    </View>
   );
 }
 
