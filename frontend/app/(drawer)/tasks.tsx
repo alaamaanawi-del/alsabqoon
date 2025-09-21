@@ -220,7 +220,7 @@ export default function TasksScreen() {
     const prayerIcon = icons?.[item.prayer as keyof typeof icons];
 
     return (
-      <Swipeable
+      <View
         key={item.id}
         renderRightActions={() => renderSwipeActions(item.id)}
         rightThreshold={40}
