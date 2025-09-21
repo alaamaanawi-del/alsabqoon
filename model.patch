@@ -1,26 +1,56 @@
-diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
-index b6dc703..9cb0d1a 100644
---- a/frontend/app/(drawer)/my-prayers/record.tsx
-+++ b/frontend/app/(drawer)/my-prayers/record.tsx
-@@ -291,6 +291,7 @@ export default function RecordPrayer() {
-   // SurahSelector handlers
-   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
-     // Open sura viewer for range selection
-+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
-     setSelectedSura({
-       number: surah.number,
-       nameAr: surah.nameAr,
-@@ -298,11 +299,12 @@ export default function RecordPrayer() {
-       initialVerse: 1
-     });
-     setShowSuraViewer(true);
-+    setShowSurahSelector(false);
-   };
+diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
+index 4077add..2a9d60f 100644
+--- a/frontend/src/components/SurahSelector.tsx
++++ b/frontend/src/components/SurahSelector.tsx
+@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+   const [searchQuery, setSearchQuery] = useState('');
+   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
  
-   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
-     // Open sura viewer to allow user to select range or whole sura
--    console.log(`Opening whole sura: ${surah.nameAr}`);
-+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
-     setSelectedSura({
-       number: surah.number,
-       nameAr: surah.nameAr,
++  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
++
+   useEffect(() => {
+     if (!searchQuery.trim()) {
+       setFilteredSurahs(ALL_SURAHS);
++      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
+       return;
+     }
+ 
+@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+       surah.nameEn.toLowerCase().includes(query) ||
+       surah.number.toString().includes(query)
+     );
++    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
+     setFilteredSurahs(filtered);
+   }, [searchQuery]);
+ 
+diff --git a/model.patch b/model.patch
+index 2f216fa..e69de29 100644
+--- a/model.patch
++++ b/model.patch
+@@ -1,26 +0,0 @@
+-diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
+-index b6dc703..9cb0d1a 100644
+---- a/frontend/app/(drawer)/my-prayers/record.tsx
+-+++ b/frontend/app/(drawer)/my-prayers/record.tsx
+-@@ -291,6 +291,7 @@ export default function RecordPrayer() {
+-   // SurahSelector handlers
+-   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+-     // Open sura viewer for range selection
+-+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
+-     setSelectedSura({
+-       number: surah.number,
+-       nameAr: surah.nameAr,
+-@@ -298,11 +299,12 @@ export default function RecordPrayer() {
+-       initialVerse: 1
+-     });
+-     setShowSuraViewer(true);
+-+    setShowSurahSelector(false);
+-   };
+- 
+-   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+-     // Open sura viewer to allow user to select range or whole sura
+--    console.log(`Opening whole sura: ${surah.nameAr}`);
+-+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
+-     setSelectedSura({
+-       number: surah.number,
+-       nameAr: surah.nameAr,
