@@ -153,7 +153,7 @@ export default function TasksScreen() {
         rightThreshold={40}
       >
         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
-          {/* Priority Indicator */}
+          {/* Removed Priority Indicator */}
           <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
           
           <View style={styles.taskContent}>
