@@ -476,7 +476,7 @@ export default function RecordPrayer() {
       <View style={styles.header}>
         <View style={styles.headerInfoRow}>
           <Text style={styles.prayerNameText}>{PRAYERS.find(prayer => prayer.key === p)?.label || p}</Text>
-          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('ar-SA', { weekday: 'long' })}</Text>
+          <Text style={styles.dayText}>{new Date(day).toLocaleDateString('en-US', { weekday: 'long' })}</Text>
           <Text style={styles.dateText}>{new Date(day).toLocaleDateString('ar-SA')}</Text>
           <View style={styles.progressBarContainer}>
             <TaskProgressBar score={sc.total} showPercentage={true} />
