@@ -291,6 +291,7 @@ export default function RecordPrayer() {
   // SurahSelector handlers
   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
     // Open sura viewer for range selection
+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
     setSelectedSura({
       number: surah.number,
       nameAr: surah.nameAr,
@@ -298,11 +299,12 @@ export default function RecordPrayer() {
       initialVerse: 1
     });
     setShowSuraViewer(true);
+    setShowSurahSelector(false);
   };
 
   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
     // Open sura viewer to allow user to select range or whole sura
-    console.log(`Opening whole sura: ${surah.nameAr}`);
+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
     setSelectedSura({
       number: surah.number,
       nameAr: surah.nameAr,
