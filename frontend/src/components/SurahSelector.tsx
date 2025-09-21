@@ -218,7 +218,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           />
         </View>
 
-        <ScrollView style={styles.list} showsVerticalScrollIndicator={true}>
+        <ScrollView 
+          style={styles.list} 
+          showsVerticalScrollIndicator={true}
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled={true}
+        >
           {filteredSurahs.map((surah) => (
             <View key={surah.number} style={styles.surahItem}>
               <TouchableOpacity 
@@ -231,6 +236,9 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
                 onPressOut={() => console.log(`👆 Press OUT: ${surah.nameAr}`)}
                 activeOpacity={0.5}
                 testID={`sura-${surah.number}`}
+                accessible={true}
+                accessibilityLabel={`Select sura ${surah.nameAr}`}
+                accessibilityRole="button"
               >
                 <Text style={styles.surahNumber}>{surah.number}</Text>
                 <View style={styles.surahNames}>
