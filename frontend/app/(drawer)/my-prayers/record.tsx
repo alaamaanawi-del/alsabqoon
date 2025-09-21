@@ -104,7 +104,15 @@ export default function RecordPrayer() {
   }, [focus]);
 
   const [record, setRecord] = useState<PrayerRecord | null>(null);
-  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(focusRakka || 1); // Use focusRakka if available, otherwise default to rakka 1
+  const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Start with default 1
+  
+  // Set activeRakka based on focusRakka when component loads or focus changes
+  useEffect(() => {
+    if (focusRakka) {
+      console.log(`🎯 Setting activeRakka to ${focusRakka} based on focus parameter`);
+      setActiveRakka(focusRakka);
+    }
+  }, [focusRakka]);
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
