@@ -196,73 +196,57 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
     <Modal
       visible={visible}
       animationType="slide"
-      presentationStyle="pageSheet"
+      presentationStyle="fullScreen"
       onRequestClose={onClose}
       transparent={false}
     >
-      <SafeAreaView style={[styles.container, { pointerEvents: 'auto' }]}>
-        <View style={[styles.header, { pointerEvents: 'auto' }]}>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>إغلاق</Text>
+      <View style={{ flex: 1, backgroundColor: Colors.dark }}>
+        {/* Header */}
+        <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
+          <TouchableOpacity onPress={onClose} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
+            <Text style={{ color: 'white' }}>إغلاق</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
+          <Text style={{ color: Colors.light, fontSize: 18, fontWeight: 'bold' }}>اختر السورة</Text>
         </View>
 
-        {/* TEST BUTTON */}
-        <View style={{ pointerEvents: 'auto', zIndex: 1000 }}>
+        {/* SIMPLE TEST AREA */}
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#333' }}>
+          
+          {/* TEST BUTTON 1 */}
           <TouchableOpacity 
-            style={{ backgroundColor: 'red', padding: 20, margin: 10, zIndex: 1001 }}
-            onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
-            activeOpacity={0.5}
+            style={{ backgroundColor: 'red', padding: 30, margin: 20, borderRadius: 10 }}
+            onPress={() => {
+              console.log('🔥 TEST BUTTON 1 WORKS!');
+              Alert.alert('Success!', 'Test Button 1 Works!');
+            }}
           >
-            <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
+            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>TEST BUTTON 1</Text>
           </TouchableOpacity>
-        </View>
 
-        <View style={[styles.searchContainer, { pointerEvents: 'auto' }]}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="ابحث عن السورة..."
-            placeholderTextColor="#888"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            textAlign="right"
-          />
-        </View>
+          {/* TEST BUTTON 2 */}
+          <TouchableOpacity 
+            style={{ backgroundColor: 'blue', padding: 30, margin: 20, borderRadius: 10 }}
+            onPress={() => {
+              console.log('🔥 TEST BUTTON 2 WORKS!');
+              Alert.alert('Success!', 'Test Button 2 Works!');
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>TEST BUTTON 2</Text>
+          </TouchableOpacity>
 
-        <ScrollView 
-          style={[styles.list, { pointerEvents: 'auto' }]} 
-          showsVerticalScrollIndicator={true}
-          keyboardShouldPersistTaps="handled"
-          nestedScrollEnabled={true}
-          contentContainerStyle={{ pointerEvents: 'auto' }}
-        >
-          {filteredSurahs.map((surah) => (
-            <View key={surah.number} style={[styles.surahItem, { pointerEvents: 'auto' }]}>
-              <TouchableOpacity 
-                style={[styles.surahContent, { backgroundColor: '#2a3a39', pointerEvents: 'auto' }]}
-                onPress={() => {
-                  console.log(`🎯 TOUCH REGISTERED: ${surah.nameAr} (${surah.number})`);
-                  handleSelectSurah(surah);
-                }}
-                onPressIn={() => console.log(`👆 Press IN: ${surah.nameAr}`)}
-                onPressOut={() => console.log(`👆 Press OUT: ${surah.nameAr}`)}
-                activeOpacity={0.5}
-                testID={`sura-${surah.number}`}
-                accessible={true}
-                accessibilityLabel={`Select sura ${surah.nameAr}`}
-                accessibilityRole="button"
-              >
-                <Text style={styles.surahNumber}>{surah.number}</Text>
-                <View style={styles.surahNames}>
-                  <Text style={styles.surahNameAr}>{surah.nameAr}</Text>
-                  <Text style={styles.surahNameEn}>{surah.nameEn}</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
+          {/* SIMPLE SURA TEST */}
+          <TouchableOpacity 
+            style={{ backgroundColor: 'green', padding: 30, margin: 20, borderRadius: 10 }}
+            onPress={() => {
+              console.log('🕌 SURA TEST WORKS! Opening Al-Fatiha');
+              handleSelectSurah({ number: 1, nameAr: 'الفاتحة', nameEn: 'Al-Fatiha' });
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>SURA TEST - الفاتحة</Text>
+          </TouchableOpacity>
+
+        </View>
+      </View>
     </Modal>
   );
 }
