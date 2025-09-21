@@ -220,26 +220,25 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
 
         <ScrollView style={styles.list} showsVerticalScrollIndicator={true}>
           {filteredSurahs.map((surah) => (
-            <TouchableOpacity 
-              key={surah.number}
-              style={styles.surahItem}
-              onPress={() => {
-                console.log(`🎯 TOUCH REGISTERED: ${surah.nameAr} (${surah.number})`);
-                handleSelectSurah(surah);
-              }}
-              onPressIn={() => console.log(`👆 Press IN: ${surah.nameAr}`)}
-              onPressOut={() => console.log(`👆 Press OUT: ${surah.nameAr}`)}
-              activeOpacity={0.7}
-              testID={`sura-${surah.number}`}
-            >
-              <View style={styles.surahContent}>
+            <View key={surah.number} style={styles.surahItem}>
+              <TouchableOpacity 
+                style={[styles.surahContent, { backgroundColor: '#2a3a39' }]}
+                onPress={() => {
+                  console.log(`🎯 TOUCH REGISTERED: ${surah.nameAr} (${surah.number})`);
+                  handleSelectSurah(surah);
+                }}
+                onPressIn={() => console.log(`👆 Press IN: ${surah.nameAr}`)}
+                onPressOut={() => console.log(`👆 Press OUT: ${surah.nameAr}`)}
+                activeOpacity={0.5}
+                testID={`sura-${surah.number}`}
+              >
                 <Text style={styles.surahNumber}>{surah.number}</Text>
                 <View style={styles.surahNames}>
                   <Text style={styles.surahNameAr}>{surah.nameAr}</Text>
                   <Text style={styles.surahNameEn}>{surah.nameEn}</Text>
                 </View>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
           ))}
         </ScrollView>
       </SafeAreaView>
