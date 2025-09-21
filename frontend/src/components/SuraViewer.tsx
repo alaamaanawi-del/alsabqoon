@@ -52,8 +52,8 @@ export default function SuraViewer({
 
   // Scroll to initial verse when verses are loaded
   useEffect(() => {
-    if (verses.length > 0 && initialVerse && initialVerse > 1) {
-      // Highlight the initial verse
+    if (verses.length > 0 && initialVerse) {
+      // Highlight the initial verse (including verse 1)
       setRangeStart(initialVerse);
       setRangeEnd(null);
       
@@ -64,10 +64,13 @@ export default function SuraViewer({
           verseRefs.current[initialVerse]?.measureLayout(
             scrollViewRef.current as any,
             (x, y) => {
-              scrollViewRef.current?.scrollTo({ y: y - 100, animated: true });
+              scrollViewRef.current?.scrollTo({ y: Math.max(0, y - 100), animated: true });
             },
             () => console.log('Failed to measure verse layout')
           );
+        } else if (initialVerse === 1) {
+          // If it's verse 1 and no ref, just scroll to top
+          scrollViewRef.current?.scrollTo({ y: 0, animated: true });
         }
       }, 500);
     }
