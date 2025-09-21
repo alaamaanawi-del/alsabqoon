@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
 
+  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
+
   useEffect(() => {
     if (!searchQuery.trim()) {
       setFilteredSurahs(ALL_SURAHS);
+      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
       return;
     }
 
@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
       surah.nameEn.toLowerCase().includes(query) ||
       surah.number.toString().includes(query)
     );
+    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
     setFilteredSurahs(filtered);
   }, [searchQuery]);
 
