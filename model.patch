@@ -1,477 +1,538 @@
 diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-index 93859fe..dbe1e4b 100644
+index dbe1e4b..a80802a 100644
 --- a/frontend/app/(drawer)/tasks.tsx
 +++ b/frontend/app/(drawer)/tasks.tsx
-@@ -48,11 +48,20 @@ export default function TasksScreen() {
-   useEffect(() => { refresh(); }, []);
+@@ -113,7 +113,8 @@ export default function TasksScreen() {
  
-   const toggleComplete = async (id: string) => {
-+    console.log('✅ تم button pressed for task ID:', id);
-+    
-     const task = tasks.find(t => t.id === id);
--    if (!task) return;
-+    if (!task) {
-+      console.log('❌ Task not found for ID:', id);
-+      return;
-+    }
-+
-+    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
  
-     // If unchecking (was completed, now will be incomplete), delete the task
-     if (task.completed) {
-+      console.log('🔄 Task is completed, showing uncheck confirmation');
-+      
-       Alert.alert(
-         'إلغاء المهمة',
-         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
-@@ -61,24 +70,44 @@ export default function TasksScreen() {
-           { 
-             text: 'موافق', 
-             onPress: async () => {
--              // Load the prayer record and uncheck the task button
--              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--              await savePrayerRecord(prayerRecord);
-+              console.log('🔄 User confirmed unchecking, deleting task');
+   const deleteTask = async (id: string) => {
+-    console.log('🗑 Delete button pressed for task ID:', id);
++    // Use Alert instead of console.log for debugging
++    Alert.alert('Debug', `🗑 Delete button pressed for task ID: ${id}`);
+     
+     Alert.alert(
+       'حذف المهمة',
+@@ -124,37 +125,28 @@ export default function TasksScreen() {
+           text: 'حذف', 
+           style: 'destructive',
+           onPress: async () => {
+-            console.log('🗑 User confirmed deletion for task ID:', id);
++            Alert.alert('Debug', `🗑 User confirmed deletion for task ID: ${id}`);
+             
+             try {
+               // Find the task to get its details
+               const task = tasks.find(t => t.id === id);
+-              console.log('🔍 Found task:', task);
                
--              // Remove from tasks list
--              const next = tasks.filter(t => t.id !== id);
--              setTasks(next);
--              await saveTasks(next);
-+              try {
-+                // Load the prayer record and uncheck the task button
-+                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
-+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
-+                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
-+                
-+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
-+                console.log('✏️ Unchecked task button in prayer record (from تم button)');
-+                
-+                await savePrayerRecord(prayerRecord);
-+                console.log('💾 Saved prayer record (from تم button)');
-+                
-+                // Remove from tasks list
-+                const next = tasks.filter(t => t.id !== id);
-+                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
-+                
-+                setTasks(next);
-+                await saveTasks(next);
-+                console.log('✅ Task unchecked and deleted successfully');
-+                
-+              } catch (error) {
-+                console.error('❌ Error unchecking task:', error);
-+                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
-+              }
+               if (task) {
+                 // Load the prayer record and uncheck the task button
+-                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+                 const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+-                console.log('📖 Loaded prayer record:', prayerRecord);
+-                
+                 prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+-                console.log('✏️ Unchecked task button in prayer record');
+-                
+                 await savePrayerRecord(prayerRecord);
+-                console.log('💾 Saved prayer record');
++                Alert.alert('Debug', '✅ Unchecked task in prayer record');
+               }
+               
+               // Remove from tasks list
+               const next = tasks.filter(t => t.id !== id);
+-              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
+-              
+               setTasks(next);
+               await saveTasks(next);
+-              console.log('✅ Task deleted successfully');
++              Alert.alert('Success', '✅ Task deleted successfully');
+               
+             } catch (error) {
+-              console.error('❌ Error deleting task:', error);
+-              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
++              Alert.alert('Error', `❌ Error deleting task: ${error}`);
              }
            }
-         ]
-       );
-     } else {
-       // Just toggle completed status
-+      console.log('✅ Task is incomplete, marking as complete');
-+      
-       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-       setTasks(next);
-       await saveTasks(next);
-+      console.log('✅ Task marked as complete successfully');
-     }
-   };
- 
+         }
 diff --git a/model.patch b/model.patch
-index 75c5ca6..e69de29 100644
+index c41506e..e69de29 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,393 +0,0 @@
+@@ -1,477 +0,0 @@
 -diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
--index a8c1dda..93859fe 100644
+-index 93859fe..dbe1e4b 100644
 ---- a/frontend/app/(drawer)/tasks.tsx
 -+++ b/frontend/app/(drawer)/tasks.tsx
--@@ -82,7 +82,10 @@ export default function TasksScreen() {
--     }
--   };
+-@@ -48,11 +48,20 @@ export default function TasksScreen() {
+-   useEffect(() => { refresh(); }, []);
 - 
--+
--   const deleteTask = async (id: string) => {
--+    console.log('🗑 Delete button pressed for task ID:', id);
+-   const toggleComplete = async (id: string) => {
+-+    console.log('✅ تم button pressed for task ID:', id);
 -+    
--     Alert.alert(
--       'حذف المهمة',
--       'هل تريد حذف هذه المهمة نهائياً؟',
--@@ -92,19 +95,38 @@ export default function TasksScreen() {
--           text: 'حذف', 
--           style: 'destructive',
--           onPress: async () => {
---            // Find the task to get its details
---            const task = tasks.find(t => t.id === id);
---            if (task) {
+-     const task = tasks.find(t => t.id === id);
+--    if (!task) return;
+-+    if (!task) {
+-+      console.log('❌ Task not found for ID:', id);
+-+      return;
+-+    }
+-+
+-+    console.log('📋 Current task status:', task.completed ? 'completed' : 'incomplete');
+- 
+-     // If unchecking (was completed, now will be incomplete), delete the task
+-     if (task.completed) {
+-+      console.log('🔄 Task is completed, showing uncheck confirmation');
+-+      
+-       Alert.alert(
+-         'إلغاء المهمة',
+-         'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+-@@ -61,24 +70,44 @@ export default function TasksScreen() {
+-           { 
+-             text: 'موافق', 
+-             onPress: async () => {
 --              // Load the prayer record and uncheck the task button
 --              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
 --              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
 --              await savePrayerRecord(prayerRecord);
---            }
--+            console.log('🗑 User confirmed deletion for task ID:', id);
--             
---            // Remove from tasks list
---            const next = tasks.filter(t => t.id !== id);
---            setTasks(next);
---            await saveTasks(next);
--+            try {
--+              // Find the task to get its details
--+              const task = tasks.find(t => t.id === id);
--+              console.log('🔍 Found task:', task);
--+              
--+              if (task) {
+-+              console.log('🔄 User confirmed unchecking, deleting task');
+-               
+--              // Remove from tasks list
+--              const next = tasks.filter(t => t.id !== id);
+--              setTasks(next);
+--              await saveTasks(next);
+-+              try {
 -+                // Load the prayer record and uncheck the task button
--+                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+-+                console.log('📖 Loading prayer record for unchecking:', task.prayer, task.date);
 -+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
--+                console.log('📖 Loaded prayer record:', prayerRecord);
+-+                console.log('📖 Loaded prayer record for unchecking:', prayerRecord);
 -+                
 -+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
--+                console.log('✏️ Unchecked task button in prayer record');
+-+                console.log('✏️ Unchecked task button in prayer record (from تم button)');
 -+                
 -+                await savePrayerRecord(prayerRecord);
--+                console.log('💾 Saved prayer record');
+-+                console.log('💾 Saved prayer record (from تم button)');
+-+                
+-+                // Remove from tasks list
+-+                const next = tasks.filter(t => t.id !== id);
+-+                console.log('📝 Filtered tasks (from تم button). Before:', tasks.length, 'After:', next.length);
+-+                
+-+                setTasks(next);
+-+                await saveTasks(next);
+-+                console.log('✅ Task unchecked and deleted successfully');
+-+                
+-+              } catch (error) {
+-+                console.error('❌ Error unchecking task:', error);
+-+                Alert.alert('خطأ', 'حدث خطأ في إلغاء المهمة');
 -+              }
--+              
--+              // Remove from tasks list
--+              const next = tasks.filter(t => t.id !== id);
--+              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
--+              
--+              setTasks(next);
--+              await saveTasks(next);
--+              console.log('✅ Task deleted successfully');
--+              
--+            } catch (error) {
--+              console.error('❌ Error deleting task:', error);
--+              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
--+            }
+-             }
 -           }
--         }
--       ]
+-         ]
+-       );
+-     } else {
+-       // Just toggle completed status
+-+      console.log('✅ Task is incomplete, marking as complete');
+-+      
+-       const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+-       setTasks(next);
+-       await saveTasks(next);
+-+      console.log('✅ Task marked as complete successfully');
+-     }
+-   };
+- 
 -diff --git a/model.patch b/model.patch
--index 577d7d0..e69de29 100644
+-index 75c5ca6..e69de29 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,322 +0,0 @@
+-@@ -1,393 +0,0 @@
 --diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
---index f87f546..a8c1dda 100644
+--index a8c1dda..93859fe 100644
 ----- a/frontend/app/(drawer)/tasks.tsx
 --+++ b/frontend/app/(drawer)/tasks.tsx
---@@ -284,28 +284,7 @@ export default function TasksScreen() {
---         </View>
---       </View>
+--@@ -82,7 +82,10 @@ export default function TasksScreen() {
+--     }
+--   };
 -- 
----      {/* Category Overview */}
----      <View style={styles.categoryOverview}>
----        {Object.entries(stats.byCategory).map(([category, categoryTasks]) => {
----          const completed = categoryTasks.filter(t => t.completed).length;
----          const total = categoryTasks.length;
----          const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
----          
----          if (total === 0) return null;
----          
----          return (
----            <View key={category} style={styles.categoryCard}>
----              <View style={[styles.categoryDot, { backgroundColor: getCategoryColor(category as TaskCategory) }]} />
----              <Text style={styles.categoryLabel}>
----                {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
----              </Text>
----              <Text style={styles.categoryCount}>
----                {completed}/{total}
----              </Text>
----            </View>
----          );
----        })}
----      </View>
---+      {/* Category Overview - Removed priority labels */}
--- 
---       {/* Grouping Controls */}
---       <View style={styles.groupingControls}>
---@@ -366,39 +345,6 @@ const styles = StyleSheet.create({
---     minWidth: 80,
---   },
---   
----  // Category Overview
----  categoryOverview: {
----    flexDirection: 'row',
----    paddingHorizontal: 16,
----    paddingVertical: 12,
----    gap: 12,
----  },
----  categoryCard: {
----    flex: 1,
----    flexDirection: 'row',
----    alignItems: 'center',
----    backgroundColor: '#1a2626',
----    borderRadius: 8,
----    padding: 8,
----    gap: 6,
----  },
----  categoryDot: {
----    width: 8,
----    height: 8,
----    borderRadius: 4,
----  },
----  categoryLabel: {
----    flex: 1,
----    color: Colors.light,
----    fontSize: 12,
----    fontWeight: '600',
----  },
----  categoryCount: {
----    color: '#A6D3CF',
----    fontSize: 11,
----    fontWeight: '500',
----  },
----  
---   // Grouping Controls
---   groupingControls: {
---     flexDirection: 'row',
+--+
+--   const deleteTask = async (id: string) => {
+--+    console.log('🗑 Delete button pressed for task ID:', id);
+--+    
+--     Alert.alert(
+--       'حذف المهمة',
+--       'هل تريد حذف هذه المهمة نهائياً؟',
+--@@ -92,19 +95,38 @@ export default function TasksScreen() {
+--           text: 'حذف', 
+--           style: 'destructive',
+--           onPress: async () => {
+---            // Find the task to get its details
+---            const task = tasks.find(t => t.id === id);
+---            if (task) {
+---              // Load the prayer record and uncheck the task button
+---              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+---              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+---              await savePrayerRecord(prayerRecord);
+---            }
+--+            console.log('🗑 User confirmed deletion for task ID:', id);
+--             
+---            // Remove from tasks list
+---            const next = tasks.filter(t => t.id !== id);
+---            setTasks(next);
+---            await saveTasks(next);
+--+            try {
+--+              // Find the task to get its details
+--+              const task = tasks.find(t => t.id === id);
+--+              console.log('🔍 Found task:', task);
+--+              
+--+              if (task) {
+--+                // Load the prayer record and uncheck the task button
+--+                console.log('📖 Loading prayer record for:', task.prayer, task.date);
+--+                const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+--+                console.log('📖 Loaded prayer record:', prayerRecord);
+--+                
+--+                prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+--+                console.log('✏️ Unchecked task button in prayer record');
+--+                
+--+                await savePrayerRecord(prayerRecord);
+--+                console.log('💾 Saved prayer record');
+--+              }
+--+              
+--+              // Remove from tasks list
+--+              const next = tasks.filter(t => t.id !== id);
+--+              console.log('📝 Filtered tasks. Before:', tasks.length, 'After:', next.length);
+--+              
+--+              setTasks(next);
+--+              await saveTasks(next);
+--+              console.log('✅ Task deleted successfully');
+--+              
+--+            } catch (error) {
+--+              console.error('❌ Error deleting task:', error);
+--+              Alert.alert('خطأ', 'حدث خطأ في حذف المهمة');
+--+            }
+--           }
+--         }
+--       ]
 --diff --git a/model.patch b/model.patch
---index e367ff3..e69de29 100644
+--index 577d7d0..e69de29 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,243 +0,0 @@
+--@@ -1,322 +0,0 @@
 ---diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
----index aec3901..f87f546 100644
+---index f87f546..a8c1dda 100644
 ------ a/frontend/app/(drawer)/tasks.tsx
 ---+++ b/frontend/app/(drawer)/tasks.tsx
----@@ -11,7 +11,7 @@ import {
----   Dimensions 
---- } from 'react-native';
---- import { Colors } from '../../src/theme/colors';
-----import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
----+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
---- import { Link } from 'expo-router';
---- import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
---- import TaskProgressBar from '../../src/components/TaskProgressBar';
----@@ -48,9 +48,38 @@ export default function TasksScreen() {
----   useEffect(() => { refresh(); }, []);
+---@@ -284,28 +284,7 @@ export default function TasksScreen() {
+---         </View>
+---       </View>
 --- 
----   const toggleComplete = async (id: string) => {
-----    const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-----    setTasks(next);
-----    await saveTasks(next);
----+    const task = tasks.find(t => t.id === id);
----+    if (!task) return;
----+
----+    // If unchecking (was completed, now will be incomplete), delete the task
----+    if (task.completed) {
----+      Alert.alert(
----+        'إلغاء المهمة',
----+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
----+        [
----+          { text: 'إلغاء', style: 'cancel' },
----+          { 
----+            text: 'موافق', 
----+            onPress: async () => {
----+              // Load the prayer record and uncheck the task button
----+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
----+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
----+              await savePrayerRecord(prayerRecord);
----+              
----+              // Remove from tasks list
----+              const next = tasks.filter(t => t.id !== id);
----+              setTasks(next);
----+              await saveTasks(next);
----+            }
----+          }
----+        ]
----+      );
----+    } else {
----+      // Just toggle completed status
----+      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
----+      setTasks(next);
----+      await saveTasks(next);
----+    }
----   };
+----      {/* Category Overview */}
+----      <View style={styles.categoryOverview}>
+----        {Object.entries(stats.byCategory).map(([category, categoryTasks]) => {
+----          const completed = categoryTasks.filter(t => t.completed).length;
+----          const total = categoryTasks.length;
+----          const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+----          
+----          if (total === 0) return null;
+----          
+----          return (
+----            <View key={category} style={styles.categoryCard}>
+----              <View style={[styles.categoryDot, { backgroundColor: getCategoryColor(category as TaskCategory) }]} />
+----              <Text style={styles.categoryLabel}>
+----                {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
+----              </Text>
+----              <Text style={styles.categoryCount}>
+----                {completed}/{total}
+----              </Text>
+----            </View>
+----          );
+----        })}
+----      </View>
+---+      {/* Category Overview - Removed priority labels */}
 --- 
----   const deleteTask = async (id: string) => {
----@@ -63,6 +92,16 @@ export default function TasksScreen() {
----           text: 'حذف', 
----           style: 'destructive',
----           onPress: async () => {
----+            // Find the task to get its details
----+            const task = tasks.find(t => t.id === id);
----+            if (task) {
----+              // Load the prayer record and uncheck the task button
----+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
----+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
----+              await savePrayerRecord(prayerRecord);
----+            }
----+            
----+            // Remove from tasks list
----             const next = tasks.filter(t => t.id !== id);
----             setTasks(next);
----             await saveTasks(next);
+---       {/* Grouping Controls */}
+---       <View style={styles.groupingControls}>
+---@@ -366,39 +345,6 @@ const styles = StyleSheet.create({
+---     minWidth: 80,
+---   },
+---   
+----  // Category Overview
+----  categoryOverview: {
+----    flexDirection: 'row',
+----    paddingHorizontal: 16,
+----    paddingVertical: 12,
+----    gap: 12,
+----  },
+----  categoryCard: {
+----    flex: 1,
+----    flexDirection: 'row',
+----    alignItems: 'center',
+----    backgroundColor: '#1a2626',
+----    borderRadius: 8,
+----    padding: 8,
+----    gap: 6,
+----  },
+----  categoryDot: {
+----    width: 8,
+----    height: 8,
+----    borderRadius: 4,
+----  },
+----  categoryLabel: {
+----    flex: 1,
+----    color: Colors.light,
+----    fontSize: 12,
+----    fontWeight: '600',
+----  },
+----  categoryCount: {
+----    color: '#A6D3CF',
+----    fontSize: 11,
+----    fontWeight: '500',
+----  },
+----  
+---   // Grouping Controls
+---   groupingControls: {
+---     flexDirection: 'row',
 ---diff --git a/model.patch b/model.patch
----index 3a031ff..e69de29 100644
+---index e367ff3..e69de29 100644
 ------ a/model.patch
 ---+++ b/model.patch
----@@ -1,166 +0,0 @@
+---@@ -1,243 +0,0 @@
 ----diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-----index 982cb65..aec3901 100644
+----index aec3901..f87f546 100644
 ------- a/frontend/app/(drawer)/tasks.tsx
 ----+++ b/frontend/app/(drawer)/tasks.tsx
-----@@ -153,8 +153,7 @@ export default function TasksScreen() {
-----         rightThreshold={40}
-----       >
-----         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
------          {/* Priority Indicator */}
------          <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
-----+          {/* Removed Priority Indicator */}
-----           
-----           <View style={styles.taskContent}>
-----             {/* Prayer Icon */}
+----@@ -11,7 +11,7 @@ import {
+----   Dimensions 
+---- } from 'react-native';
+---- import { Colors } from '../../src/theme/colors';
+-----import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
+----+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
+---- import { Link } from 'expo-router';
+---- import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
+---- import TaskProgressBar from '../../src/components/TaskProgressBar';
+----@@ -48,9 +48,38 @@ export default function TasksScreen() {
+----   useEffect(() => { refresh(); }, []);
+---- 
+----   const toggleComplete = async (id: string) => {
+-----    const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+-----    setTasks(next);
+-----    await saveTasks(next);
+----+    const task = tasks.find(t => t.id === id);
+----+    if (!task) return;
+----+
+----+    // If unchecking (was completed, now will be incomplete), delete the task
+----+    if (task.completed) {
+----+      Alert.alert(
+----+        'إلغاء المهمة',
+----+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+----+        [
+----+          { text: 'إلغاء', style: 'cancel' },
+----+          { 
+----+            text: 'موافق', 
+----+            onPress: async () => {
+----+              // Load the prayer record and uncheck the task button
+----+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+----+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+----+              await savePrayerRecord(prayerRecord);
+----+              
+----+              // Remove from tasks list
+----+              const next = tasks.filter(t => t.id !== id);
+----+              setTasks(next);
+----+              await saveTasks(next);
+----+            }
+----+          }
+----+        ]
+----+      );
+----+    } else {
+----+      // Just toggle completed status
+----+      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+----+      setTasks(next);
+----+      await saveTasks(next);
+----+    }
+----   };
+---- 
+----   const deleteTask = async (id: string) => {
+----@@ -63,6 +92,16 @@ export default function TasksScreen() {
+----           text: 'حذف', 
+----           style: 'destructive',
+----           onPress: async () => {
+----+            // Find the task to get its details
+----+            const task = tasks.find(t => t.id === id);
+----+            if (task) {
+----+              // Load the prayer record and uncheck the task button
+----+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+----+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+----+              await savePrayerRecord(prayerRecord);
+----+            }
+----+            
+----+            // Remove from tasks list
+----             const next = tasks.filter(t => t.id !== id);
+----             setTasks(next);
+----             await saveTasks(next);
 ----diff --git a/model.patch b/model.patch
-----index d47b8ea..e69de29 100644
+----index 3a031ff..e69de29 100644
 ------- a/model.patch
 ----+++ b/model.patch
-----@@ -1,147 +0,0 @@
+----@@ -1,166 +0,0 @@
+-----diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+-----index 982cb65..aec3901 100644
+-------- a/frontend/app/(drawer)/tasks.tsx
+-----+++ b/frontend/app/(drawer)/tasks.tsx
+-----@@ -153,8 +153,7 @@ export default function TasksScreen() {
+-----         rightThreshold={40}
+-----       >
+-----         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
+------          {/* Priority Indicator */}
+------          <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
+-----+          {/* Removed Priority Indicator */}
+-----           
+-----           <View style={styles.taskContent}>
+-----             {/* Prayer Icon */}
 -----diff --git a/model.patch b/model.patch
------index 52ad936..e69de29 100644
+-----index d47b8ea..e69de29 100644
 -------- a/model.patch
 -----+++ b/model.patch
------@@ -1,142 +0,0 @@
-------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
-------index 1f11024..982cb65 100644
---------- a/frontend/app/(drawer)/tasks.tsx
-------+++ b/frontend/app/(drawer)/tasks.tsx
-------@@ -178,16 +178,10 @@ export default function TasksScreen() {
-------               <Text style={styles.taskMeta}>
-------                 {item.prayer} • ر{item.rakka} • {item.date}
-------               </Text>
--------              <View style={styles.taskBadges}>
--------                <View style={[styles.categoryBadge, { backgroundColor: categoryColor }]}>
--------                  <Text style={styles.categoryText}>
--------                    {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
--------                  </Text>
--------                </View>
--------              </View>
-------+              {/* Removed task badges with priority labels */}
-------             </View>
------- 
--------            {/* Actions */}
-------+            {/* Actions - Three controls side by side horizontally */}
-------             <View style={styles.taskActions}>
-------               <Link asChild href={{ 
-------                 pathname: '/(drawer)/my-prayers/record', 
-------@@ -206,6 +200,13 @@ export default function TasksScreen() {
-------                   {item.completed ? '✔' : 'تم'}
-------                 </Text>
-------               </TouchableOpacity>
-------+
-------+              <TouchableOpacity 
-------+                onPress={() => deleteTask(item.id)} 
-------+                style={styles.deleteBtn}
-------+              >
-------+                <Text style={styles.deleteBtnText}>🗑</Text>
-------+              </TouchableOpacity>
-------             </View>
-------           </View>
-------         </View>
-------@@ -515,6 +516,19 @@ const styles = StyleSheet.create({
-------     fontSize: 12,
-------     fontWeight: '700',
-------   },
-------+  deleteBtn: {
-------+    backgroundColor: '#ff4444',
-------+    paddingHorizontal: 12,
-------+    paddingVertical: 6,
-------+    borderRadius: 6,
-------+    minWidth: 40,
-------+    alignItems: 'center',
-------+  },
-------+  deleteBtnText: {
-------+    color: Colors.light,
-------+    fontSize: 12,
-------+    fontWeight: '700',
-------+  },
-------   
-------   // Swipe Actions
-------   swipeActions: {
+-----@@ -1,147 +0,0 @@
 ------diff --git a/model.patch b/model.patch
-------index b8298ee..e69de29 100644
+------index 52ad936..e69de29 100644
 --------- a/model.patch
 ------+++ b/model.patch
-------@@ -1,80 +0,0 @@
--------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
--------index 7825ef4..0a1a36c 100644
----------- a/frontend/src/components/SurahSelector.tsx
--------+++ b/frontend/src/components/SurahSelector.tsx
--------@@ -207,6 +207,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
--------           <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
--------         </View>
+------@@ -1,142 +0,0 @@
+-------diff --git a/frontend/app/(drawer)/tasks.tsx b/frontend/app/(drawer)/tasks.tsx
+-------index 1f11024..982cb65 100644
+---------- a/frontend/app/(drawer)/tasks.tsx
+-------+++ b/frontend/app/(drawer)/tasks.tsx
+-------@@ -178,16 +178,10 @@ export default function TasksScreen() {
+-------               <Text style={styles.taskMeta}>
+-------                 {item.prayer} • ر{item.rakka} • {item.date}
+-------               </Text>
+--------              <View style={styles.taskBadges}>
+--------                <View style={[styles.categoryBadge, { backgroundColor: categoryColor }]}>
+--------                  <Text style={styles.categoryText}>
+--------                    {category === 'high' ? 'مهم' : category === 'medium' ? 'متوسط' : 'عادي'}
+--------                  </Text>
+--------                </View>
+--------              </View>
+-------+              {/* Removed task badges with priority labels */}
+-------             </View>
 ------- 
--------+        {/* TEST BUTTON */}
--------+        <TouchableOpacity 
--------+          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
--------+          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
--------+        >
--------+          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
--------+        </TouchableOpacity>
+--------            {/* Actions */}
+-------+            {/* Actions - Three controls side by side horizontally */}
+-------             <View style={styles.taskActions}>
+-------               <Link asChild href={{ 
+-------                 pathname: '/(drawer)/my-prayers/record', 
+-------@@ -206,6 +200,13 @@ export default function TasksScreen() {
+-------                   {item.completed ? '✔' : 'تم'}
+-------                 </Text>
+-------               </TouchableOpacity>
 -------+
--------         <View style={styles.searchContainer}>
--------           <TextInput
--------             style={styles.searchInput}
+-------+              <TouchableOpacity 
+-------+                onPress={() => deleteTask(item.id)} 
+-------+                style={styles.deleteBtn}
+-------+              >
+-------+                <Text style={styles.deleteBtnText}>🗑</Text>
+-------+              </TouchableOpacity>
+-------             </View>
+-------           </View>
+-------         </View>
+-------@@ -515,6 +516,19 @@ const styles = StyleSheet.create({
+-------     fontSize: 12,
+-------     fontWeight: '700',
+-------   },
+-------+  deleteBtn: {
+-------+    backgroundColor: '#ff4444',
+-------+    paddingHorizontal: 12,
+-------+    paddingVertical: 6,
+-------+    borderRadius: 6,
+-------+    minWidth: 40,
+-------+    alignItems: 'center',
+-------+  },
+-------+  deleteBtnText: {
+-------+    color: Colors.light,
+-------+    fontSize: 12,
+-------+    fontWeight: '700',
+-------+  },
+-------   
+-------   // Swipe Actions
+-------   swipeActions: {
 -------diff --git a/model.patch b/model.patch
--------index 63f79e3..e69de29 100644
+-------index b8298ee..e69de29 100644
 ---------- a/model.patch
 -------+++ b/model.patch
--------@@ -1,56 +0,0 @@
+-------@@ -1,80 +0,0 @@
 --------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
---------index 4077add..2a9d60f 100644
+--------index 7825ef4..0a1a36c 100644
 ----------- a/frontend/src/components/SurahSelector.tsx
 --------+++ b/frontend/src/components/SurahSelector.tsx
---------@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
---------   const [searchQuery, setSearchQuery] = useState('');
---------   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
+--------@@ -207,6 +207,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+--------           <Text style={styles.title}>اختر السورة ({ALL_SURAHS.length})</Text>
+--------         </View>
 -------- 
---------+  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
+--------+        {/* TEST BUTTON */}
+--------+        <TouchableOpacity 
+--------+          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
+--------+          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
+--------+        >
+--------+          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
+--------+        </TouchableOpacity>
 --------+
---------   useEffect(() => {
---------     if (!searchQuery.trim()) {
---------       setFilteredSurahs(ALL_SURAHS);
---------+      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
---------       return;
---------     }
--------- 
---------@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
---------       surah.nameEn.toLowerCase().includes(query) ||
---------       surah.number.toString().includes(query)
---------     );
---------+    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
---------     setFilteredSurahs(filtered);
---------   }, [searchQuery]);
--------- 
+--------         <View style={styles.searchContainer}>
+--------           <TextInput
+--------             style={styles.searchInput}
 --------diff --git a/model.patch b/model.patch
---------index 2f216fa..e69de29 100644
+--------index 63f79e3..e69de29 100644
 ----------- a/model.patch
 --------+++ b/model.patch
---------@@ -1,26 +0,0 @@
----------diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
----------index b6dc703..9cb0d1a 100644
------------- a/frontend/app/(drawer)/my-prayers/record.tsx
----------+++ b/frontend/app/(drawer)/my-prayers/record.tsx
----------@@ -291,6 +291,7 @@ export default function RecordPrayer() {
----------   // SurahSelector handlers
----------   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
----------     // Open sura viewer for range selection
----------+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
----------     setSelectedSura({
----------       number: surah.number,
----------       nameAr: surah.nameAr,
----------@@ -298,11 +299,12 @@ export default function RecordPrayer() {
----------       initialVerse: 1
----------     });
----------     setShowSuraViewer(true);
----------+    setShowSurahSelector(false);
----------   };
+--------@@ -1,56 +0,0 @@
+---------diff --git a/frontend/src/components/SurahSelector.tsx b/frontend/src/components/SurahSelector.tsx
+---------index 4077add..2a9d60f 100644
+------------ a/frontend/src/components/SurahSelector.tsx
+---------+++ b/frontend/src/components/SurahSelector.tsx
+---------@@ -141,9 +141,12 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+---------   const [searchQuery, setSearchQuery] = useState('');
+---------   const [filteredSurahs, setFilteredSurahs] = useState(ALL_SURAHS);
 --------- 
----------   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
----------     // Open sura viewer to allow user to select range or whole sura
-----------    console.log(`Opening whole sura: ${surah.nameAr}`);
----------+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
----------     setSelectedSura({
----------       number: surah.number,
----------       nameAr: surah.nameAr,
+---------+  console.log(`🕌 SurahSelector visible: ${visible}, showing ${filteredSurahs.length} surahs`);
+---------+
+---------   useEffect(() => {
+---------     if (!searchQuery.trim()) {
+---------       setFilteredSurahs(ALL_SURAHS);
+---------+      console.log(`📜 Showing all ${ALL_SURAHS.length} surahs`);
+---------       return;
+---------     }
+--------- 
+---------@@ -153,6 +156,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
+---------       surah.nameEn.toLowerCase().includes(query) ||
+---------       surah.number.toString().includes(query)
+---------     );
+---------+    console.log(`🔍 Filtered ${filtered.length} surahs for query: "${searchQuery}"`);
+---------     setFilteredSurahs(filtered);
+---------   }, [searchQuery]);
+--------- 
+---------diff --git a/model.patch b/model.patch
+---------index 2f216fa..e69de29 100644
+------------ a/model.patch
+---------+++ b/model.patch
+---------@@ -1,26 +0,0 @@
+----------diff --git a/frontend/app/(drawer)/my-prayers/record.tsx b/frontend/app/(drawer)/my-prayers/record.tsx
+----------index b6dc703..9cb0d1a 100644
+------------- a/frontend/app/(drawer)/my-prayers/record.tsx
+----------+++ b/frontend/app/(drawer)/my-prayers/record.tsx
+----------@@ -291,6 +291,7 @@ export default function RecordPrayer() {
+----------   // SurahSelector handlers
+----------   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+----------     // Open sura viewer for range selection
+----------+    console.log(`📖 handleSelectSurah called for: ${surah.nameAr} (${surah.number})`);
+----------     setSelectedSura({
+----------       number: surah.number,
+----------       nameAr: surah.nameAr,
+----------@@ -298,11 +299,12 @@ export default function RecordPrayer() {
+----------       initialVerse: 1
+----------     });
+----------     setShowSuraViewer(true);
+----------+    setShowSurahSelector(false);
+----------   };
+---------- 
+----------   const handleSelectWholeSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+----------     // Open sura viewer to allow user to select range or whole sura
+-----------    console.log(`Opening whole sura: ${surah.nameAr}`);
+----------+    console.log(`📚 handleSelectWholeSurah called for: ${surah.nameAr} (${surah.number})`);
+----------     setSelectedSura({
+----------       number: surah.number,
+----------       nameAr: surah.nameAr,
