@@ -219,7 +219,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           </TouchableOpacity>
         </View>
 
-        <View style={styles.searchContainer}>
+        <View style={[styles.searchContainer, { pointerEvents: 'auto' }]}>
           <TextInput
             style={styles.searchInput}
             placeholder="ابحث عن السورة..."
@@ -231,15 +231,16 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
         </View>
 
         <ScrollView 
-          style={styles.list} 
+          style={[styles.list, { pointerEvents: 'auto' }]} 
           showsVerticalScrollIndicator={true}
           keyboardShouldPersistTaps="handled"
           nestedScrollEnabled={true}
+          contentContainerStyle={{ pointerEvents: 'auto' }}
         >
           {filteredSurahs.map((surah) => (
-            <View key={surah.number} style={styles.surahItem}>
+            <View key={surah.number} style={[styles.surahItem, { pointerEvents: 'auto' }]}>
               <TouchableOpacity 
-                style={[styles.surahContent, { backgroundColor: '#2a3a39' }]}
+                style={[styles.surahContent, { backgroundColor: '#2a3a39', pointerEvents: 'auto' }]}
                 onPress={() => {
                   console.log(`🎯 TOUCH REGISTERED: ${surah.nameAr} (${surah.number})`);
                   handleSelectSurah(surah);
