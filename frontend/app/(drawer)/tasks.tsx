@@ -222,7 +222,6 @@ export default function TasksScreen() {
     return (
       <View
         key={item.id}
-        renderRightActions={() => renderSwipeActions(item.id)}
         rightThreshold={40}
       >
         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
