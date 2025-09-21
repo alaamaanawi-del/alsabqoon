@@ -277,16 +277,16 @@ export default function TasksScreen() {
                 </Text>
               </TouchableOpacity>
 
-<Pressable 
-                onPress={() => {
-                  Alert.alert('Debug', `Delete button pressed for task: ${item.id}`);
-                  deleteTask(item.id);
-                }}
-                style={styles.deleteBtn}
-                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-              >
-                <Text style={styles.deleteBtnText}>🗑</Text>
-              </Pressable>
+<View style={styles.deleteBtn}>
+                <Button 
+                  title="🗑"
+                  color="#ff4444"
+                  onPress={() => {
+                    Alert.alert('Debug', `Delete button pressed for task: ${item.id}`);
+                    deleteTask(item.id);
+                  }}
+                />
+              </View>
             </View>
           </View>
         </View>
