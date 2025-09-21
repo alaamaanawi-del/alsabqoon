@@ -296,12 +296,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 8,
     overflow: 'hidden',
+    minHeight: 60, // Ensure minimum touch target
   },
   surahContent: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
     padding: 16,
     gap: 16,
+    minHeight: 44, // Minimum touch target for iOS
   },
   surahNumber: {
     color: Colors.warmOrange,
