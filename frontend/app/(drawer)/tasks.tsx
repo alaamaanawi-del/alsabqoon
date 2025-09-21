@@ -11,7 +11,7 @@ import {
   Dimensions 
 } from 'react-native';
 import { Colors } from '../../src/theme/colors';
-import { loadTasks, saveTasks, TaskItem } from '../../src/storage/prayer';
+import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } from '../../src/storage/prayer';
 import { Link } from 'expo-router';
 import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
 import TaskProgressBar from '../../src/components/TaskProgressBar';
