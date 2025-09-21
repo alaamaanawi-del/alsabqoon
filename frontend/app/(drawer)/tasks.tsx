@@ -8,6 +8,7 @@ import {
   Image, 
   ScrollView,
   Alert,
+  Pressable,
   Dimensions 
 } from 'react-native';
 import { Colors } from '../../src/theme/colors';
