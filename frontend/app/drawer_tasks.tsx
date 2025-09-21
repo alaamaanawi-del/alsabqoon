@@ -255,7 +255,11 @@ export default function TasksScreen() {
             <View style={styles.taskActions}>
               <Link asChild href={{ 
                 pathname: '/(drawer)/my-prayers/record', 
-                params: { prayer: item.prayer, focus: `${item.rakka}:${item.question}` } 
+                params: { 
+                  prayer: item.prayer, 
+                  date: item.date,
+                  focus: `${item.rakka}:${item.question}` 
+                } 
               }}>
                 <TouchableOpacity style={styles.openBtn}>
                   <Text style={styles.openBtnText}>فتح</Text>
