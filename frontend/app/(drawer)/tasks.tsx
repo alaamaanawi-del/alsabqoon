@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
   Pressable,
+  Button,
   Dimensions 
 } from 'react-native';
 import { Colors } from '../../src/theme/colors';
