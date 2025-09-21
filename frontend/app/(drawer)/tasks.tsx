@@ -286,7 +286,6 @@ export default function TasksScreen() {
 
       {/* Category Overview - Removed priority labels */}
 
-
       {/* Grouping Controls */}
       <View style={styles.groupingControls}>
         {(['date', 'prayer', 'type'] as GroupingType[]).map(type => (
