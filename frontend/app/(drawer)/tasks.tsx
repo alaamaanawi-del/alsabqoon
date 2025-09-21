@@ -17,7 +17,7 @@ import { loadTasks, saveTasks, TaskItem, loadPrayerRecord, savePrayerRecord } fr
 import { Link } from 'expo-router';
 import { usePrayerIcons } from '../../src/hooks/usePrayerIcons';
 import TaskProgressBar from '../../src/components/TaskProgressBar';
-import { Swipeable } from 'react-native-gesture-handler';
+// Removed Swipeable import
 
 type GroupingType = 'date' | 'prayer' | 'type';
 type TaskCategory = 'high' | 'medium' | 'low';
