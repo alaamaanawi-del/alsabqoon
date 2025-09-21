@@ -219,8 +219,14 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
             <TouchableOpacity 
               key={surah.number}
               style={styles.surahItem}
-              onPress={() => handleSelectSurah(surah)}
+              onPress={() => {
+                console.log(`🎯 TOUCH REGISTERED: ${surah.nameAr} (${surah.number})`);
+                handleSelectSurah(surah);
+              }}
+              onPressIn={() => console.log(`👆 Press IN: ${surah.nameAr}`)}
+              onPressOut={() => console.log(`👆 Press OUT: ${surah.nameAr}`)}
               activeOpacity={0.7}
+              testID={`sura-${surah.number}`}
             >
               <View style={styles.surahContent}>
                 <Text style={styles.surahNumber}>{surah.number}</Text>
