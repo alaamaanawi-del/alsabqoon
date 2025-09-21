@@ -251,7 +251,7 @@ export default function TasksScreen() {
               {/* Removed task badges with priority labels */}
             </View>
 
-            {/* Actions - Three controls side by side horizontally */}
+            {/* Actions - Two controls side by side horizontally */}
             <View style={styles.taskActions}>
               <Link asChild href={{ 
                 pathname: '/(drawer)/my-prayers/record', 
@@ -274,17 +274,6 @@ export default function TasksScreen() {
                   {item.completed ? '✔' : 'تم'}
                 </Text>
               </TouchableOpacity>
-
-<View style={styles.deleteBtn}>
-                <Button 
-                  title="🗑"
-                  color="#ff4444"
-                  onPress={() => {
-                    Alert.alert('Debug', `Delete button pressed for task: ${item.id}`);
-                    deleteTask(item.id);
-                  }}
-                />
-              </View>
             </View>
           </View>
         </View>
