@@ -198,9 +198,10 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
       animationType="slide"
       presentationStyle="pageSheet"
       onRequestClose={onClose}
+      transparent={false}
     >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
+      <SafeAreaView style={[styles.container, { pointerEvents: 'auto' }]}>
+        <View style={[styles.header, { pointerEvents: 'auto' }]}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>إغلاق</Text>
           </TouchableOpacity>
@@ -208,12 +209,15 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
         </View>
 
         {/* TEST BUTTON */}
-        <TouchableOpacity 
-          style={{ backgroundColor: 'red', padding: 20, margin: 10 }}
-          onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
-        >
-          <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
-        </TouchableOpacity>
+        <View style={{ pointerEvents: 'auto', zIndex: 1000 }}>
+          <TouchableOpacity 
+            style={{ backgroundColor: 'red', padding: 20, margin: 10, zIndex: 1001 }}
+            onPress={() => console.log('🔥 TEST BUTTON WORKS!')}
+            activeOpacity={0.5}
+          >
+            <Text style={{ color: 'white', textAlign: 'center' }}>TEST BUTTON - CLICK ME</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.searchContainer}>
           <TextInput
