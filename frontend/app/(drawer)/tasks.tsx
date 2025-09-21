@@ -154,7 +154,6 @@ export default function TasksScreen() {
       >
         <View style={[styles.taskCard, item.completed && styles.completedTask]}>
           {/* Removed Priority Indicator */}
-          <View style={[styles.priorityIndicator, { backgroundColor: categoryColor }]} />
           
           <View style={styles.taskContent}>
             {/* Prayer Icon */}
