@@ -196,6 +196,22 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
 
   console.log('🕌 SurahSelector rendering - visible:', visible);
 
+  // Create test functions in the same scope as onClose
+  const testFunction1 = () => {
+    console.log('🔥 TEST FUNCTION 1 WORKS!');
+    Alert.alert('Success!', 'Test Function 1 Works!');
+  };
+
+  const testFunction2 = () => {
+    console.log('🔥 TEST FUNCTION 2 WORKS!');
+    Alert.alert('Success!', 'Test Function 2 Works!');
+  };
+
+  const testSuraFunction = () => {
+    console.log('🕌 SURA FUNCTION WORKS!');
+    onSelectSurah({ number: 1, nameAr: 'الفاتحة', nameEn: 'Al-Fatiha' });
+  };
+
   return (
     <View style={{ 
       position: 'absolute', 
@@ -206,7 +222,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
       backgroundColor: Colors.dark, 
       zIndex: 9999 
     }}>
-      {/* Header with WORKING close button AND identical test buttons */}
+      {/* Header with WORKING close button AND test buttons using same pattern */}
       <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
         
         {/* WORKING CLOSE BUTTON */}
@@ -214,37 +230,26 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           <Text style={{ color: 'white' }}>إغلاق</Text>
         </TouchableOpacity>
         
-        {/* IDENTICAL BUTTON - SAME PROPS AS CLOSE BUTTON */}
-        <TouchableOpacity onPress={() => {
-          console.log('🔥 IDENTICAL BUTTON CLICKED!');
-          Alert.alert('IDENTICAL BUTTON', 'This button has identical props to close button');
-        }} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: 'white' }}>SAME</Text>
+        {/* TEST USING SAME PATTERN AS onClose */}
+        <TouchableOpacity onPress={testFunction1} style={{ backgroundColor: 'green', padding: 10, borderRadius: 5 }}>
+          <Text style={{ color: 'white' }}>TEST1</Text>
         </TouchableOpacity>
 
-        {/* SIMPLE FUNCTION TEST */}
-        <TouchableOpacity onPress={() => Alert.alert('SIMPLE', 'Simple alert')} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5 }}>
-          <Text style={{ color: 'white' }}>SIMPLE</Text>
+        {/* ANOTHER TEST FUNCTION */}
+        <TouchableOpacity onPress={testFunction2} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5 }}>
+          <Text style={{ color: 'white' }}>TEST2</Text>
         </TouchableOpacity>
 
       </View>
 
-      {/* Test if the component can render basic text and receive props */}
+      {/* Content area with sura function test */}
       <View style={{ padding: 20 }}>
+        <TouchableOpacity onPress={testSuraFunction} style={{ backgroundColor: 'orange', padding: 30, borderRadius: 10, marginBottom: 20 }}>
+          <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>TEST SURA FUNCTION</Text>
+        </TouchableOpacity>
+
         <Text style={{ color: 'white', fontSize: 16, marginBottom: 10 }}>
-          Debugging Info:
-        </Text>
-        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
-          visible: {visible ? 'true' : 'false'}
-        </Text>
-        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
-          onClose type: {typeof onClose}
-        </Text>
-        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
-          onSelectSurah type: {typeof onSelectSurah}
-        </Text>
-        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
-          Alert function: {typeof Alert.alert}
+          If these buttons work, the issue was inline functions vs defined functions!
         </Text>
       </View>
     </View>
