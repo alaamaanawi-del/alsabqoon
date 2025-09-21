@@ -345,39 +345,6 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   
-  // Category Overview
-  categoryOverview: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 12,
-  },
-  categoryCard: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1a2626',
-    borderRadius: 8,
-    padding: 8,
-    gap: 6,
-  },
-  categoryDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  categoryLabel: {
-    flex: 1,
-    color: Colors.light,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  categoryCount: {
-    color: '#A6D3CF',
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  
   // Grouping Controls
   groupingControls: {
     flexDirection: 'row',
