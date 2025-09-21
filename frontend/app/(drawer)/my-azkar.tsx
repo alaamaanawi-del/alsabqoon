@@ -735,7 +735,7 @@ export default function MyAzkarScreen() {
         <View style={styles.filterDescriptionContainer}>
           {selectedFilter === 'today' && (
             <Text style={styles.filterDescriptionText}>
-              {new Date().toLocaleDateString('ar', { 
+              {selectedDate.toLocaleDateString('ar', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
