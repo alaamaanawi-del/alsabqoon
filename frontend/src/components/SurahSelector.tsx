@@ -194,6 +194,8 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
 
   if (!visible) return null;
 
+  console.log('🕌 SurahSelector rendering - visible:', visible);
+
   return (
     <View style={{ 
       position: 'absolute', 
@@ -204,7 +206,7 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
       backgroundColor: Colors.dark, 
       zIndex: 9999 
     }}>
-      {/* Header with WORKING close button AND test buttons in same row */}
+      {/* Header with WORKING close button AND identical test buttons */}
       <View style={{ paddingTop: 50, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 20 }}>
         
         {/* WORKING CLOSE BUTTON */}
@@ -212,35 +214,38 @@ export default function SurahSelector({ visible, onClose, onSelectSurah, onSelec
           <Text style={{ color: 'white' }}>إغلاق</Text>
         </TouchableOpacity>
         
-        {/* TEST BUTTON IN SAME ROW AS WORKING BUTTON */}
-        <TouchableOpacity 
-          onPress={() => {
-            console.log('🔥 HEADER TEST BUTTON WORKS!');
-            Alert.alert('Success!', 'Header test button works!');
-          }}
-          style={{ backgroundColor: 'red', padding: 10, borderRadius: 5 }}
-        >
-          <Text style={{ color: 'white' }}>TEST</Text>
+        {/* IDENTICAL BUTTON - SAME PROPS AS CLOSE BUTTON */}
+        <TouchableOpacity onPress={() => {
+          console.log('🔥 IDENTICAL BUTTON CLICKED!');
+          Alert.alert('IDENTICAL BUTTON', 'This button has identical props to close button');
+        }} style={{ backgroundColor: '#ff4444', padding: 10, borderRadius: 5 }}>
+          <Text style={{ color: 'white' }}>SAME</Text>
         </TouchableOpacity>
 
-        <Text style={{ color: Colors.light, fontSize: 18, fontWeight: 'bold' }}>اختر السورة</Text>
+        {/* SIMPLE FUNCTION TEST */}
+        <TouchableOpacity onPress={() => Alert.alert('SIMPLE', 'Simple alert')} style={{ backgroundColor: 'blue', padding: 10, borderRadius: 5 }}>
+          <Text style={{ color: 'white' }}>SIMPLE</Text>
+        </TouchableOpacity>
+
       </View>
 
-      {/* Content area that doesn't work */}
-      <View style={{ flex: 1, backgroundColor: '#222', padding: 20 }}>
-        <Text style={{ color: 'white', fontSize: 16, marginBottom: 20 }}>
-          If HEADER TEST button works but content buttons don't, there's an overlay covering content area.
+      {/* Test if the component can render basic text and receive props */}
+      <View style={{ padding: 20 }}>
+        <Text style={{ color: 'white', fontSize: 16, marginBottom: 10 }}>
+          Debugging Info:
         </Text>
-        
-        <TouchableOpacity 
-          style={{ backgroundColor: 'blue', padding: 30, margin: 20, borderRadius: 10 }}
-          onPress={() => {
-            console.log('🔥 CONTENT BUTTON WORKS!');
-            Alert.alert('Success!', 'Content button works!');
-          }}
-        >
-          <Text style={{ color: 'white', fontSize: 20, textAlign: 'center' }}>CONTENT BUTTON</Text>
-        </TouchableOpacity>
+        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
+          visible: {visible ? 'true' : 'false'}
+        </Text>
+        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
+          onClose type: {typeof onClose}
+        </Text>
+        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
+          onSelectSurah type: {typeof onSelectSurah}
+        </Text>
+        <Text style={{ color: 'white', fontSize: 14, marginBottom: 5 }}>
+          Alert function: {typeof Alert.alert}
+        </Text>
       </View>
     </View>
   );
