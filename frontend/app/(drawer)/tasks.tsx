@@ -276,13 +276,19 @@ export default function TasksScreen() {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <Pressable 
                 onPress={() => deleteTask(item.id)} 
-                style={[styles.deleteBtn, { zIndex: 1000 }]}
-                activeOpacity={0.7}
+                style={({ pressed }) => [
+                  styles.deleteBtn, 
+                  { 
+                    opacity: pressed ? 0.5 : 1,
+                    transform: pressed ? [{ scale: 0.95 }] : [{ scale: 1 }]
+                  }
+                ]}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Text style={styles.deleteBtnText}>🗑</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>
