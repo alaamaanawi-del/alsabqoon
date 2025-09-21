@@ -48,9 +48,38 @@ export default function TasksScreen() {
   useEffect(() => { refresh(); }, []);
 
   const toggleComplete = async (id: string) => {
-    const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-    setTasks(next);
-    await saveTasks(next);
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    // If unchecking (was completed, now will be incomplete), delete the task
+    if (task.completed) {
+      Alert.alert(
+        'إلغاء المهمة',
+        'سيتم حذف هذه المهمة من القائمة وإلغاء تحديدها في الصلاة. هل تريد المتابعة؟',
+        [
+          { text: 'إلغاء', style: 'cancel' },
+          { 
+            text: 'موافق', 
+            onPress: async () => {
+              // Load the prayer record and uncheck the task button
+              const prayerRecord = await loadPrayerRecord(task.prayer, task.date);
+              prayerRecord.rakka[task.rakka].addToTask[task.question] = false;
+              await savePrayerRecord(prayerRecord);
+              
+              // Remove from tasks list
+              const next = tasks.filter(t => t.id !== id);
+              setTasks(next);
+              await saveTasks(next);
+            }
+          }
+        ]
+      );
+    } else {
+      // Just toggle completed status
+      const next = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      setTasks(next);
+      await saveTasks(next);
+    }
   };
 
   const deleteTask = async (id: string) => {
