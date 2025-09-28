@@ -20,6 +20,8 @@ import {
   getAzkarList, 
   getDailyAzkar, 
   getAzkarRange,
+  createZikrEntry,
+  getCurrentLocalDateString,
   Zikr, 
   DailyAzkarSummary 
 } from '../../src/api/client';
