@@ -576,7 +576,7 @@ test_plan:
 
 agent_communication:
   - agent: "main"
-    message: "Please run backend tests for the above three API routes (health, surah list, search) and basic status endpoints using the existing FastAPI backend on /api."
+    message: "TASK COMPLETED: Azkar Notes Display & Edit Tracking Implementation. Updated ZikrEntry interface to include edit_notes and comments fields. Modified azkar details page to display actual note content in history section instead of generic 'edited' message. Implemented enhanced edit tracking with timestamps showing format '2025-01-28T10:15:30: تعديل: تم تغيير العدد من 2 إلى 1'. Backend testing shows all 4 scenarios passing: comments stored properly, edit notes added with timestamps, history API returns complete edit_notes, full workflow tested for both zikr types (1, 13). Ready for frontend testing upon user approval."
   - agent: "testing"
     message: "✅ BACKEND TESTING COMPLETE: All 5 backend tasks tested successfully. Health endpoint, status endpoints (POST/GET), Qur'an surahs list, and Qur'an search (Arabic/English/Spanish) all working correctly via ingress path /api. MongoDB integration confirmed. Created comprehensive backend_test.py for future testing. Note: Arabic search requires exact text matching including diacritical marks (الْحَمْدُ vs الحمد)."
   - agent: "main"
