@@ -306,7 +306,7 @@ export default function CharityDetailScreen() {
                 { backgroundColor: getDateBackgroundColor(dateIndex) }
               ]}>
                 <Text style={styles.dateGroupHeader}>
-                  {formatDate(date)} - {new Date(date).toLocaleDateString('ar-SA', { weekday: 'long' })}
+                  {formatDate(date)} - {new Date(date).toLocaleDateString('en-GB', { weekday: 'long' })}
                 </Text>
                 {entries.map((entry, entryIndex) => (
                   <View key={entry.id} style={styles.historyEntry}>
