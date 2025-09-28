@@ -889,6 +889,59 @@ export default function MyAzkarScreen() {
           )}
         </View>
 
+        {/* Sort Control */}
+        <View style={styles.sortContainer}>
+          <Text style={styles.sortLabel}>ترتيب حسب:</Text>
+          <TouchableOpacity 
+            style={styles.sortButton}
+            onPress={() => setShowSortDropdown(!showSortDropdown)}
+          >
+            <Text style={styles.sortButtonText}>
+              {sortOption === 'highest' ? 'أعلى معدل أولاً' : 'أقل معدل أولاً'}
+            </Text>
+            <Ionicons 
+              name={showSortDropdown ? "chevron-up" : "chevron-down"} 
+              size={16} 
+              color={Colors.darkGray} 
+            />
+          </TouchableOpacity>
+          
+          {/* Sort Dropdown */}
+          {showSortDropdown && (
+            <View style={styles.sortDropdown}>
+              <TouchableOpacity 
+                style={[styles.sortOption, sortOption === 'highest' && styles.sortOptionActive]}
+                onPress={() => {
+                  setSortOption('highest');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.sortOptionText, sortOption === 'highest' && styles.sortOptionTextActive]}>
+                  أعلى معدل أولاً
+                </Text>
+                {sortOption === 'highest' && (
+                  <Ionicons name="checkmark" size={16} color={Colors.warmOrange} />
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.sortOption, sortOption === 'lowest' && styles.sortOptionActive]}
+                onPress={() => {
+                  setSortOption('lowest');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.sortOptionText, sortOption === 'lowest' && styles.sortOptionTextActive]}>
+                  أقل معدل أولاً
+                </Text>
+                {sortOption === 'lowest' && (
+                  <Ionicons name="checkmark" size={16} color={Colors.warmOrange} />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
         {/* Azkar List */}
         {renderAzkarList()}
 
