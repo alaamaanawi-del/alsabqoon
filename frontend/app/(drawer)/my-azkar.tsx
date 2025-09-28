@@ -1252,10 +1252,21 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
+  zikrNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  colorCircle: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
   azkarNameAr: {
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.darkGray,
+    flex: 1,
   },
   progressSection: {
     flexDirection: 'row',
