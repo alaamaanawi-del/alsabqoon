@@ -519,12 +519,67 @@ export default function MyCharitiesScreen() {
           )}
         </View>
 
+        {/* Sort Control */}
+        <View style={styles.sortContainer}>
+          <View style={styles.sortRow}>
+            <Text style={styles.sortLabel}>ترتيب حسب:</Text>
+            <TouchableOpacity 
+              style={styles.sortButton}
+              onPress={() => setShowSortDropdown(!showSortDropdown)}
+            >
+              <Text style={styles.sortButtonText}>
+                {sortOption === 'highest' ? 'أعلى معدل أولاً' : 'أقل معدل أولاً'}
+              </Text>
+              <Ionicons 
+                name={showSortDropdown ? "chevron-up" : "chevron-down"} 
+                size={16} 
+                color={Colors.darkGray} 
+              />
+            </TouchableOpacity>
+          </View>
+          
+          {/* Sort Dropdown */}
+          {showSortDropdown && (
+            <View style={styles.sortDropdown}>
+              <TouchableOpacity 
+                style={[styles.sortOption, sortOption === 'highest' && styles.sortOptionActive]}
+                onPress={() => {
+                  setSortOption('highest');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.sortOptionText, sortOption === 'highest' && styles.sortOptionTextActive]}>
+                  أعلى معدل أولاً
+                </Text>
+                {sortOption === 'highest' && (
+                  <Ionicons name="checkmark" size={16} color={Colors.warmOrange} />
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.sortOption, sortOption === 'lowest' && styles.sortOptionActive]}
+                onPress={() => {
+                  setSortOption('lowest');
+                  setShowSortDropdown(false);
+                }}
+              >
+                <Text style={[styles.sortOptionText, sortOption === 'lowest' && styles.sortOptionTextActive]}>
+                  أقل معدل أولاً
+                </Text>
+                {sortOption === 'lowest' && (
+                  <Ionicons name="checkmark" size={16} color={Colors.warmOrange} />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
         {/* Charity List */}
         <View style={styles.charitiesContainer}>
           <Text style={styles.totalDailyText}>
             إجمالي الصدقات اليوم: {dailySummary?.total_daily || 0}
           </Text>
-          {charitiesList.map(renderCharityItem)}
+          {getSortedCharitiesList().map(renderCharityItem)}
         </View>
 
         {/* Progress Chart */}
