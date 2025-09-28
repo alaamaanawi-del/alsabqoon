@@ -395,18 +395,15 @@ export default function MyCharitiesScreen() {
           
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBarBg}>
-              {percentage > 0 && (
-                <View 
-                  style={[
-                    styles.progressBarFill, 
-                    { 
-                      flex: Math.max(0, Math.min(100, percentage)) / 100,
-                      backgroundColor: '#3F6663'
-                    }
-                  ]} 
-                />
-              )}
-              <View style={{ flex: Math.max(0, (100 - percentage)) / 100 }} />
+              <View 
+                style={[
+                  styles.progressBarFill, 
+                  { 
+                    width: percentage > 0 ? `${Math.round(percentage)}%` : '0%',
+                    backgroundColor: '#3F6663'
+                  }
+                ]} 
+              />
             </View>
           </View>
           
