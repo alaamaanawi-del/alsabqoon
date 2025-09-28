@@ -157,7 +157,7 @@ export default function CharityDetailScreen() {
       }
       
       const date = new Date(timeString);
-      return date.toLocaleTimeString('ar-SA', {
+      return date.toLocaleTimeString('en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use device timezone
