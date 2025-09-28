@@ -650,9 +650,26 @@ export default function MyAzkarScreen() {
     }
   };
 
+  // Function to sort zikr list based on completion percentage
+  const getSortedZikrList = () => {
+    const baseList = azkarList.length > 0 ? azkarList : AZKAR_LIST;
+    const azkarSummary = dailySummary?.azkar_summary || {};
+    
+    return [...baseList].sort((a, b) => {
+      const dataA = azkarSummary[a.id] || { count: 0, percentage: 0 };
+      const dataB = azkarSummary[b.id] || { count: 0, percentage: 0 };
+      
+      if (sortOption === 'highest') {
+        return dataB.percentage - dataA.percentage; // Highest first
+      } else {
+        return dataA.percentage - dataB.percentage; // Lowest first
+      }
+    });
+  };
+
   const renderAzkarList = () => (
     <View style={styles.azkarListContainer}>
-      {(azkarList.length > 0 ? azkarList : AZKAR_LIST).map((zikr, index) => {
+      {getSortedZikrList().map((zikr, index) => {
         const azkarSummary = dailySummary?.azkar_summary || {};
         const data = azkarSummary[zikr.id] || { count: 0, percentage: 0 };
         
