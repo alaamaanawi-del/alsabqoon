@@ -895,13 +895,21 @@ const styles = StyleSheet.create({
   },
   editNotesContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
+    alignItems: 'flex-start',
+    gap: 6,
+    marginTop: 4,
+    paddingTop: 4,
+    borderTopWidth: 1,
+    borderTopColor: Colors.lightGray,
+  },
+  editNotesContent: {
+    flex: 1,
   },
   editNotesText: {
-    fontSize: 10,
+    fontSize: 11,
     color: Colors.mediumGray,
     fontStyle: 'italic',
+    lineHeight: 14,
+    marginBottom: 2,
   },
 });
