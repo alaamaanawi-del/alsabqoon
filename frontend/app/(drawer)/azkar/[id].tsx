@@ -644,43 +644,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
   },
-  colorIndicator: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginBottom: 12,
-  },
-  zikrNameAr: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.darkGray,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  zikrNameEn: {
-    fontSize: 16,
-    color: Colors.mediumGray,
-    textAlign: 'center',
-  },
-  dateTimeContainer: {
-    marginTop: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.lightGray,
-    alignItems: 'center',
-  },
-  dateTimeText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.darkGray,
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  timeText: {
-    fontSize: 12,
-    color: Colors.mediumGray,
-    textAlign: 'center',
-  },
+  // Removed unused styles: colorIndicator, zikrNameAr, zikrNameEn, dateTimeContainer, dateTimeText, timeText
   inputContainer: {
     backgroundColor: Colors.light,
     marginHorizontal: 16,
