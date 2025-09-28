@@ -236,7 +236,7 @@ export default function CharityDetailScreen() {
                 style={styles.textInput}
                 value={count}
                 onChangeText={setCount}
-                placeholder="أدخل عدد المرات"
+                placeholder="أدخل عدد الصدقات"
                 keyboardType="numeric"
                 returnKeyType="next"
               />
