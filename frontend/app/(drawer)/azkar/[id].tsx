@@ -147,6 +147,7 @@ export default function ZikrDetailsScreen() {
   const [editCount, setEditCount] = useState<string>('');
   const [azkarFromAPI, setAzkarFromAPI] = useState<Zikr[]>([]);
   const scrollViewRef = useRef<ScrollView>(null);
+  const historyRef = useRef<View>(null);
 
   useEffect(() => {
     loadAzkarFromAPI();
