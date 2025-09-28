@@ -718,7 +718,7 @@ export default function MyAzkarScreen() {
             </View>
             
             {/* Separator */}
-            {index < (azkarList.length > 0 ? azkarList : AZKAR_LIST).length - 1 && 
+            {index < getSortedZikrList().length - 1 && 
               <View style={styles.separator} />
             }
           </View>
