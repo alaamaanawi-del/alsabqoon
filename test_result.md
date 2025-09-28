@@ -295,6 +295,20 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: POST /api/azkar/entry successfully creates zikr entries. Tested with multiple entries (zikr_id 1,6,11) with different counts and dates. All entries created with proper UUID, user_id='default', timestamp. MongoDB persistence working correctly."
+  - task: "Azkar notes functionality (comments and edit tracking)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented azkar notes functionality with comment parameter in POST /api/azkar/entry and edit_note parameter in PUT /api/azkar/entry/{id} for comprehensive edit tracking"
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE AZKAR NOTES FUNCTIONALITY TESTING COMPLETE: All 4 test scenarios passed successfully! TESTED ALL REQUIREMENTS: 1) Creating azkar entry with comment parameter - comments properly stored in edit_notes field during creation for both zikr types (1: سبحان الله وبحمده, 13: الدعوة – تعليم), 2) Updating azkar entry with edit_note parameter - edit notes properly added during updates with timestamps (Arabic text support confirmed), 3) Azkar history API returns entries with complete edit_notes field containing both original comments and edit tracking information, 4) Full workflow tested: Create entry with comment → Update with edit note → Fetch history to verify both original comment and edit notes are stored and returned correctly, 5) Entry creation without comment works correctly (no edit_notes created). CRITICAL SUCCESS: Comments stored in edit_notes during creation, edit notes added with timestamps during updates, history API preserves complete edit tracking. Azkar notes functionality is fully operational and ready for production use with both zikr types (1, 13) as requested."
   - task: "Azkar history API (/api/azkar/{zikr_id}/history)"
     implemented: true
     working: true
