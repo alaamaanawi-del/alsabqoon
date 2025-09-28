@@ -304,19 +304,27 @@ export default function MyAzkarScreen() {
     // Clamp percentage between 0 and 100
     const clampedPercentage = Math.max(0, Math.min(100, percentage));
     
-    if (clampedPercentage <= 50) {
+    // Convert percentage to a value between 0 and 1
+    const normalizedPercentage = clampedPercentage / 100;
+    
+    // Red to Green gradient
+    // At 0%: pure red (255, 0, 0)
+    // At 50%: yellow (255, 255, 0)  
+    // At 100%: pure green (0, 255, 0)
+    
+    let red, green;
+    
+    if (normalizedPercentage <= 0.5) {
       // Red to Yellow (0% to 50%)
-      const ratio = clampedPercentage / 50;
-      const red = 255;
-      const green = Math.round(255 * ratio);
-      return `rgb(${red}, ${green}, 0)`;
+      red = 255;
+      green = Math.round(255 * (normalizedPercentage * 2)); // 0 to 255
     } else {
       // Yellow to Green (50% to 100%)
-      const ratio = (clampedPercentage - 50) / 50;
-      const red = Math.round(255 * (1 - ratio));
-      const green = 255;
-      return `rgb(${red}, ${green}, 0)`;
+      red = Math.round(255 * (2 - normalizedPercentage * 2)); // 255 to 0
+      green = 255;
     }
+    
+    return `rgb(${red}, ${green}, 0)`;
   };
 
   // Handle pencil icon press to open quick entry modal
