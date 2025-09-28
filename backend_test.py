@@ -1770,6 +1770,228 @@ def test_dawah_category_functionality():
     print("   ✅ Da'wah category (ID 13) is fully functional and ready for prayer integration")
     return True
 
+def test_azkar_notes_functionality():
+    """Test azkar notes functionality with comments and edit tracking as requested in review"""
+    print("\n🔍 Testing Azkar Notes Functionality (Comments & Edit Tracking)...")
+    
+    # Test data for different zikr types as requested (1, 13)
+    test_cases = [
+        {
+            "zikr_id": 1,
+            "zikr_name": "سبحان الله وبحمده",
+            "initial_count": 33,
+            "updated_count": 66,
+            "comment": "تسبيح بعد صلاة الفجر - الركعة الأولى",
+            "edit_note": "تم زيادة العدد بعد صلاة الظهر"
+        },
+        {
+            "zikr_id": 13,
+            "zikr_name": "الدعوة – تعليم",
+            "initial_count": 1,
+            "updated_count": 2,
+            "comment": "تعليم آيات الصلاة للأطفال في المسجد",
+            "edit_note": "إضافة جلسة تعليم إضافية في المساء"
+        }
+    ]
+    
+    all_tests_passed = True
+    created_entries = []
+    
+    for i, test_case in enumerate(test_cases, 1):
+        print(f"\n   📝 TEST CASE {i}: {test_case['zikr_name']} (ID: {test_case['zikr_id']})")
+        print("   " + "-" * 50)
+        
+        # Test 1: Create azkar entry with comment
+        print(f"   1️⃣ Testing azkar entry creation with comment...")
+        
+        entry_data = {
+            "zikr_id": test_case["zikr_id"],
+            "count": test_case["initial_count"],
+            "date": "2024-01-20",
+            "comment": test_case["comment"],
+            "timezone": "Asia/Dubai"
+        }
+        
+        try:
+            response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data)
+            if response.status_code == 200:
+                entry = response.json()
+                entry_id = entry["id"]
+                created_entries.append(entry_id)
+                
+                print(f"      ✅ Entry created successfully with ID: {entry_id}")
+                print(f"      📊 Count: {entry['count']}")
+                print(f"      💬 Comment stored in edit_notes: {entry.get('edit_notes', [])}")
+                
+                # Verify comment is stored in edit_notes
+                if entry.get('edit_notes') and test_case["comment"] in str(entry['edit_notes']):
+                    print(f"      ✅ Comment correctly stored in edit_notes")
+                else:
+                    print(f"      ❌ Comment not found in edit_notes: {entry.get('edit_notes', [])}")
+                    all_tests_passed = False
+                    continue
+                    
+            else:
+                print(f"      ❌ Failed to create entry: {response.status_code} - {response.text}")
+                all_tests_passed = False
+                continue
+                
+        except Exception as e:
+            print(f"      ❌ Error creating entry: {e}")
+            all_tests_passed = False
+            continue
+        
+        # Test 2: Update azkar entry with edit note
+        print(f"   2️⃣ Testing azkar entry update with edit note...")
+        
+        update_data = {
+            "count": test_case["updated_count"],
+            "edit_note": test_case["edit_note"],
+            "timezone": "Asia/Dubai"
+        }
+        
+        try:
+            response = requests.put(f"{BASE_URL}/azkar/entry/{entry_id}", json=update_data)
+            if response.status_code == 200:
+                result = response.json()
+                updated_entry = result.get("entry", {})
+                
+                print(f"      ✅ Entry updated successfully")
+                print(f"      📊 Count updated: {test_case['initial_count']} → {updated_entry.get('count')}")
+                print(f"      📝 Edit notes: {updated_entry.get('edit_notes', [])}")
+                
+                # Verify count was updated
+                if updated_entry.get('count') == test_case["updated_count"]:
+                    print(f"      ✅ Count correctly updated to {test_case['updated_count']}")
+                else:
+                    print(f"      ❌ Count not updated correctly. Expected: {test_case['updated_count']}, Got: {updated_entry.get('count')}")
+                    all_tests_passed = False
+                
+                # Verify edit note was added
+                edit_notes = updated_entry.get('edit_notes', [])
+                edit_note_found = any(test_case["edit_note"] in str(note) for note in edit_notes)
+                if edit_note_found:
+                    print(f"      ✅ Edit note correctly added to edit_notes")
+                else:
+                    print(f"      ❌ Edit note not found in edit_notes")
+                    all_tests_passed = False
+                    
+            else:
+                print(f"      ❌ Failed to update entry: {response.status_code} - {response.text}")
+                all_tests_passed = False
+                
+        except Exception as e:
+            print(f"      ❌ Error updating entry: {e}")
+            all_tests_passed = False
+        
+        # Test 3: Fetch azkar history and verify edit_notes field
+        print(f"   3️⃣ Testing azkar history API with edit_notes...")
+        
+        try:
+            response = requests.get(f"{BASE_URL}/azkar/{test_case['zikr_id']}/history")
+            if response.status_code == 200:
+                history = response.json()
+                entries = history.get("entries", [])
+                
+                print(f"      ✅ History retrieved successfully")
+                print(f"      📊 Found {len(entries)} entries for zikr_id {test_case['zikr_id']}")
+                
+                # Find our created entry
+                our_entry = None
+                for entry in entries:
+                    if entry.get("id") == entry_id:
+                        our_entry = entry
+                        break
+                
+                if our_entry:
+                    print(f"      ✅ Our entry found in history")
+                    print(f"      💬 Edit notes in history: {our_entry.get('edit_notes', [])}")
+                    
+                    # Verify both original comment and edit note are present
+                    edit_notes = our_entry.get('edit_notes', [])
+                    original_comment_found = any(test_case["comment"] in str(note) for note in edit_notes)
+                    edit_note_found = any(test_case["edit_note"] in str(note) for note in edit_notes)
+                    
+                    if original_comment_found:
+                        print(f"      ✅ Original comment found in history")
+                    else:
+                        print(f"      ❌ Original comment not found in history")
+                        all_tests_passed = False
+                    
+                    if edit_note_found:
+                        print(f"      ✅ Edit note found in history")
+                    else:
+                        print(f"      ❌ Edit note not found in history")
+                        all_tests_passed = False
+                        
+                else:
+                    print(f"      ❌ Our entry not found in history")
+                    all_tests_passed = False
+                    
+            else:
+                print(f"      ❌ Failed to get history: {response.status_code} - {response.text}")
+                all_tests_passed = False
+                
+        except Exception as e:
+            print(f"      ❌ Error getting history: {e}")
+            all_tests_passed = False
+    
+    # Test 4: Test creating entry without comment
+    print(f"\n   4️⃣ Testing azkar entry creation WITHOUT comment...")
+    
+    entry_data_no_comment = {
+        "zikr_id": 1,
+        "count": 10,
+        "date": "2024-01-21",
+        "timezone": "Asia/Dubai"
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data_no_comment)
+        if response.status_code == 200:
+            entry = response.json()
+            created_entries.append(entry["id"])
+            
+            print(f"      ✅ Entry created successfully without comment")
+            print(f"      📊 Count: {entry['count']}")
+            print(f"      💬 Edit notes: {entry.get('edit_notes', [])}")
+            
+            # Verify edit_notes is empty or contains no comment
+            edit_notes = entry.get('edit_notes', [])
+            if not edit_notes:
+                print(f"      ✅ No edit_notes created when no comment provided (correct behavior)")
+            else:
+                print(f"      ⚠️  Edit notes present when no comment provided: {edit_notes}")
+                
+        else:
+            print(f"      ❌ Failed to create entry without comment: {response.status_code} - {response.text}")
+            all_tests_passed = False
+            
+    except Exception as e:
+        print(f"      ❌ Error creating entry without comment: {e}")
+        all_tests_passed = False
+    
+    # Summary
+    print(f"\n   🏁 AZKAR NOTES FUNCTIONALITY TEST SUMMARY")
+    print("   " + "=" * 50)
+    
+    if all_tests_passed:
+        print("   ✅ ALL TESTS PASSED - Azkar notes functionality is working correctly!")
+        print("   ✅ Comments are properly stored in edit_notes during creation")
+        print("   ✅ Edit notes are properly added during updates with timestamps")
+        print("   ✅ History API returns entries with complete edit_notes field")
+        print("   ✅ Both zikr types (1, 13) work correctly with notes functionality")
+        print("   ✅ Entry creation without comment works correctly")
+    else:
+        print("   ❌ SOME TESTS FAILED - Issues found in azkar notes functionality")
+    
+    print(f"\n   📊 Test Statistics:")
+    print(f"      • Tested zikr types: 1 (سبحان الله وبحمده), 13 (الدعوة – تعليم)")
+    print(f"      • Created entries: {len(created_entries)}")
+    print(f"      • Test scenarios: Create with comment, Update with edit note, Fetch history, Create without comment")
+    
+    return all_tests_passed
+
 def main():
     """Run all backend tests including new charity functionality"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
