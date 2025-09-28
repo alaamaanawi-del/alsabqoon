@@ -891,20 +891,22 @@ export default function MyAzkarScreen() {
 
         {/* Sort Control */}
         <View style={styles.sortContainer}>
-          <Text style={styles.sortLabel}>ترتيب حسب:</Text>
-          <TouchableOpacity 
-            style={styles.sortButton}
-            onPress={() => setShowSortDropdown(!showSortDropdown)}
-          >
-            <Text style={styles.sortButtonText}>
-              {sortOption === 'highest' ? 'أعلى معدل أولاً' : 'أقل معدل أولاً'}
-            </Text>
-            <Ionicons 
-              name={showSortDropdown ? "chevron-up" : "chevron-down"} 
-              size={16} 
-              color={Colors.darkGray} 
-            />
-          </TouchableOpacity>
+          <View style={styles.sortRow}>
+            <Text style={styles.sortLabel}>ترتيب حسب:</Text>
+            <TouchableOpacity 
+              style={styles.sortButton}
+              onPress={() => setShowSortDropdown(!showSortDropdown)}
+            >
+              <Text style={styles.sortButtonText}>
+                {sortOption === 'highest' ? 'أعلى معدل أولاً' : 'أقل معدل أولاً'}
+              </Text>
+              <Ionicons 
+                name={showSortDropdown ? "chevron-up" : "chevron-down"} 
+                size={16} 
+                color={Colors.darkGray} 
+              />
+            </TouchableOpacity>
+          </View>
           
           {/* Sort Dropdown */}
           {showSortDropdown && (
