@@ -1671,6 +1671,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.lightGray,
     borderRadius: 8,
     backgroundColor: Colors.background,
+    minWidth: 140,
   },
   sortButtonText: {
     fontSize: 16,
