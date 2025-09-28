@@ -799,7 +799,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGray,
     borderRadius: 4,
     overflow: 'hidden',
-    flexDirection: 'row',
   },
   progressBarFill: {
     height: '100%',
