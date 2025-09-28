@@ -660,7 +660,10 @@ export default function MyAzkarScreen() {
                 style={styles.zikrNameContainer}
                 onPress={() => handleZikrPress(zikr)}
               >
-                <Text style={styles.azkarNameAr}>{zikr.nameAr}</Text>
+                <View style={styles.zikrNameRow}>
+                  <View style={[styles.colorCircle, { backgroundColor: zikr.color }]} />
+                  <Text style={styles.azkarNameAr}>{zikr.nameAr}</Text>
+                </View>
               </TouchableOpacity>
             </View>
             
