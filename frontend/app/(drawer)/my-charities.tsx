@@ -353,6 +353,22 @@ export default function MyCharitiesScreen() {
     </View>
   );
 
+  // Function to sort charity list based on completion percentage
+  const getSortedCharitiesList = () => {
+    const baseList = charitiesList;
+    
+    return [...baseList].sort((a, b) => {
+      const dataA = dailySummary?.charity_summary[a.id] || { count: 0, percentage: 0 };
+      const dataB = dailySummary?.charity_summary[b.id] || { count: 0, percentage: 0 };
+      
+      if (sortOption === 'highest') {
+        return dataB.percentage - dataA.percentage; // Highest first
+      } else {
+        return dataA.percentage - dataB.percentage; // Lowest first
+      }
+    });
+  };
+
   const renderCharityItem = (charity: Charity) => {
     const dailyData = dailySummary?.charity_summary[charity.id];
     const count = dailyData?.count || 0;
