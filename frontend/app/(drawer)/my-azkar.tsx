@@ -688,7 +688,7 @@ export default function MyAzkarScreen() {
                       styles.progressBarFill, 
                       { 
                         width: `${data.percentage}%`,
-                        backgroundColor: getProgressColor(data.percentage)
+                        backgroundColor: data.percentage > 0 ? getProgressColor(data.percentage) : 'transparent'
                       }
                     ]} 
                   />
