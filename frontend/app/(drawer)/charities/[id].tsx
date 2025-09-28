@@ -299,7 +299,7 @@ export default function CharityDetailScreen() {
 
           {/* History */}
           <View style={styles.historyContainer}>
-            <Text style={styles.historyTitle}>السجل التاريخي</Text>
+            <Text style={styles.historyTitle}>سجل الصدقات</Text>
             {Object.entries(groupHistoryByDate()).map(([date, entries], dateIndex) => (
               <View key={date} style={[
                 styles.dateGroup,
