@@ -299,6 +299,44 @@ export default function MyAzkarScreen() {
     router.push(`/azkar/${zikr.id}?date=${dateParam}`);
   };
 
+  // Handle pencil icon press to open quick entry modal
+  const handlePencilPress = (zikr: Zikr) => {
+    setSelectedZikrForEntry(zikr);
+    setQuickEntryCount('');
+    setShowQuickEntry(true);
+  };
+
+  // Handle quick entry submission
+  const handleQuickEntrySubmit = async () => {
+    if (!selectedZikrForEntry || !quickEntryCount) {
+      Alert.alert('خطأ', 'يرجى إدخال العدد');
+      return;
+    }
+
+    const count = parseInt(quickEntryCount);
+    if (count <= 0) {
+      Alert.alert('خطأ', 'يرجى إدخال عدد صحيح');
+      return;
+    }
+
+    try {
+      const date = formatDateForAPI(selectedDate);
+      await createZikrEntry(selectedZikrForEntry.id, count, date);
+      
+      // Refresh data
+      await loadAzkarData();
+      
+      setShowQuickEntry(false);
+      setSelectedZikrForEntry(null);
+      setQuickEntryCount('');
+      
+      Alert.alert('تم الحفظ', 'تم إضافة الذكر بنجاح');
+    } catch (error) {
+      console.error('Error creating zikr entry:', error);
+      Alert.alert('خطأ', 'فشل في حفظ الذكر. يرجى المحاولة مرة أخرى.');
+    }
+  };
+
   const renderCalendarDays = () => {
     const today = new Date();
     let currentMonth, currentYear, monthName;
