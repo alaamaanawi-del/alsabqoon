@@ -901,7 +901,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGray,
     borderRadius: 4,
     overflow: 'hidden',
-    position: 'relative',
   },
   progressBarFill: {
     height: '100%',
