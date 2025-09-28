@@ -134,7 +134,8 @@ const AZKAR_DETAILS = {
 };
 
 export default function ZikrDetailsScreen() {
-  const { id } = useLocalSearchParams();
+  const { id, date } = useLocalSearchParams();
+  const selectedDate = date as string || getCurrentLocalDateString(); // Use passed date or current date as fallback
   const [count, setCount] = useState('');
   const [comments, setComments] = useState('');
   const [zikrDetails, setZikrDetails] = useState(null);
