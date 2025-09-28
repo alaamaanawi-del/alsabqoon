@@ -158,7 +158,7 @@ export default function ZikrDetailsScreen() {
 
   // Auto-scroll to history section when a specific date is selected
   useEffect(() => {
-    if (dateParam && dateParam !== getCurrentLocalDateString()) {
+    if (date && date !== getCurrentLocalDateString()) {
       // Only scroll if the selected date is not today
       const timer = setTimeout(() => {
         scrollToHistory();
@@ -166,7 +166,7 @@ export default function ZikrDetailsScreen() {
       
       return () => clearTimeout(timer);
     }
-  }, [dateParam, history, loading]);
+  }, [date, history, loading]);
 
   const scrollToHistory = () => {
     if (historyRef.current && scrollViewRef.current) {
