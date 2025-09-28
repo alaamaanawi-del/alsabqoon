@@ -138,6 +138,7 @@ export default function ZikrDetailsScreen() {
   const selectedDate = date as string || getCurrentLocalDateString(); // Use passed date or current date as fallback
   const [count, setCount] = useState('');
   const [comments, setComments] = useState('');
+  const [showNotesBox, setShowNotesBox] = useState(false); // Hide notes box by default
   const [zikrDetails, setZikrDetails] = useState(null);
   const [history, setHistory] = useState<ZikrEntry[]>([]);
   const [stats, setStats] = useState<ZikrStats | null>(null);
