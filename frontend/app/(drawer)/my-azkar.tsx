@@ -74,6 +74,10 @@ export default function MyAzkarScreen() {
   const [showQuickEntry, setShowQuickEntry] = useState(false);
   const [selectedZikrForEntry, setSelectedZikrForEntry] = useState<Zikr | null>(null);
   const [quickEntryCount, setQuickEntryCount] = useState('');
+  
+  // Sorting states
+  const [sortOption, setSortOption] = useState<'highest' | 'lowest'>('highest');
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   // Hijri calendar conversion functions
   const gregorianToHijri = (gregorianDate: Date) => {
