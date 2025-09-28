@@ -234,7 +234,7 @@ export default function ZikrDetailsScreen() {
     try {
       const zikrId = parseInt(id as string);
       
-      console.log('Creating zikr entry:', { zikrId, countValue, selectedDate, localTime: new Date().toString() });
+      console.log('Creating zikr entry:', { zikrId, countValue, selectedDate, localTime: new Date(selectedDate).toString() });
       
       await createZikrEntry(zikrId, countValue, selectedDate, comments.trim() || undefined);
       
@@ -412,7 +412,7 @@ export default function ZikrDetailsScreen() {
             {/* Selected Date Display */}
             <View style={styles.dateTimeContainer}>
               <Text style={styles.dateTimeText}>
-                {new Date().toLocaleDateString('ar', { 
+                {new Date(selectedDate).toLocaleDateString('ar', { 
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
@@ -420,7 +420,7 @@ export default function ZikrDetailsScreen() {
                 })}
               </Text>
               <Text style={styles.timeText}>
-                {new Date().toLocaleTimeString('ar', { 
+                {new Date(selectedDate).toLocaleTimeString('ar', { 
                   hour: '2-digit', 
                   minute: '2-digit',
                   hour12: true 
