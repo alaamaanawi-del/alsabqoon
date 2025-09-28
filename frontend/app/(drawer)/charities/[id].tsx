@@ -243,18 +243,33 @@ export default function CharityDetailScreen() {
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>تعليقات/ملاحظات</Text>
-              <TextInput
-                style={[styles.textInput, styles.multilineInput]}
-                value={comments}
-                onChangeText={setComments}
-                placeholder="اكتب ملاحظاتك هنا (اختياري)"
-                multiline
-                numberOfLines={3}
-                returnKeyType="done"
+            {/* Notes Button */}
+            <TouchableOpacity 
+              style={styles.addNoteButton} 
+              onPress={() => setShowComments(!showComments)}
+            >
+              <Text style={styles.addNoteButtonText}>أضف ملاحظة</Text>
+              <Ionicons 
+                name={showComments ? "chevron-up" : "chevron-down"} 
+                size={16} 
+                color={Colors.darkGray} 
               />
-            </View>
+            </TouchableOpacity>
+
+            {/* Expandable Comments Section */}
+            {showComments && (
+              <View style={styles.inputGroup}>
+                <TextInput
+                  style={[styles.textInput, styles.multilineInput]}
+                  value={comments}
+                  onChangeText={setComments}
+                  placeholder="اكتب ملاحظاتك هنا (اختياري)"
+                  multiline
+                  numberOfLines={3}
+                  returnKeyType="done"
+                />
+              </View>
+            )}
 
             <TouchableOpacity
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
