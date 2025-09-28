@@ -623,26 +623,53 @@ export default function MyAzkarScreen() {
       {(azkarList.length > 0 ? azkarList : AZKAR_LIST).map((zikr, index) => {
         const azkarSummary = dailySummary?.azkar_summary || {};
         const data = azkarSummary[zikr.id] || { count: 0, percentage: 0 };
+        
         return (
-          <TouchableOpacity
-            key={zikr.id}
-            style={styles.azkarItem}
-            onPress={() => handleZikrPress(zikr)}
-          >
-            <View style={styles.azkarRow}>
-              <View style={[styles.colorCircle, { backgroundColor: zikr.color }]} />
-              <View style={styles.azkarContent}>
+          <View key={zikr.id} style={styles.azkarItem}>
+            {/* Top Row: Pencil Icon + Zikr Name */}
+            <View style={styles.azkarTopRow}>
+              <TouchableOpacity 
+                style={styles.pencilButton}
+                onPress={() => handlePencilPress(zikr)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons name="create-outline" size={20} color={Colors.darkGray} />
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.zikrNameContainer}
+                onPress={() => handleZikrPress(zikr)}
+              >
                 <Text style={styles.azkarNameAr}>{zikr.nameAr}</Text>
-                <Text style={styles.azkarNameEn}>{zikr.nameEn}</Text>
-                <View style={styles.statsRow}>
-                  <Text style={styles.countText}>{data.count.toLocaleString()}</Text>
-                  <Text style={styles.percentageText}>{data.percentage}%</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Progress Section: Percentage + Progress Bar + Count */}
+            <View style={styles.progressSection}>
+              <Text style={styles.percentageNumber}>{data.percentage}%</Text>
+              
+              <View style={styles.progressBarContainer}>
+                <View style={styles.progressBarBg}>
+                  <View 
+                    style={[
+                      styles.progressBarFill, 
+                      { 
+                        width: `${data.percentage}%`,
+                        backgroundColor: zikr.color 
+                      }
+                    ]} 
+                  />
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={Colors.mediumGray} />
+              
+              <Text style={styles.countNumber}>{data.count.toLocaleString()}</Text>
             </View>
-            {index < (azkarList.length > 0 ? azkarList : AZKAR_LIST).length - 1 && <View style={styles.separator} />}
-          </TouchableOpacity>
+            
+            {/* Separator */}
+            {index < (azkarList.length > 0 ? azkarList : AZKAR_LIST).length - 1 && 
+              <View style={styles.separator} />
+            }
+          </View>
         );
       })}
     </View>
