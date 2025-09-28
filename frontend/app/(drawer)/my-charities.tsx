@@ -905,8 +905,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   progressBarFill: {
-    height: '100%',
+    height: 8,
     borderRadius: 4,
+    position: 'absolute',
+    left: 0,
+    top: 0,
   },
   countNumber: {
     fontSize: 14,
