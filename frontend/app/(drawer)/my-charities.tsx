@@ -544,7 +544,7 @@ export default function MyCharitiesScreen() {
         <View style={styles.filterDescriptionContainer}>
           {selectedFilter === 'today' && (
             <Text style={styles.filterDescriptionText}>
-              {new Date().toLocaleDateString('en-GB', { 
+              {new Date().toLocaleDateString('ar', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
