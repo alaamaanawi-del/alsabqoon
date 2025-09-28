@@ -169,10 +169,17 @@ export default function ZikrDetailsScreen() {
   }, [dateParam, history, loading]);
 
   const scrollToHistory = () => {
-    if (scrollViewRef.current) {
-      // Scroll to approximately where the history section starts
-      // This is an estimated position, adjust based on your layout
-      scrollViewRef.current.scrollTo({ y: 800, animated: true });
+    if (historyRef.current && scrollViewRef.current) {
+      historyRef.current.measureLayout(
+        scrollViewRef.current.getInnerViewNode(),
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y: y - 50, animated: true }); // Offset by 50px for better visibility
+        },
+        () => {
+          // Fallback: scroll to estimated position if measure fails
+          scrollViewRef.current?.scrollTo({ y: 600, animated: true });
+        }
+      );
     }
   };
 
