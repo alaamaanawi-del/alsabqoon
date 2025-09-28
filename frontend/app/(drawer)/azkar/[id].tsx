@@ -262,6 +262,7 @@ export default function ZikrDetailsScreen() {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+                  timeZone: 'Asia/Riyadh',
     });
   };
 
@@ -416,7 +417,8 @@ export default function ZikrDetailsScreen() {
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
-                  day: 'numeric' 
+                  day: 'numeric',
+                  timeZone: 'Asia/Riyadh' 
                 })}
               </Text>
               <Text style={styles.timeText}>
