@@ -399,8 +399,8 @@ export default function MyCharitiesScreen() {
                 style={[
                   styles.progressBarFill, 
                   { 
-                    width: `${percentage}%`,
-                    backgroundColor: percentage > 0 ? Colors.deepGreen : 'transparent'
+                    width: `${Math.max(0, Math.min(100, percentage))}%`,
+                    backgroundColor: Colors.deepGreen
                   }
                 ]} 
               />
