@@ -279,9 +279,11 @@ export default function ZikrDetailsScreen() {
     }
 
     try {
-      // Create edit note
+      // Create edit note with timestamp
       const originalCount = entry.count;
-      const editNote = `تعديل: تم تغيير العدد من ${originalCount} إلى ${newCount}`;
+      const now = new Date();
+      const timestamp = now.toISOString().split('T')[0] + 'T' + now.toTimeString().split(' ')[0];
+      const editNote = `${timestamp}: تعديل: تم تغيير العدد من ${originalCount} إلى ${newCount}`;
       
       // Call backend API to update entry
       const response = await updateZikrEntry(entry.id, newCount, editNote);
