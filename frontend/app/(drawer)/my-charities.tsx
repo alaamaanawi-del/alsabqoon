@@ -81,8 +81,8 @@ export default function MyCharitiesScreen() {
     const startOfMonth = new Date(today);
     startOfMonth.setDate(today.getDate() - 29); // Last 30 days including today
     
-    const startDateStr = startOfMonth.toLocaleDateString('en-GB');
-    const endDateStr = today.toLocaleDateString('en-GB');
+    const startDateStr = startOfMonth.toLocaleDateString('ar');
+    const endDateStr = today.toLocaleDateString('ar');
     
     return `من ${startDateStr} إلى ${endDateStr}`;
   };
