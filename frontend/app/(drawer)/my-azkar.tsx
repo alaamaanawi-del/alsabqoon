@@ -654,6 +654,8 @@ export default function MyAzkarScreen() {
         const azkarSummary = dailySummary?.azkar_summary || {};
         const data = azkarSummary[zikr.id] || { count: 0, percentage: 0 };
         
+        console.log(`Zikr ${zikr.id} (${zikr.nameAr}): ${data.percentage}% - ${data.count} count`);
+        
         return (
           <View key={zikr.id} style={styles.azkarItem}>
             {/* Top Row: Pencil Icon + Zikr Name */}
