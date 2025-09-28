@@ -47,6 +47,11 @@ export default function MyCharitiesScreen() {
   // Sorting states
   const [sortOption, setSortOption] = useState<'highest' | 'lowest'>('highest');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  
+  // Fast Add modal states
+  const [showFastAdd, setShowFastAdd] = useState(false);
+  const [selectedCharityForAdd, setSelectedCharityForAdd] = useState<Charity | null>(null);
+  const [fastAddAmount, setFastAddAmount] = useState('');
 
   // Format date for API calls (consistent with backend expectations)
   const formatDateForAPI = (date: Date): string => {
