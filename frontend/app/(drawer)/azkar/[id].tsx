@@ -165,7 +165,6 @@ export default function ZikrDetailsScreen() {
 
   const loadZikrDetails = async () => {
     const zikrId = parseInt(id as string);
-    
     // Try to get from API first
     let apiZikr = null;
     if (azkarFromAPI.length > 0) {
@@ -233,7 +232,6 @@ export default function ZikrDetailsScreen() {
 
     try {
       const zikrId = parseInt(id as string);
-      
       
       console.log('Creating zikr entry:', { zikrId, countValue, selectedDate, localTime: new Date().toString() });
       
