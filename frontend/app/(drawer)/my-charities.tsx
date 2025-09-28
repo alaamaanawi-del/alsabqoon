@@ -904,11 +904,8 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   progressBarFill: {
-    height: 8,
+    height: '100%',
     borderRadius: 4,
-    position: 'absolute',
-    left: 0,
-    top: 0,
   },
   countNumber: {
     fontSize: 14,
