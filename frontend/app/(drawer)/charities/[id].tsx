@@ -39,6 +39,7 @@ export default function CharityDetailScreen() {
   const [editCount, setEditCount] = useState('');
   const [editComments, setEditComments] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   useEffect(() => {
     loadCharityData();
