@@ -228,7 +228,7 @@ export default function CharityDetailScreen() {
         <ScrollView style={styles.content}>
           {/* Entry Form */}
           <View style={styles.formContainer}>
-            <Text style={styles.formTitle}>تسجيل صدقة جديدة</Text>
+            {/* Removed "تسجيل صدقة جديدة" text */}
             
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>عدد المرات</Text>
