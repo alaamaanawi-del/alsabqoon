@@ -416,7 +416,11 @@ export default function ZikrDetailsScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          ref={scrollViewRef}
+          style={styles.scrollContainer} 
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header */}
           <View style={[styles.header, { backgroundColor: zikrDetails.color }]}>
             <View style={styles.headerContent}>
