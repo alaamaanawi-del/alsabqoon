@@ -231,7 +231,7 @@ export default function CharityDetailScreen() {
             {/* Removed "تسجيل صدقة جديدة" text */}
             
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>عدد المرات</Text>
+              <Text style={styles.inputLabel}>عدد الصدقات</Text>
               <TextInput
                 style={styles.textInput}
                 value={count}
@@ -348,7 +348,7 @@ export default function CharityDetailScreen() {
               <Text style={styles.modalTitle}>تعديل الصدقة</Text>
               
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>عدد المرات</Text>
+                <Text style={styles.inputLabel}>عدد الصدقات</Text>
                 <TextInput
                   style={styles.textInput}
                   value={editCount}
