@@ -19,6 +19,8 @@ import {
   getCharityList, 
   getDailyCharity, 
   getCharityRange,
+  createCharityEntry,
+  getCurrentLocalDateString,
   Charity, 
   DailyCharitySummary 
 } from '../../src/api/client';
