@@ -725,6 +725,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  notesButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  notesButtonText: {
+    fontSize: 16,
+    color: Colors.darkGray,
+    fontWeight: '600',
+  },
   descriptionContainer: {
     backgroundColor: Colors.light,
     marginHorizontal: 16,
