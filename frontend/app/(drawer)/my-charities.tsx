@@ -742,10 +742,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   charityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: Colors.light,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     marginBottom: 8,
     borderRadius: 12,
     shadowColor: '#000',
@@ -754,38 +753,63 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  charityCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginLeft: 12,
+  // New design styles
+  charityTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  charityContent: {
+  charityNameContainer: {
     flex: 1,
   },
-  charityNamePrimary: {
+  charityNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  colorCircle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+    marginLeft: 2,
+  },
+  charityNameAr: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.dark,
-    marginBottom: 4,
-  },
-  charityNameSecondary: {
-    fontSize: 14,
     color: Colors.darkGray,
-    marginBottom: 4,
+    flex: 1,
   },
-  charityStats: {
+  progressSection: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 12,
   },
-  charityCount: {
-    fontSize: 14,
-    color: Colors.darkGray,
-  },
-  charityPercentage: {
+  percentageNumber: {
     fontSize: 14,
     fontWeight: 'bold',
     color: Colors.deepGreen,
+    minWidth: 50,
+    textAlign: 'center',
+  },
+  progressBarContainer: {
+    flex: 1,
+  },
+  progressBarBg: {
+    height: 8,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  countNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+    minWidth: 50,
+    textAlign: 'center',
   },
   progressContainer: {
     backgroundColor: Colors.light,
