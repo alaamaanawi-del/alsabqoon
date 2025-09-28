@@ -979,6 +979,49 @@ export default function MyAzkarScreen() {
           </View>
         </View>
       )}
+
+      {/* Quick Entry Modal */}
+      <Modal
+        visible={showQuickEntry}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowQuickEntry(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.quickEntryModal}>
+            <Text style={styles.modalTitle}>
+              {selectedZikrForEntry?.nameAr}
+            </Text>
+            
+            <Text style={styles.modalLabel}>العدد:</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={quickEntryCount}
+              onChangeText={setQuickEntryCount}
+              placeholder="أدخل العدد"
+              placeholderTextColor={Colors.mediumGray}
+              keyboardType="numeric"
+              autoFocus={true}
+            />
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelModalButton]}
+                onPress={() => setShowQuickEntry(false)}
+              >
+                <Text style={styles.cancelModalButtonText}>إلغاء</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.doneModalButton]}
+                onPress={handleQuickEntrySubmit}
+              >
+                <Text style={styles.doneModalButtonText}>تم</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
