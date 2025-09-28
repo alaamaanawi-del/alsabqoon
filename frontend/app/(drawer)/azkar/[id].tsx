@@ -409,7 +409,7 @@ export default function ZikrDetailsScreen() {
             <Text style={styles.zikrNameAr}>{zikrDetails.nameAr}</Text>
             <Text style={styles.zikrNameEn}>{zikrDetails.nameEn}</Text>
             
-            {/* Current Date and Time Display */}
+            {/* Selected Date Display */}
             <View style={styles.dateTimeContainer}>
               <Text style={styles.dateTimeText}>
                 {new Date().toLocaleDateString('ar', { 
