@@ -2017,6 +2017,7 @@ def main():
     # Azkar regression tests
     test_results.append(("Azkar List API", test_azkar_list()))
     test_results.append(("Azkar Entry Creation", test_azkar_entry_creation()))
+    test_results.append(("Azkar Notes Functionality", test_azkar_notes_functionality()))
     test_results.append(("Azkar Update Functionality", test_azkar_update_functionality()))
     test_results.append(("Azkar History API", test_azkar_history()))
     test_results.append(("Azkar Statistics API", test_azkar_stats()))
