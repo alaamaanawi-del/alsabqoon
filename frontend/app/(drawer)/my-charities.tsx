@@ -43,6 +43,10 @@ export default function MyCharitiesScreen() {
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
   const [isSelectingStartDate, setIsSelectingStartDate] = useState(true);
+  
+  // Sorting states
+  const [sortOption, setSortOption] = useState<'highest' | 'lowest'>('highest');
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   // Format date for API calls (consistent with backend expectations)
   const formatDateForAPI = (date: Date): string => {
