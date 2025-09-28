@@ -67,6 +67,11 @@ export default function MyAzkarScreen() {
   const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [dateRangeStep, setDateRangeStep] = useState<'start' | 'end'>('start');
+  
+  // Modal states for quick zikr entry
+  const [showQuickEntry, setShowQuickEntry] = useState(false);
+  const [selectedZikrForEntry, setSelectedZikrForEntry] = useState<Zikr | null>(null);
+  const [quickEntryCount, setQuickEntryCount] = useState('');
 
   // Hijri calendar conversion functions
   const gregorianToHijri = (gregorianDate: Date) => {
