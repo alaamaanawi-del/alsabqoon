@@ -93,6 +93,9 @@ export interface ZikrEntry {
   count: number;
   date: string;
   timestamp: string;
+  created_at?: string;
+  edit_notes?: string[];
+  comments?: string;
 }
 
 export interface ZikrStats {
