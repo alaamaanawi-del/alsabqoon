@@ -675,7 +675,7 @@ export default function MyAzkarScreen() {
                       styles.progressBarFill, 
                       { 
                         width: `${data.percentage}%`,
-                        backgroundColor: zikr.color 
+                        backgroundColor: getProgressColor(data.percentage)
                       }
                     ]} 
                   />
