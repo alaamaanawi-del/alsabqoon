@@ -697,4 +697,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  addNoteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  addNoteButtonText: {
+    fontSize: 16,
+    color: Colors.darkGray,
+    fontWeight: '500',
+  },
 });
