@@ -376,6 +376,45 @@ export default function MyCharitiesScreen() {
     });
   };
 
+  // Handle Fast Add button press
+  const handleFastAdd = (charity: Charity) => {
+    setSelectedCharityForAdd(charity);
+    setFastAddAmount('');
+    setShowFastAdd(true);
+  };
+
+  // Handle Fast Add submission
+  const handleFastAddSubmit = async () => {
+    if (!selectedCharityForAdd || !fastAddAmount) {
+      Alert.alert('خطأ', 'يرجى إدخال المبلغ');
+      return;
+    }
+
+    const amount = parseFloat(fastAddAmount);
+    if (amount <= 0) {
+      Alert.alert('خطأ', 'يرجى إدخال مبلغ صحيح');
+      return;
+    }
+
+    try {
+      const date = getCurrentLocalDateString();
+      await createCharityEntry(selectedCharityForAdd.id, amount, date);
+      
+      // Refresh data
+      await loadCharitiesList();
+      await loadDailySummary();
+      
+      setShowFastAdd(false);
+      setSelectedCharityForAdd(null);
+      setFastAddAmount('');
+      
+      Alert.alert('تم الحفظ', 'تم إضافة الصدقة بنجاح');
+    } catch (error) {
+      console.error('Error creating charity entry:', error);
+      Alert.alert('خطأ', 'فشل في حفظ الصدقة. يرجى المحاولة مرة أخرى.');
+    }
+  };
+
   const renderCharityItem = (charity: Charity) => {
     const dailyData = dailySummary?.charity_summary[charity.id];
     const count = dailyData?.count || 0;
