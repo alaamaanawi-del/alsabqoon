@@ -622,11 +622,20 @@ const styles = StyleSheet.create({
   backButton: {
     marginLeft: 8,
   },
+  headerTextContainer: {
+    flex: 1,
+    marginRight: 16,
+  },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.light,
-    marginRight: 16,
+    marginBottom: 4,
+  },
+  headerDate: {
+    fontSize: 14,
+    color: Colors.light,
+    opacity: 0.9,
   },
   zikrInfoContainer: {
     backgroundColor: Colors.light,
