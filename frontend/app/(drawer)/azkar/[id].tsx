@@ -417,32 +417,7 @@ export default function ZikrDetailsScreen() {
             </View>
           </View>
 
-          {/* Zikr Info */}
-          <View style={styles.zikrInfoContainer}>
-            <View style={[styles.colorIndicator, { backgroundColor: zikrDetails.color }]} />
-            <Text style={styles.zikrNameAr}>{zikrDetails.nameAr}</Text>
-            <Text style={styles.zikrNameEn}>{zikrDetails.nameEn}</Text>
-            
-            {/* Selected Date Display */}
-            <View style={styles.dateTimeContainer}>
-              <Text style={styles.dateTimeText}>
-                {new Date(selectedDate).toLocaleDateString('ar', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric',
-                  timeZone: 'Asia/Riyadh' 
-                })}
-              </Text>
-              <Text style={styles.timeText}>
-                {new Date(selectedDate).toLocaleTimeString('ar', { 
-                  hour: '2-digit', 
-                  minute: '2-digit',
-                  hour12: true 
-                })}
-              </Text>
-            </View>
-          </View>
+          {/* Removed Zikr Info Container - moved date to header */}
 
           {/* Count Input */}
           <View style={styles.inputContainer}>
