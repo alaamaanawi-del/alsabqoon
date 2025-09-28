@@ -291,26 +291,9 @@ export default function CharityDetailScreen() {
           {/* Statistics */}
           {charityStats && (
             <View style={styles.statsContainer}>
-              <Text style={styles.statsTitle}>الإحصائيات</Text>
-              <View style={styles.statsRow}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{charityStats.total_count}</Text>
-                  <Text style={styles.statLabel}>إجمالي المرات</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{charityStats.total_sessions}</Text>
-                  <Text style={styles.statLabel}>عدد الجلسات</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>
-                    {charityStats.last_entry ? 
-                      formatDate(new Date(charityStats.last_entry).toISOString().split('T')[0]) : 
-                      'لا يوجد'
-                    }
-                  </Text>
-                  <Text style={styles.statLabel}>آخر تسجيل</Text>
-                </View>
-              </View>
+              <Text style={styles.statsTitle}>
+                الإحصائيات – إجمالي المرات: {charityStats.total_count} – عدد الجلسات: {charityStats.total_sessions}
+              </Text>
             </View>
           )}
 
