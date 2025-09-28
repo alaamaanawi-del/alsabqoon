@@ -1,0 +1,5 @@
+  const handleZikrPress = (zikr: any) => {
+    // Pass the selected date to the zikr details page
+    const dateParam = formatDateForAPI(selectedDate);
+    router.push(`/azkar/${zikr.id}?date=${dateParam}`);
+  };
