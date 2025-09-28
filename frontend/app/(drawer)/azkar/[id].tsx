@@ -544,7 +544,13 @@ export default function ZikrDetailsScreen() {
                         {entry.edit_notes && entry.edit_notes.length > 0 && (
                           <View style={styles.editNotesContainer}>
                             <Ionicons name="create-outline" size={12} color={Colors.mediumGray} />
-                            <Text style={styles.editNotesText}>تم التعديل</Text>
+                            <View style={styles.editNotesContent}>
+                              {entry.edit_notes.map((note, noteIndex) => (
+                                <Text key={noteIndex} style={styles.editNotesText}>
+                                  {note}
+                                </Text>
+                              ))}
+                            </View>
                           </View>
                         )}
                       </View>
