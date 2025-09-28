@@ -399,7 +399,7 @@ export default function ZikrDetailsScreen() {
               <TouchableOpacity onPress={() => router.push('/(drawer)/my-azkar')} style={styles.backButton}>
                 <Ionicons name="arrow-forward" size={24} color={Colors.light} />
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>تفاصيل الذكر</Text>
+              <Text style={styles.headerTitle}>{zikrDetails.nameAr}</Text>
             </View>
           </View>
 
