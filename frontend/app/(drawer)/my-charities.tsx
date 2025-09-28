@@ -655,12 +655,12 @@ export default function MyCharitiesScreen() {
               {selectedCharityForAdd?.nameAr}
             </Text>
             
-            <Text style={styles.modalLabel}>المبلغ:</Text>
+            <Text style={styles.modalLabel}>العدد:</Text>
             <TextInput
               style={styles.modalInput}
               value={fastAddAmount}
               onChangeText={setFastAddAmount}
-              placeholder="أدخل المبلغ"
+              placeholder="ادخل العدد"
               placeholderTextColor={Colors.mediumGray}
               keyboardType="numeric"
               autoFocus={true}
