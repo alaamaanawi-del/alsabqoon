@@ -637,14 +637,7 @@ const styles = StyleSheet.create({
     color: Colors.light,
     opacity: 0.9,
   },
-  zikrInfoContainer: {
-    backgroundColor: Colors.light,
-    margin: 16,
-    padding: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  // Removed unused styles: colorIndicator, zikrNameAr, zikrNameEn, dateTimeContainer, dateTimeText, timeText
+  // Removed unused styles: zikrInfoContainer, colorIndicator, zikrNameAr, zikrNameEn, dateTimeContainer, dateTimeText, timeText
   inputContainer: {
     backgroundColor: Colors.light,
     marginHorizontal: 16,
