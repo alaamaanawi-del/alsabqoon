@@ -530,7 +530,7 @@ export default function ZikrDetailsScreen() {
           </View>
 
           {/* History */}
-          <View style={styles.historyContainer}>
+          <View ref={historyRef} style={styles.historyContainer}>
             <Text style={styles.sectionTitle}>سجل الأذكار:</Text>
             {history.length > 0 ? (
               groupHistoryByDay().map((dayGroup, dayIndex) => (
