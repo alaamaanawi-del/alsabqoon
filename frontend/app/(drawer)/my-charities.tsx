@@ -566,7 +566,7 @@ export default function MyCharitiesScreen() {
           {selectedFilter === 'select' && (
             <Text style={styles.filterDescriptionText}>
               {customStartDate && customEndDate 
-                ? `النطاق المحدد - من ${customStartDate.toLocaleDateString('en-GB')} إلى ${customEndDate.toLocaleDateString('en-GB')}`
+                ? `النطاق المحدد - من ${customStartDate.toLocaleDateString('ar')} إلى ${customEndDate.toLocaleDateString('ar')}`
                 : isSelectingStartDate 
                   ? 'اختر تاريخ البداية'
                   : 'اختر تاريخ النهاية'
