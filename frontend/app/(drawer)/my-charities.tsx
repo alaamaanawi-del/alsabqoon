@@ -69,8 +69,8 @@ export default function MyCharitiesScreen() {
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - 6); // Last 7 days including today
     
-    const startDateStr = startOfWeek.toLocaleDateString('ar');
-    const endDateStr = today.toLocaleDateString('ar');
+    const startDateStr = startOfWeek.toLocaleDateString('en-GB');
+    const endDateStr = today.toLocaleDateString('en-GB');
     
     return `من ${startDateStr} إلى ${endDateStr}`;
   };
