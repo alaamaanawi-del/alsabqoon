@@ -1189,4 +1189,68 @@ const styles = StyleSheet.create({
     color: Colors.warmOrange,
     fontWeight: '600',
   },
+  // Fast Add Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  fastAddModal: {
+    backgroundColor: Colors.light,
+    borderRadius: 16,
+    padding: 24,
+    width: '90%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalLabel: {
+    fontSize: 16,
+    color: Colors.darkGray,
+    marginBottom: 8,
+    fontWeight: '600',
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 24,
+    backgroundColor: Colors.background,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelModalButton: {
+    backgroundColor: Colors.lightGray,
+  },
+  doneModalButton: {
+    backgroundColor: Colors.warmOrange,
+  },
+  cancelModalButtonText: {
+    fontSize: 16,
+    color: Colors.mediumGray,
+    fontWeight: '600',
+  },
+  doneModalButtonText: {
+    fontSize: 16,
+    color: Colors.light,
+    fontWeight: '600',
+  },
 });
