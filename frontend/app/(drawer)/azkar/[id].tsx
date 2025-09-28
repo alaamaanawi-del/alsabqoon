@@ -155,6 +155,26 @@ export default function ZikrDetailsScreen() {
     loadZikrStats();
   }, [id]);
 
+  // Auto-scroll to history section when a specific date is selected
+  useEffect(() => {
+    if (dateParam && dateParam !== getCurrentLocalDateString()) {
+      // Only scroll if the selected date is not today
+      const timer = setTimeout(() => {
+        scrollToHistory();
+      }, 1000); // Wait for content to load
+      
+      return () => clearTimeout(timer);
+    }
+  }, [dateParam, history, loading]);
+
+  const scrollToHistory = () => {
+    if (scrollViewRef.current) {
+      // Scroll to approximately where the history section starts
+      // This is an estimated position, adjust based on your layout
+      scrollViewRef.current.scrollTo({ y: 800, animated: true });
+    }
+  };
+
   const loadAzkarFromAPI = async () => {
     try {
       const response = await getAzkarList();
