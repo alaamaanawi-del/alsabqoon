@@ -299,6 +299,26 @@ export default function MyAzkarScreen() {
     router.push(`/azkar/${zikr.id}?date=${dateParam}`);
   };
 
+  // Calculate gradient color based on percentage (red to green)
+  const getProgressColor = (percentage: number) => {
+    // Clamp percentage between 0 and 100
+    const clampedPercentage = Math.max(0, Math.min(100, percentage));
+    
+    if (clampedPercentage <= 50) {
+      // Red to Yellow (0% to 50%)
+      const ratio = clampedPercentage / 50;
+      const red = 255;
+      const green = Math.round(255 * ratio);
+      return `rgb(${red}, ${green}, 0)`;
+    } else {
+      // Yellow to Green (50% to 100%)
+      const ratio = (clampedPercentage - 50) / 50;
+      const red = Math.round(255 * (1 - ratio));
+      const green = 255;
+      return `rgb(${red}, ${green}, 0)`;
+    }
+  };
+
   // Handle pencil icon press to open quick entry modal
   const handlePencilPress = (zikr: Zikr) => {
     setSelectedZikrForEntry(zikr);
