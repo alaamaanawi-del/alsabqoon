@@ -235,9 +235,9 @@ export default function ZikrDetailsScreen() {
       const zikrId = parseInt(id as string);
       
       
-      console.log('Creating zikr entry:', { zikrId, countValue, dateStr, localTime: new Date().toString() });
+      console.log('Creating zikr entry:', { zikrId, countValue, selectedDate, localTime: new Date().toString() });
       
-      await createZikrEntry(zikrId, countValue, dateStr, comments.trim() || undefined);
+      await createZikrEntry(zikrId, countValue, selectedDate, comments.trim() || undefined);
       
       // Refresh data
       await loadZikrHistory();
@@ -257,8 +257,8 @@ export default function ZikrDetailsScreen() {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
+  const formatDate = (selectedDateing) => {
+    const date = new Date(selectedDateing);
     return date.toLocaleDateString('ar', {
       year: 'numeric',
       month: 'long',
@@ -316,10 +316,10 @@ export default function ZikrDetailsScreen() {
     setEditCount('');
   };
 
-  const formatTime = (dateString) => {
+  const formatTime = (selectedDateing) => {
     try {
       // Ensure the date string has timezone info, assume UTC if missing
-      let timeString = dateString;
+      let timeString = selectedDateing;
       if (timeString && !timeString.includes('Z') && !timeString.includes('+') && !timeString.includes('-', 10)) {
         timeString = timeString + 'Z'; // Treat as UTC if no timezone info
       }
@@ -336,8 +336,8 @@ export default function ZikrDetailsScreen() {
     }
   };
 
-  const getDayName = (dateString) => {
-    const date = new Date(dateString);
+  const getDayName = (selectedDateing) => {
+    const date = new Date(selectedDateing);
     const dayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     return dayNames[date.getDay()];
   };
