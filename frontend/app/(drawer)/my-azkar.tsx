@@ -285,7 +285,9 @@ export default function MyAzkarScreen() {
   };
 
   const handleZikrPress = (zikr: any) => {
-    router.push(`/azkar/${zikr.id}`);
+    // Pass the selected date to the zikr details page
+    const dateParam = formatDateForAPI(selectedDate);
+    router.push(`/azkar/${zikr.id}?date=${dateParam}`);
   };
 
   const renderCalendarDays = () => {
