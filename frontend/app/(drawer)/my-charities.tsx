@@ -639,6 +639,49 @@ export default function MyCharitiesScreen() {
         {/* Progress Chart */}
         {renderProgressChart()}
       </ScrollView>
+
+      {/* Fast Add Modal */}
+      <Modal
+        visible={showFastAdd}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowFastAdd(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.fastAddModal}>
+            <Text style={styles.modalTitle}>
+              {selectedCharityForAdd?.nameAr}
+            </Text>
+            
+            <Text style={styles.modalLabel}>المبلغ:</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={fastAddAmount}
+              onChangeText={setFastAddAmount}
+              placeholder="أدخل المبلغ"
+              placeholderTextColor={Colors.mediumGray}
+              keyboardType="numeric"
+              autoFocus={true}
+            />
+            
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelModalButton]}
+                onPress={() => setShowFastAdd(false)}
+              >
+                <Text style={styles.cancelModalButtonText}>إلغاء</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.doneModalButton]}
+                onPress={handleFastAddSubmit}
+              >
+                <Text style={styles.doneModalButtonText}>تم</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );}
 
