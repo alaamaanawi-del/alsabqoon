@@ -324,9 +324,7 @@ export default function MyAzkarScreen() {
       green = 255;
     }
     
-    const color = `rgb(${red}, ${green}, 0)`;
-    console.log(`Progress color for ${percentage}%: ${color}`);
-    return color;
+    return `rgb(${red}, ${green}, 0)`;
   };
 
   // Handle pencil icon press to open quick entry modal
