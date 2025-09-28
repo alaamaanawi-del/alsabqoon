@@ -449,21 +449,37 @@ export default function ZikrDetailsScreen() {
             </View>
           </View>
 
-          {/* Comment Field - Show for Da'wah category or if user wants to add notes */}
+          {/* Notes Button and Field */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>
-              {zikrDetails.id === 13 ? 'ملاحظات (ماذا علمته، السياق، المكان، إلخ):' : 'ملاحظات (اختياري):'}
-            </Text>
-            <TextInput
-              style={styles.commentInput}
-              value={comments}
-              onChangeText={setComments}
-              placeholder={zikrDetails.id === 13 ? "مثال: علمت القرآن للأطفال في المسجد..." : "اكتب ملاحظاتك هنا..."}
-              placeholderTextColor={Colors.mediumGray}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
+            <TouchableOpacity 
+              style={styles.notesButton}
+              onPress={() => setShowNotesBox(!showNotesBox)}
+            >
+              <Text style={styles.notesButtonText}>أضف ملاحظة</Text>
+              <Ionicons 
+                name={showNotesBox ? "chevron-up" : "chevron-down"} 
+                size={20} 
+                color={Colors.warmOrange} 
+              />
+            </TouchableOpacity>
+            
+            {showNotesBox && (
+              <>
+                <Text style={styles.inputLabel}>
+                  {zikrDetails.id === 13 ? 'ملاحظات (ماذا علمته، السياق، المكان، إلخ):' : 'ملاحظات:'}
+                </Text>
+                <TextInput
+                  style={styles.commentInput}
+                  value={comments}
+                  onChangeText={setComments}
+                  placeholder={zikrDetails.id === 13 ? "مثال: علمت القرآن للأطفال في المسجد..." : "اكتب ملاحظاتك هنا..."}
+                  placeholderTextColor={Colors.mediumGray}
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+              </>
+            )}
           </View>
 
           {/* Description */}
