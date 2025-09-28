@@ -422,18 +422,26 @@ export default function MyCharitiesScreen() {
 
     return (
       <View key={charity.id} style={styles.charityItem}>
-        {/* Top Row: Charity Name with Color Circle */}
-        <TouchableOpacity 
-          style={styles.charityTopRow}
-          onPress={() => handleCharityPress(charity)}
-        >
-          <View style={styles.charityNameContainer}>
+        {/* Top Row: Fast Add Button + Charity Name with Color Circle */}
+        <View style={styles.charityTopRow}>
+          <TouchableOpacity 
+            style={styles.fastAddButton}
+            onPress={() => handleFastAdd(charity)}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="add-circle-outline" size={20} color={Colors.darkGray} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.charityNameContainer}
+            onPress={() => handleCharityPress(charity)}
+          >
             <View style={styles.charityNameRow}>
               <View style={[styles.colorCircle, { backgroundColor: charity.color }]} />
               <Text style={styles.charityNameAr}>{charity.nameAr}</Text>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
         
         {/* Progress Section: Percentage + Progress Bar + Count */}
         <View style={styles.progressSection}>
