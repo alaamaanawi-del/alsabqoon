@@ -1213,19 +1213,19 @@ const styles = StyleSheet.create({
   },
   azkarItem: {
     paddingHorizontal: 16,
-  },
-  azkarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: 16,
   },
-  colorCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginLeft: 12,
+  // New design styles
+  azkarTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  azkarContent: {
+  pencilButton: {
+    marginLeft: 8,
+    padding: 4,
+  },
+  zikrNameContainer: {
     flex: 1,
     marginLeft: 12,
   },
@@ -1233,25 +1233,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.darkGray,
-    marginBottom: 4,
   },
-  azkarNameEn: {
-    fontSize: 14,
-    color: Colors.mediumGray,
-    marginBottom: 4,
-  },
-  statsRow: {
+  progressSection: {
     flexDirection: 'row',
-    gap: 16,
+    alignItems: 'center',
+    gap: 12,
   },
-  countText: {
+  percentageNumber: {
     fontSize: 14,
     fontWeight: 'bold',
     color: Colors.deepGreen,
+    minWidth: 40,
+    textAlign: 'center',
   },
-  percentageText: {
+  progressBarContainer: {
+    flex: 1,
+  },
+  progressBarBg: {
+    height: 8,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  countNumber: {
     fontSize: 14,
-    color: Colors.accent,
+    fontWeight: 'bold',
+    color: Colors.darkGray,
+    minWidth: 50,
+    textAlign: 'center',
   },
   separator: {
     height: 1,
