@@ -402,7 +402,18 @@ export default function ZikrDetailsScreen() {
               <TouchableOpacity onPress={() => router.push('/(drawer)/my-azkar')} style={styles.backButton}>
                 <Ionicons name="arrow-forward" size={24} color={Colors.light} />
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>{zikrDetails.nameAr}</Text>
+              <View style={styles.headerTextContainer}>
+                <Text style={styles.headerTitle}>{zikrDetails.nameAr}</Text>
+                <Text style={styles.headerDate}>
+                  {new Date(selectedDate).toLocaleDateString('ar', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    timeZone: 'Asia/Riyadh' 
+                  })}
+                </Text>
+              </View>
             </View>
           </View>
 
