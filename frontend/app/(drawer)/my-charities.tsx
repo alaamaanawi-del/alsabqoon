@@ -375,21 +375,41 @@ export default function MyCharitiesScreen() {
     const percentage = dailyData?.percentage || 0;
 
     return (
-      <TouchableOpacity
-        key={charity.id}
-        style={styles.charityItem}
-        onPress={() => handleCharityPress(charity)}
-      >
-        <View style={[styles.charityCircle, { backgroundColor: charity.color }]} />
-        <View style={styles.charityContent}>
-          <Text style={styles.charityNamePrimary}>{charity.nameAr}</Text>
-          <View style={styles.charityStats}>
-            <Text style={styles.charityCount}>العدد: {count}</Text>
-            <Text style={styles.charityPercentage}>{percentage.toFixed(1)}%</Text>
+      <View key={charity.id} style={styles.charityItem}>
+        {/* Top Row: Charity Name with Color Circle */}
+        <TouchableOpacity 
+          style={styles.charityTopRow}
+          onPress={() => handleCharityPress(charity)}
+        >
+          <View style={styles.charityNameContainer}>
+            <View style={styles.charityNameRow}>
+              <View style={[styles.colorCircle, { backgroundColor: charity.color }]} />
+              <Text style={styles.charityNameAr}>{charity.nameAr}</Text>
+            </View>
           </View>
+        </TouchableOpacity>
+        
+        {/* Progress Section: Percentage + Progress Bar + Count */}
+        <View style={styles.progressSection}>
+          <Text style={styles.percentageNumber}>{percentage.toFixed(1)}%</Text>
+          
+          <View style={styles.progressBarContainer}>
+            <View style={styles.progressBarBg}>
+              <View 
+                style={[
+                  styles.progressBarFill, 
+                  { 
+                    width: `${percentage}%`,
+                    backgroundColor: percentage > 0 ? Colors.deepGreen : 'transparent'
+                  }
+                ]} 
+              />
+            </View>
+          </View>
+          
+          <Text style={styles.countNumber}>{count.toLocaleString()}</Text>
         </View>
-        <Ionicons name="chevron-back" size={20} color={Colors.darkGray} />
-      </TouchableOpacity>
+      </View>
     );
   };
 
