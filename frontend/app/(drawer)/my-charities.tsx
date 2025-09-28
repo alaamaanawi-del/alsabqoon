@@ -856,8 +856,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  fastAddButton: {
+    marginLeft: 8,
+    padding: 4,
+  },
   charityNameContainer: {
     flex: 1,
+    marginLeft: 12,
   },
   charityNameRow: {
     flexDirection: 'row',
