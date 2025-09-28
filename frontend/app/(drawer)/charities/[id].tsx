@@ -313,7 +313,7 @@ export default function CharityDetailScreen() {
                   <View key={entry.id} style={styles.historyEntry}>
                     <View style={styles.historyEntryContent}>
                       <View style={styles.historyEntryHeader}>
-                        <Text style={styles.historyEntryCount}>عدد المرات: {entry.count}</Text>
+                        <Text style={styles.historyEntryCount}>عدد الصدقات: {entry.count}</Text>
                         <Text style={styles.historyEntryTime}>{formatTime(entry.timestamp)}</Text>
                       </View>
                       {entry.comments && (
