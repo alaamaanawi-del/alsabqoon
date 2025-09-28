@@ -1269,10 +1269,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   colorCircle: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     marginRight: 8,
+    marginLeft: 2,
   },
   azkarNameAr: {
     fontSize: 16,
