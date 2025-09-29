@@ -774,7 +774,7 @@ export default function ZikrDetailsScreen() {
                           </View>
                         )}
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   ))}
                 </View>
               ))
