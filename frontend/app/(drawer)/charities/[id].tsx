@@ -462,13 +462,7 @@ export default function CharityDetailScreen() {
                         </View>
                       )}
                     </View>
-                    <TouchableOpacity
-                      style={styles.editButton}
-                      onPress={() => handleEdit(entry)}
-                    >
-                      <Ionicons name="create-outline" size={20} color={Colors.deepGreen} />
-                    </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             ))}
