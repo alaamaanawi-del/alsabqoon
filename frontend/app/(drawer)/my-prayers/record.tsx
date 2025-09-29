@@ -454,7 +454,7 @@ export default function RecordPrayer() {
         }
       }
 
-      // If user taught people, create an entry in Da'wah category (ID 13)
+      // If user taught people, create or update entry in Da'wah category (ID 13)
       if (totalTaughtCount > 0) {
         const dateStr = getCurrentLocalDateString();
         const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
@@ -476,9 +476,15 @@ export default function RecordPrayer() {
         
         const autoComment = allComments ? `${baseTitle}\n\nتفاصيل التعليم:${allComments}` : baseTitle;
         
-        console.log('Creating Dawah entry:', { totalTaughtCount, autoComment });
-        
-        await createZikrEntry(13, totalTaughtCount, dateStr, autoComment);
+        if (existingDawaEntry) {
+          // Update existing entry
+          console.log('Updating existing Dawah entry:', existingDawaEntry.id, { totalTaughtCount, autoComment });
+          await updateZikrEntry(existingDawaEntry.id, totalTaughtCount, undefined, autoComment);
+        } else {
+          // Create new entry with prayer source metadata
+          console.log('Creating new Dawah entry:', { totalTaughtCount, autoComment });
+          await createZikrEntry(13, totalTaughtCount, dateStr, autoComment, 'prayer', `${p}_${day}`, taughtRakkas[0]);
+        }
       }
 
       // FIXED WORKFLOW NAVIGATION
