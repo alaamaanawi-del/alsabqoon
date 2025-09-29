@@ -103,21 +103,33 @@ export default function RecordPrayer() {
     return [parseInt(r) as RakkaIndex || null, q as QuestionKey || null];
   }, [focus]);
 
+  // Parse rakka parameter directly (for navigation from Dawa page)
+  const directRakka = useMemo(() => {
+    if (rakka) {
+      const rakkaNum = parseInt(rakka as string);
+      return (rakkaNum === 1 || rakkaNum === 2) ? rakkaNum as RakkaIndex : null;
+    }
+    return null;
+  }, [rakka]);
+
   const [record, setRecord] = useState<PrayerRecord | null>(null);
   const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Start with default 1
   const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state
   
-  // Set activeRakka based on focusRakka when component loads or focus changes
+  // Set activeRakka based on focus, rakka parameter, or default to 1
   useEffect(() => {
     if (focusRakka) {
       console.log(`🎯 Setting activeRakka to ${focusRakka} based on focus parameter`);
       setActiveRakka(focusRakka);
+    } else if (directRakka) {
+      console.log(`🎯 Setting activeRakka to ${directRakka} based on rakka parameter`);
+      setActiveRakka(directRakka);
     } else {
-      // Always default to Rakka 1 when opening a fresh prayer (no focus)
+      // Always default to Rakka 1 when opening a fresh prayer (no focus or rakka)
       console.log(`🔄 Defaulting to Rakka 1 for fresh prayer`);
       setActiveRakka(1);
     }
-  }, [focusRakka]);
+  }, [focusRakka, directRakka]);
 
   // Removed existing Dawa entry checking since we create separate entries for each rakka
 
