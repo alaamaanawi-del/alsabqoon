@@ -2277,6 +2277,14 @@ def main():
     test_results.append(("NEW: Charity Range Filtering", test_charity_range_filtering()))
     test_results.append(("Charity Regression After Range", test_charity_regression_after_range_implementation()))
     
+    print("\n" + "=" * 70)
+    print("🕌 PRAYER-DAWA SYNCHRONIZATION SYSTEM TESTS")
+    print("=" * 70)
+    
+    # NEW: Prayer-Dawa synchronization tests as requested in review
+    test_results.append(("Prayer-Dawa Synchronization", test_prayer_dawa_synchronization()))
+    test_results.append(("Prayer Navigation Links", test_prayer_navigation_links()))
+    
     # Summary
     print("\n" + "=" * 70)
     print("📊 COMPREHENSIVE TEST SUMMARY")
