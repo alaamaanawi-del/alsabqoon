@@ -131,9 +131,9 @@ export default function RecordPrayer() {
     }
   }, [focusRakka, directRakka]);
 
-  // Load existing Dawa entry comments when component loads
+  // Load existing Dawa entry comments and counts when component loads
   useEffect(() => {
-    const loadExistingComments = async () => {
+    const loadExistingData = async () => {
       try {
         const dateStr = getCurrentLocalDateString();
         const historyData = await getZikrHistory(13, 2); // Get last 2 days to be safe
@@ -145,29 +145,54 @@ export default function RecordPrayer() {
             entry.prayer_id === prayerId && entry.date === dateStr
           );
           
-          if (existingEntry && existingEntry.edit_notes && existingEntry.edit_notes.length > 0) {
-            // Extract comment from the edit_notes (after the base title)
-            const fullComment = existingEntry.edit_notes[0];
-            const commentMatch = fullComment.match(/تفاصيل التعليم:\s*(.+)$/s);
-            if (commentMatch) {
-              const commentKey = `${p}_${day}_${rakkaNum}`;
-              setTeachingComments(prev => ({
-                ...prev,
-                [commentKey]: commentMatch[1].trim()
-              }));
-              console.log(`Loaded existing comment for Rakka ${rakkaNum}:`, commentMatch[1].trim());
+          if (existingEntry) {
+            // Load existing count into the record
+            if (existingEntry.count > 0 && record) {
+              setRecord(prevRecord => {
+                if (!prevRecord) return null;
+                
+                const updatedRecord = { ...prevRecord };
+                if (!updatedRecord.rakka[rakkaNum]) {
+                  updatedRecord.rakka[rakkaNum] = {
+                    verses: [],
+                    questions: { understood: false, memorized: false, applied: false, taught: false },
+                    taughtCount: 0
+                  };
+                }
+                
+                // Update taught status and count from Dawa entry
+                updatedRecord.rakka[rakkaNum].questions.taught = true;
+                updatedRecord.rakka[rakkaNum].taughtCount = existingEntry.count;
+                
+                console.log(`Loaded existing count for Rakka ${rakkaNum}:`, existingEntry.count);
+                return updatedRecord;
+              });
+            }
+            
+            // Load existing comment
+            if (existingEntry.edit_notes && existingEntry.edit_notes.length > 0) {
+              const fullComment = existingEntry.edit_notes[0];
+              const commentMatch = fullComment.match(/تفاصيل التعليم:\s*(.+)$/s);
+              if (commentMatch) {
+                const commentKey = `${p}_${day}_${rakkaNum}`;
+                setTeachingComments(prev => ({
+                  ...prev,
+                  [commentKey]: commentMatch[1].trim()
+                }));
+                console.log(`Loaded existing comment for Rakka ${rakkaNum}:`, commentMatch[1].trim());
+              }
             }
           }
         }
       } catch (error) {
-        console.log('No existing comments found or error loading:', error);
+        console.log('No existing data found or error loading:', error);
       }
     };
     
-    if (p && day) {
-      loadExistingComments();
+    if (p && day && record) {
+      loadExistingData();
     }
-  }, [p, day]);
+  }, [p, day, record?.prayer]); // Add record?.prayer as dependency to ensure it runs after record is loaded
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
