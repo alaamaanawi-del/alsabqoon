@@ -522,6 +522,8 @@ export default function RecordPrayer() {
     } catch (error) {
       console.error('Error saving prayer record:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
     }
   };
   return (
