@@ -614,8 +614,15 @@ export default function ZikrDetailsScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-            {history.length > 0 ? (
-              groupHistoryByDay().map((dayGroup, dayIndex) => (
+            {getFilteredHistory().length > 0 ? (
+              groupHistoryByDay().filter(dayGroup => 
+                dayGroup.entries.some(entry => {
+                  if (historyFilter === 'all') return true;
+                  if (historyFilter === 'prayer') return entry.source === 'prayer';
+                  if (historyFilter === 'manual') return !entry.source || entry.source === 'manual';
+                  return true;
+                })
+              ).map((dayGroup, dayIndex) => (
                 <View key={dayIndex} style={styles.dayGroup}>
                   {/* Day Header */}
                   <View style={[
