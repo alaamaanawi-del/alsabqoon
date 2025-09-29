@@ -428,10 +428,8 @@ export default function RecordPrayer() {
       // Save prayer record first
       await savePrayerRecord(record);
       
-      // Handle Dawa entry creation/update ONLY when completing the entire prayer (Rakka 2)
-      if (activeRakka === 2) {
-        await handleDawaEntryCreation();
-      }
+      // Handle Dawa entry for the CURRENT rakka only
+      await handleCurrentRakkaDawaEntry();
 
       // Navigation logic: Rakka 1 -> Rakka 2, Rakka 2 -> Prayer main page
       if (activeRakka === 1) {
