@@ -175,16 +175,59 @@ export default function CharityDetailScreen() {
     }
   };
 
-  // Group history by date
+  // Group history by date with filtering
   const groupHistoryByDate = () => {
+    const filtered = history.filter(entry => {
+      if (historyFilter === 'all') return true;
+      if (historyFilter === 'prayer') return entry.source === 'prayer';
+      if (historyFilter === 'manual') return !entry.source || entry.source === 'manual';
+      return true;
+    });
+
     const grouped: { [date: string]: CharityEntry[] } = {};
-    history.forEach(entry => {
-      if (!grouped[entry.date]) {
-        grouped[entry.date] = [];
+    filtered.forEach(entry => {
+      const entryDate = entry.date || entry.timestamp.split('T')[0];
+      if (!grouped[entryDate]) {
+        grouped[entryDate] = [];
       }
-      grouped[entry.date].push(entry);
+      grouped[entryDate].push(entry);
     });
     return grouped;
+  };
+
+  // Handle clicking on prayer-linked records
+  const handlePrayerRecordClick = (entry: CharityEntry) => {
+    if (entry.source === 'prayer' && entry.prayer_id) {
+      router.push(`/(drawer)/my-prayers/record?date=${entry.date}&rakka=${entry.rakka || 1}`);
+    }
+  };
+
+  // Handle note editing
+  const handleEditNote = (entryId: string, currentNote: string) => {
+    setEditingNoteId(entryId);
+    setEditNoteText(currentNote);
+  };
+
+  const handleSaveNote = async (entryId: string) => {
+    try {
+      // Update the note via API
+      const response = await updateCharityEntry(entryId, undefined, editNoteText);
+      if (response.success) {
+        // Refresh history
+        await loadCharityData();
+        setEditingNoteId(null);
+        setEditNoteText('');
+        Alert.alert('تم الحفظ', 'تم تحديث الملاحظة بنجاح');
+      }
+    } catch (error) {
+      console.error('Error updating note:', error);
+      Alert.alert('خطأ', 'فشل في تحديث الملاحظة');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingNoteId(null);
+    setEditNoteText('');
   };
 
   const getDateBackgroundColor = (index: number) => {
