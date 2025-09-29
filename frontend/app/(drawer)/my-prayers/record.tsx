@@ -432,11 +432,15 @@ export default function RecordPrayer() {
 
 
   const handleDone = async () => {
-    if (!record) {
-      router.replace(`/(drawer)/my-prayers?date=${day}`);
+    if (!record || isSubmitting) {
+      if (!record) {
+        router.replace(`/(drawer)/my-prayers?date=${day}`);
+      }
       return;
     }
 
+    setIsSubmitting(true); // Prevent multiple submissions
+    
     try {
       // Check if user taught anyone
       let totalTaughtCount = 0;
