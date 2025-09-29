@@ -442,83 +442,58 @@ export default function RecordPrayer() {
     setIsSubmitting(true); // Prevent multiple submissions
     
     try {
-      // Check if user taught anyone
-      let totalTaughtCount = 0;
-      const taughtRakkas = [];
+      // Save prayer record first
+      await savePrayerRecord(record);
+      
+      // Create separate Dawa entries for each rakka that has teaching count > 0
+      let totalCreatedEntries = 0;
+      const dateStr = getCurrentLocalDateString();
+      const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
       
       for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
         const rakka = record.rakka[rakkaNum];
         if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
-          totalTaughtCount += rakka.taughtCount;
-          taughtRakkas.push(rakkaNum);
-        }
-      }
-
-      // If user taught people, create or update entry in Da'wah category (ID 13)
-      if (totalTaughtCount > 0) {
-        const dateStr = getCurrentLocalDateString();
-        const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
-        const rakkaText = taughtRakkas.length === 1 ? `الركعة ${taughtRakkas[0]}` : `الركعات ${taughtRakkas.join(' و ')}`;
-        const baseTitle = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
-        
-        // Collect teaching comments from all rakkas that have taught entries
-        let allComments = '';
-        for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
-          const rakka = record.rakka[rakkaNum];
-          if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
-            const commentKey = `${p}_${day}_${rakkaNum}`;
-            const comment = teachingComments[commentKey];
-            if (comment) {
-              allComments += `\nركعة ${rakkaNum}: ${comment}`;
-            }
-          }
-        }
-        
-        const autoComment = allComments ? `${baseTitle}\n\nتفاصيل التعليم:${allComments}` : baseTitle;
-        
-        if (existingDawaEntry) {
-          // Update existing entry
-          console.log('Updating existing Dawah entry:', existingDawaEntry.id, { totalTaughtCount, autoComment });
-          await updateZikrEntry(existingDawaEntry.id, totalTaughtCount, undefined, autoComment);
-        } else {
-          // Create new entry with prayer source metadata
-          console.log('Creating new Dawah entry:', { totalTaughtCount, autoComment });
-          await createZikrEntry(13, totalTaughtCount, dateStr, autoComment, 'prayer', `${p}_${day}`, taughtRakkas[0]);
-        }
-      }
-
-      // FIXED WORKFLOW NAVIGATION
-      if (activeRakka === 1) {
-        // After completing rakka 1 → go to rakka 2
-        console.log('🔄 Moving from rakka 1 to rakka 2');
-        setActiveRakka(2);
-        // Clear search keywords when moving to next rakka
-        setQuery("");
-        setResults(prev => ({ ...prev, [activeRakka]: [], 2: [] }));
-        setShowSearchResults(false);
-        showToast('تم حفظ الركعة الأولى - انتقل إلى الركعة الثانية');
-      } else if (activeRakka === 2) {
-        // After completing rakka 2 → return to prayer list for same date
-        console.log('🔄 Completing rakka 2 - returning to prayer list');
-        // Clear search keywords when completing prayer
-        setQuery("");
-        setResults({ 1: [], 2: [] });
-        setShowSearchResults(false);
-        if (totalTaughtCount > 0) {
-          Alert.alert(
-            'تم الحفظ',
-            `تم تسجيل الصلاة وإضافة ${totalTaughtCount} في قسم الدعوة - تعليم`,
-            [{ text: 'موافق', onPress: () => router.replace(`/(drawer)/my-prayers?date=${day}`) }]
+          const baseTitle = `تعليم آيات الصلاة - ${prayerName} (الركعة ${rakkaNum}) - ${dateStr}`;
+          
+          // Get teaching comment for this specific rakka
+          const commentKey = `${p}_${day}_${rakkaNum}`;
+          const comment = teachingComments[commentKey];
+          const autoComment = comment ? `${baseTitle}\n\nتفاصيل التعليم: ${comment}` : baseTitle;
+          
+          // Create separate entry for this rakka
+          console.log(`Creating Dawa entry for Rakka ${rakkaNum}:`, { 
+            count: rakka.taughtCount, 
+            comment: autoComment 
+          });
+          
+          await createZikrEntry(
+            13, // Dawa category ID
+            rakka.taughtCount, // Individual rakka count, not combined
+            dateStr, 
+            autoComment, 
+            'prayer', 
+            `${p}_${day}_rakka_${rakkaNum}`, // Unique prayer ID per rakka
+            rakkaNum
           );
-        } else {
-          showToast('تم حفظ الصلاة بنجاح');
-          router.replace(`/(drawer)/my-prayers?date=${day}`);
+          
+          totalCreatedEntries++;
         }
+      }
+
+      // Always redirect to main Prayer page after saving
+      console.log('🔄 Prayer saved successfully - returning to prayer list');
+      
+      if (totalCreatedEntries > 0) {
+        Alert.alert(
+          'تم الحفظ',
+          `تم تسجيل الصلاة وإضافة ${totalCreatedEntries} ${totalCreatedEntries === 1 ? 'إدخال' : 'إدخالات'} في قسم الدعوة - تعليم`,
+          [{ text: 'موافق', onPress: () => router.replace(`/(drawer)/my-prayers?date=${day}`) }]
+        );
       } else {
-        // Fallback - return to prayers
-        console.log('❌ Unknown rakka, returning to prayers');
+        showToast('تم حفظ الصلاة بنجاح');
         router.replace(`/(drawer)/my-prayers?date=${day}`);
       }
+      
     } catch (error) {
       console.error('Error saving prayer record:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
