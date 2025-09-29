@@ -996,6 +996,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  doneButtonDisabled: {
+    backgroundColor: '#666',
+    opacity: 0.6,
+  },
   doneButtonText: {
     color: Colors.dark,
     fontSize: 18,
