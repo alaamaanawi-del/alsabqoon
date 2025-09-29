@@ -40,6 +40,11 @@ export default function CharityDetailScreen() {
   const [editComments, setEditComments] = useState('');
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  
+  // History editing and filtering states
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editNoteText, setEditNoteText] = useState('');
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'prayer' | 'manual'>('all');
 
   useEffect(() => {
     loadCharityData();
