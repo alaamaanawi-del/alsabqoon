@@ -131,7 +131,43 @@ export default function RecordPrayer() {
     }
   }, [focusRakka, directRakka]);
 
-  // Removed existing Dawa entry checking since we create separate entries for each rakka
+  // Load existing Dawa entry comments when component loads
+  useEffect(() => {
+    const loadExistingComments = async () => {
+      try {
+        const dateStr = getCurrentLocalDateString();
+        const historyData = await getZikrHistory(13, 2); // Get last 2 days to be safe
+        
+        // Look for existing entries from this prayer session
+        for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+          const prayerId = `${p}_${day}_rakka_${rakkaNum}`;
+          const existingEntry = historyData.entries.find(entry => 
+            entry.prayer_id === prayerId && entry.date === dateStr
+          );
+          
+          if (existingEntry && existingEntry.edit_notes && existingEntry.edit_notes.length > 0) {
+            // Extract comment from the edit_notes (after the base title)
+            const fullComment = existingEntry.edit_notes[0];
+            const commentMatch = fullComment.match(/تفاصيل التعليم:\s*(.+)$/s);
+            if (commentMatch) {
+              const commentKey = `${p}_${day}_${rakkaNum}`;
+              setTeachingComments(prev => ({
+                ...prev,
+                [commentKey]: commentMatch[1].trim()
+              }));
+              console.log(`Loaded existing comment for Rakka ${rakkaNum}:`, commentMatch[1].trim());
+            }
+          }
+        }
+      } catch (error) {
+        console.log('No existing comments found or error loading:', error);
+      }
+    };
+    
+    if (p && day) {
+      loadExistingComments();
+    }
+  }, [p, day]);
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
