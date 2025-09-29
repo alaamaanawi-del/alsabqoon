@@ -304,7 +304,10 @@ async def create_zikr_entry(entry: ZikrEntryCreate):
         count=entry.count,
         date=entry.date,
         timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone),
-        edit_notes=edit_notes
+        edit_notes=edit_notes,
+        source=entry.source or "manual",
+        prayer_id=entry.prayer_id,
+        rakka=entry.rakka
     )
     await db.zikr_entries.insert_one(zikr_obj.dict())
     return zikr_obj
