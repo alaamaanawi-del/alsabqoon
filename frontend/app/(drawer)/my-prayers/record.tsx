@@ -106,7 +106,6 @@ export default function RecordPrayer() {
   const [record, setRecord] = useState<PrayerRecord | null>(null);
   const [activeRakka, setActiveRakka] = useState<RakkaIndex>(1); // Start with default 1
   const [isSubmitting, setIsSubmitting] = useState(false); // Add loading state
-  const [existingDawaEntry, setExistingDawaEntry] = useState<any>(null); // Track existing Dawa entry
   
   // Set activeRakka based on focusRakka when component loads or focus changes
   useEffect(() => {
