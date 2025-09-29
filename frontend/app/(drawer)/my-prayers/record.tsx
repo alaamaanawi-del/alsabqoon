@@ -462,71 +462,52 @@ export default function RecordPrayer() {
     }
   };
 
-  // Handle Dawa entry creation/update for the entire prayer session
-  const handleDawaEntryCreation = async () => {
-    // Calculate total taught count and collect comments from both rakkas
-    let totalTaughtCount = 0;
-    let taughtRakkas = [];
-    let allComments = '';
+  // Handle Dawa entry for current rakka only (separate entries per rakka)
+  const handleCurrentRakkaDawaEntry = async () => {
+    const currentRakka = record.rakka[activeRakka];
     
-    for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
-      const rakka = record.rakka[rakkaNum];
-      if (rakka && rakka.questions && rakka.questions.taught && rakka.taughtCount > 0) {
-        totalTaughtCount += rakka.taughtCount;
-        taughtRakkas.push(rakkaNum);
-        
-        // Collect comments for this rakka
-        const commentKey = `${p}_${day}_${rakkaNum}`;
-        const comment = teachingComments[commentKey];
-        if (comment) {
-          allComments += `${allComments ? '\n' : ''}ركعة ${rakkaNum}: ${comment}`;
-        }
-      }
-    }
-    
-    // Only create/update entry if there's teaching data
-    if (totalTaughtCount > 0) {
+    // Only process if current rakka has teaching data
+    if (currentRakka && currentRakka.questions && currentRakka.questions.taught && currentRakka.taughtCount > 0) {
       const dateStr = getCurrentLocalDateString();
       const prayerName = PRAYERS.find(prayer => prayer.key === record.prayer)?.label || record.prayer;
-      const uniquePrayerId = `${p}_${day}_prayer`; // Single ID per prayer session
+      const uniquePrayerId = `${p}_${day}_rakka_${activeRakka}`; // Unique ID per rakka
       
-      // Create comment with summary
-      const rakkaText = taughtRakkas.length === 1 ? 
-        `الركعة ${taughtRakkas[0]}` : 
-        `الركعات ${taughtRakkas.join(' و ')}`;
-      const baseTitle = `تعليم آيات الصلاة - ${prayerName} (${rakkaText}) - ${dateStr}`;
-      const autoComment = allComments ? `${baseTitle}\n\nتفاصيل التعليم:\n${allComments}` : baseTitle;
+      // Get teaching comment for this specific rakka
+      const commentKey = `${p}_${day}_${activeRakka}`;
+      const comment = teachingComments[commentKey];
+      const baseTitle = `تعليم آيات الصلاة - ${prayerName} (الركعة ${activeRakka}) - ${dateStr}`;
+      const autoComment = comment ? `${baseTitle}\n\nتفاصيل التعليم: ${comment}` : baseTitle;
       
       try {
-        // Check if entry already exists for this prayer session
+        // Check if entry already exists for this specific rakka
         const historyData = await getZikrHistory(13, 1);
         const existingEntry = historyData.entries.find(entry => 
           entry.prayer_id === uniquePrayerId && entry.date === dateStr
         );
         
         if (existingEntry) {
-          // Update existing entry
-          console.log('Updating existing Dawa entry for prayer session:', existingEntry.id);
-          await updateZikrEntry(existingEntry.id, totalTaughtCount, undefined, autoComment);
+          // Update existing entry for this rakka
+          console.log(`Updating existing Dawa entry for Rakka ${activeRakka}:`, existingEntry.id);
+          await updateZikrEntry(existingEntry.id, currentRakka.taughtCount, undefined, autoComment);
         } else {
-          // Create new entry
-          console.log('Creating new Dawa entry for prayer session:', { 
-            count: totalTaughtCount, 
+          // Create new entry for this rakka
+          console.log(`Creating new Dawa entry for Rakka ${activeRakka}:`, { 
+            count: currentRakka.taughtCount, 
             comment: autoComment 
           });
           
           await createZikrEntry(
             13, // Dawa category ID
-            totalTaughtCount, 
+            currentRakka.taughtCount, 
             dateStr, 
             autoComment, 
             'prayer', 
             uniquePrayerId, 
-            taughtRakkas[0] || 1 // Store first rakka for navigation reference
+            activeRakka
           );
         }
       } catch (error) {
-        console.error('Error handling Dawa entry:', error);
+        console.error(`Error handling Dawa entry for Rakka ${activeRakka}:`, error);
       }
     }
   };
