@@ -219,7 +219,6 @@ export default function CharityDetailScreen() {
           </TouchableOpacity>
           <View style={styles.headerContent}>
             <Text style={styles.charityNameAr}>{charity.nameAr}</Text>
-            <Text style={styles.charityNameEn}>{charity.nameEn}</Text>
             <Text style={styles.currentDate}>
               {formatDate(new Date().toISOString().split('T')[0])} - {formatTime(new Date().toISOString())}
             </Text>
