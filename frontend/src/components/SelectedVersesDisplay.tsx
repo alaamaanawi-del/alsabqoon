@@ -44,12 +44,7 @@ export default function SelectedVersesDisplay({ ranges, maxLines = 8 }: Selected
   };
 
   if (ranges.length === 0) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>لم يتم اختيار آيات بعد</Text>
-        <Text style={styles.emptySubText}>استخدم البحث أو "السورة كاملة" لاختيار الآيات</Text>
-      </View>
-    );
+    return null; // Remove the empty state box completely
   }
 
   const renderRange = (range: VerseRange, index: number) => {
