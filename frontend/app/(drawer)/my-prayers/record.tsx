@@ -708,8 +708,14 @@ export default function RecordPrayer() {
 
       {/* Fixed Footer */}
       <View style={styles.footer}>
-        <TouchableOpacity onPress={handleDone} style={styles.doneButton}>
-          <Text style={styles.doneButtonText}>تم</Text>
+        <TouchableOpacity 
+          onPress={handleDone} 
+          style={[styles.doneButton, isSubmitting && styles.doneButtonDisabled]}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.doneButtonText}>
+            {isSubmitting ? 'جاري الحفظ...' : 'تم'}
+          </Text>
         </TouchableOpacity>
       </View>
 
