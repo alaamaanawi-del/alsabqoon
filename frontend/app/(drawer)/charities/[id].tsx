@@ -101,45 +101,7 @@ export default function CharityDetailScreen() {
     }
   };
 
-  const handleEdit = (entry: CharityEntry) => {
-    setEditingEntry(entry);
-    setEditCount(entry.count.toString());
-    setEditComments(entry.comments || '');
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editingEntry) return;
-
-    if (!editCount.trim()) {
-      Alert.alert('تنبيه', 'يرجى إدخال عدد الصدقات');
-      return;
-    }
-
-    const countNum = parseInt(editCount);
-    if (isNaN(countNum) || countNum <= 0) {
-      Alert.alert('تنبيه', 'يرجى إدخال عدد صحيح');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const editNote = `تعديل: تم تغيير العدد من ${editingEntry.count} إلى ${countNum}`;
-      await updateCharityEntry(editingEntry.id, countNum, editComments, editNote);
-      
-      Alert.alert('نجح', 'تم تحديث الصدقة بنجاح');
-      setEditingEntry(null);
-      setEditCount('');
-      setEditComments('');
-      
-      // Reload data
-      await loadCharityData();
-    } catch (error) {
-      console.error('Error updating charity entry:', error);
-      Alert.alert('خطأ', 'حدث خطأ في تحديث الصدقة');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Removed unused modal functions - handleEdit and handleSaveEdit
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
