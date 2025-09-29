@@ -653,10 +653,13 @@ export default function ZikrDetailsScreen() {
                             {formatTime(entry.timestamp)}
                           </Text>
                           {entry.source === 'prayer' && (
-                            <View style={styles.prayerLinkIndicator}>
+                            <TouchableOpacity 
+                              style={styles.prayerLinkIndicator}
+                              onPress={() => handlePrayerRecordClick(entry)}
+                            >
                               <Ionicons name="link" size={14} color={Colors.warmOrange} />
                               <Text style={styles.prayerLinkText}>من الصلاة</Text>
-                            </View>
+                            </TouchableOpacity>
                           )}
                         </View>
 
