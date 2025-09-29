@@ -469,53 +469,7 @@ export default function CharityDetailScreen() {
           </View>
         </ScrollView>
 
-        {/* Edit Modal */}
-        {editingEntry && (
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>تعديل الصدقة</Text>
-              
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>عدد الصدقات</Text>
-                <TextInput
-                  style={styles.textInput}
-                  value={editCount}
-                  onChangeText={setEditCount}
-                  keyboardType="numeric"
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>تعليقات</Text>
-                <TextInput
-                  style={[styles.textInput, styles.multilineInput]}
-                  value={editComments}
-                  onChangeText={setEditComments}
-                  multiline
-                  numberOfLines={2}
-                />
-              </View>
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalButtonCancel}
-                  onPress={() => setEditingEntry(null)}
-                >
-                  <Text style={styles.modalButtonTextCancel}>إلغاء</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.modalButtonSave, loading && styles.submitButtonDisabled]}
-                  onPress={handleSaveEdit}
-                  disabled={loading}
-                >
-                  <Text style={styles.modalButtonTextSave}>
-                    {loading ? 'جاري الحفظ...' : 'حفظ'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
+        {/* Removed old edit modal - using inline editing instead */}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
