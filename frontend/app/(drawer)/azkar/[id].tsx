@@ -638,13 +638,21 @@ export default function ZikrDetailsScreen() {
                   </View>
 
                   {/* Entries for this day */}
-                  {dayGroup.entries.map((entry, entryIndex) => (
-                    <View 
+                  {dayGroup.entries.filter(entry => {
+                    if (historyFilter === 'all') return true;
+                    if (historyFilter === 'prayer') return entry.source === 'prayer';
+                    if (historyFilter === 'manual') return !entry.source || entry.source === 'manual';
+                    return true;
+                  }).map((entry, entryIndex) => (
+                    <TouchableOpacity 
                       key={entry.id} 
                       style={[
                         styles.historyItem,
-                        { backgroundColor: getDayColor(dayGroup.dayIndex) }
+                        { backgroundColor: getDayColor(dayGroup.dayIndex) },
+                        entry.source === 'prayer' && styles.historyItemClickable
                       ]}
+                      onPress={() => handlePrayerRecordClick(entry)}
+                      disabled={entry.source !== 'prayer'}
                     >
                       <View style={styles.historyInfo}>
                         <Text style={styles.historyTime}>
