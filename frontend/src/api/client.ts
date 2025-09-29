@@ -144,18 +144,23 @@ export async function createZikrEntry(
 
 export async function updateZikrEntry(
   entryId: string,
-  count: number,
-  editNote?: string
+  count?: number,
+  editNote?: string,
+  comment?: string
 ): Promise<{ success: boolean; entry: ZikrEntry }> {
+  const body: any = {
+    timezone: getDeviceTimezone(), // Include device timezone for edit timestamp
+    client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
+  };
+  
+  if (count !== undefined) body.count = count;
+  if (editNote !== undefined) body.edit_note = editNote;
+  if (comment !== undefined) body.comment = comment;
+  
   const res = await fetch(api(`/azkar/entry/${entryId}`), {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      count: count,
-      edit_note: editNote,
-      timezone: getDeviceTimezone(), // Include device timezone for edit timestamp
-      client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return (await res.json()) as { success: boolean; entry: ZikrEntry };
