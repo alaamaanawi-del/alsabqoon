@@ -188,6 +188,51 @@ export default function ZikrDetailsScreen() {
     }
   };
 
+  // Handle clicking on prayer-linked records
+  const handlePrayerRecordClick = (entry: ZikrEntry) => {
+    if (entry.source === 'prayer' && entry.prayer_id) {
+      router.push(`/(drawer)/my-prayers/record?date=${entry.date}&rakka=${entry.rakka || 1}`);
+    }
+  };
+
+  // Handle note editing
+  const handleEditNote = (entryId: string, currentNote: string) => {
+    setEditingNoteId(entryId);
+    setEditNoteText(currentNote || '');
+  };
+
+  const handleSaveNote = async (entryId: string) => {
+    try {
+      // Update the note via API
+      const response = await updateZikrEntry(entryId, undefined, editNoteText);
+      if (response.success) {
+        // Refresh history
+        await loadZikrHistory();
+        setEditingNoteId(null);
+        setEditNoteText('');
+        Alert.alert('تم الحفظ', 'تم تحديث الملاحظة بنجاح');
+      }
+    } catch (error) {
+      console.error('Error updating note:', error);
+      Alert.alert('خطأ', 'فشل في تحديث الملاحظة');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingNoteId(null);
+    setEditNoteText('');
+  };
+
+  // Filter history based on source
+  const getFilteredHistory = () => {
+    return history.filter(entry => {
+      if (historyFilter === 'all') return true;
+      if (historyFilter === 'prayer') return entry.source === 'prayer';
+      if (historyFilter === 'manual') return !entry.source || entry.source === 'manual';
+      return true;
+    });
+  };
+
   const loadAzkarFromAPI = async () => {
     try {
       const response = await getAzkarList();
