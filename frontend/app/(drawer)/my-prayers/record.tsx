@@ -120,35 +120,7 @@ export default function RecordPrayer() {
     }
   }, [focusRakka]);
 
-  // Check for existing Dawa entries when component loads
-  useEffect(() => {
-    const checkExistingDawaEntry = async () => {
-      try {
-        const dateStr = getCurrentLocalDateString();
-        const response = await getZikrHistory(13, 1); // Get today's Dawa entries
-        
-        // Look for entry from this prayer session (same date and prayer type)
-        const todayEntries = response.entries.filter(entry => entry.date === dateStr);
-        const prayerName = PRAYERS.find(prayer => prayer.key === p)?.label || p;
-        
-        // Find entry that matches this prayer session
-        const matchingEntry = todayEntries.find(entry => 
-          entry.source === 'prayer' && 
-          entry.edit_notes && 
-          entry.edit_notes.some(note => note.includes(prayerName))
-        );
-        
-        if (matchingEntry) {
-          console.log('Found existing Dawa entry for this prayer session:', matchingEntry.id);
-          setExistingDawaEntry(matchingEntry);
-        }
-      } catch (error) {
-        console.log('No existing Dawa entries found or error checking:', error);
-      }
-    };
-    
-    checkExistingDawaEntry();
-  }, [p, day]);
+  // Removed existing Dawa entry checking since we create separate entries for each rakka
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
