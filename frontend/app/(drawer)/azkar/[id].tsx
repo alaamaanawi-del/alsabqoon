@@ -146,6 +146,11 @@ export default function ZikrDetailsScreen() {
   const [editingEntry, setEditingEntry] = useState<string | null>(null);
   const [editCount, setEditCount] = useState<string>('');
   const [azkarFromAPI, setAzkarFromAPI] = useState<Zikr[]>([]);
+  
+  // History enhancement states
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editNoteText, setEditNoteText] = useState('');
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'prayer' | 'manual'>('all');
   const scrollViewRef = useRef<ScrollView>(null);
   const historyRef = useRef<View>(null);
 
