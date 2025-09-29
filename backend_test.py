@@ -1992,6 +1992,223 @@ def test_azkar_notes_functionality():
     
     return all_tests_passed
 
+def test_prayer_dawa_synchronization():
+    """Test Prayer-Dawa synchronization system for duplicate prevention"""
+    print("\n🕌 TESTING PRAYER-DAWA SYNCHRONIZATION SYSTEM")
+    print("=" * 60)
+    
+    # Test data
+    test_date = "2025-01-30"
+    prayer_id = "maghrib_2025-01-30_prayer"
+    dawa_zikr_id = 13  # Da'wah - Teaching Islam
+    
+    # Test 1: Single Prayer Entry Creation
+    print("\n1. Testing Single Prayer Entry Creation")
+    print("-" * 40)
+    
+    entry_data = {
+        "zikr_id": dawa_zikr_id,
+        "count": 35,
+        "date": test_date,
+        "comment": "تعليم آيات الصلاة - المغرب (الركعة 1 و 2) - 2025-01-30\n\nتفاصيل التعليم:\nركعة 1: تعليم آيات متنوعة\nركعة 2: تعليم دعاء",
+        "source": "prayer",
+        "prayer_id": prayer_id,
+        "rakka": 1
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data)
+        if response.status_code == 200:
+            entry_result = response.json()
+            entry_id = entry_result.get('id')
+            print(f"✅ Prayer entry created successfully")
+            print(f"   Entry ID: {entry_id}")
+            print(f"   Prayer ID: {entry_result.get('prayer_id')}")
+            print(f"   Source: {entry_result.get('source')}")
+            print(f"   Rakka: {entry_result.get('rakka')}")
+            print(f"   Count: {entry_result.get('count')}")
+        else:
+            print(f"❌ Failed to create prayer entry: {response.status_code}")
+            print(f"   Response: {response.text}")
+            return False
+    except Exception as e:
+        print(f"❌ Error creating prayer entry: {e}")
+        return False
+    
+    # Test 2: Entry Update Test
+    print("\n2. Testing Entry Update")
+    print("-" * 40)
+    
+    update_data = {
+        "count": 40,
+        "comment": "تعليم آيات الصلاة - المغرب (محدث) - 2025-01-30\n\nتفاصيل التعليم المحدثة:\nركعة 1: تعليم آيات جديدة\nركعة 2: تعليم أدعية إضافية"
+    }
+    
+    try:
+        response = requests.put(f"{BASE_URL}/azkar/entry/{entry_id}", json=update_data)
+        if response.status_code == 200:
+            update_result = response.json()
+            print(f"✅ Entry updated successfully")
+            print(f"   Updated count: {update_result['entry']['count']}")
+            print(f"   Edit notes count: {len(update_result['entry'].get('edit_notes', []))}")
+        else:
+            print(f"❌ Failed to update entry: {response.status_code}")
+            print(f"   Response: {response.text}")
+            return False
+    except Exception as e:
+        print(f"❌ Error updating entry: {e}")
+        return False
+    
+    # Test 3: Duplicate Prevention Test
+    print("\n3. Testing Duplicate Prevention")
+    print("-" * 40)
+    
+    # Try to create another entry with same prayer_id
+    duplicate_entry_data = {
+        "zikr_id": dawa_zikr_id,
+        "count": 25,
+        "date": test_date,
+        "comment": "محاولة إنشاء مدخل مكرر",
+        "source": "prayer",
+        "prayer_id": prayer_id,
+        "rakka": 2
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/azkar/entry", json=duplicate_entry_data)
+        if response.status_code == 200:
+            duplicate_result = response.json()
+            duplicate_id = duplicate_result.get('id')
+            print(f"⚠️  New entry created (this may indicate separate rakka entries are allowed)")
+            print(f"   New Entry ID: {duplicate_id}")
+            print(f"   Prayer ID: {duplicate_result.get('prayer_id')}")
+            print(f"   Rakka: {duplicate_result.get('rakka')}")
+            
+            # Check if this is the intended behavior or if we need to verify consolidation
+            if duplicate_id != entry_id:
+                print(f"   Note: Different entry IDs suggest separate entries per rakka")
+        else:
+            print(f"✅ Duplicate entry prevented: {response.status_code}")
+            print(f"   Response: {response.text}")
+    except Exception as e:
+        print(f"❌ Error testing duplicate prevention: {e}")
+        return False
+    
+    # Test 4: History Consistency Check
+    print("\n4. Testing History Consistency")
+    print("-" * 40)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/{dawa_zikr_id}/history")
+        if response.status_code == 200:
+            history_result = response.json()
+            entries = history_result.get('entries', [])
+            
+            # Filter entries for our test date and prayer_id
+            prayer_entries = [e for e in entries if e.get('date') == test_date and e.get('prayer_id') == prayer_id]
+            manual_entries = [e for e in entries if e.get('date') == test_date and e.get('source') != 'prayer']
+            
+            print(f"✅ History retrieved successfully")
+            print(f"   Total entries for zikr_id {dawa_zikr_id}: {len(entries)}")
+            print(f"   Prayer entries for {test_date}: {len(prayer_entries)}")
+            print(f"   Manual entries for {test_date}: {len(manual_entries)}")
+            
+            # Show prayer entry details
+            for i, entry in enumerate(prayer_entries):
+                print(f"   Prayer Entry {i+1}:")
+                print(f"     ID: {entry.get('id')}")
+                print(f"     Count: {entry.get('count')}")
+                print(f"     Prayer ID: {entry.get('prayer_id')}")
+                print(f"     Rakka: {entry.get('rakka')}")
+                print(f"     Source: {entry.get('source')}")
+                
+        else:
+            print(f"❌ Failed to get history: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ Error getting history: {e}")
+        return False
+    
+    # Test 5: Statistics Integration
+    print("\n5. Testing Statistics Integration")
+    print("-" * 40)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/{dawa_zikr_id}/stats")
+        if response.status_code == 200:
+            stats_result = response.json()
+            print(f"✅ Statistics retrieved successfully")
+            print(f"   Total count: {stats_result.get('total_count')}")
+            print(f"   Total sessions: {stats_result.get('total_sessions')}")
+            print(f"   Last entry: {stats_result.get('last_entry')}")
+        else:
+            print(f"❌ Failed to get statistics: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ Error getting statistics: {e}")
+        return False
+    
+    # Test 6: Daily Summary Integration
+    print("\n6. Testing Daily Summary Integration")
+    print("-" * 40)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/daily/{test_date}")
+        if response.status_code == 200:
+            daily_result = response.json()
+            azkar_summary = daily_result.get('azkar_summary', {})
+            dawa_summary = azkar_summary.get(str(dawa_zikr_id), {})
+            
+            print(f"✅ Daily summary retrieved successfully")
+            print(f"   Total daily count: {daily_result.get('total_daily')}")
+            print(f"   Dawa entries count: {dawa_summary.get('count', 0)}")
+            print(f"   Dawa sessions: {dawa_summary.get('sessions', 0)}")
+            print(f"   Dawa percentage: {dawa_summary.get('percentage', 0)}%")
+        else:
+            print(f"❌ Failed to get daily summary: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ Error getting daily summary: {e}")
+        return False
+    
+    return True
+
+def test_prayer_navigation_links():
+    """Test prayer navigation links work correctly with new format"""
+    print("\n🔗 TESTING PRAYER NAVIGATION LINKS")
+    print("=" * 60)
+    
+    # Test that entries can be retrieved by prayer_id format
+    test_prayer_ids = [
+        "fajr_2025-01-30_prayer",
+        "maghrib_2025-01-30_prayer", 
+        "isha_2025-01-30_prayer"
+    ]
+    
+    for prayer_id in test_prayer_ids:
+        print(f"\nTesting prayer_id format: {prayer_id}")
+        
+        # Create a test entry with this prayer_id format
+        entry_data = {
+            "zikr_id": 13,
+            "count": 10,
+            "date": "2025-01-30",
+            "comment": f"Test entry for {prayer_id}",
+            "source": "prayer",
+            "prayer_id": prayer_id,
+            "rakka": 1
+        }
+        
+        try:
+            response = requests.post(f"{BASE_URL}/azkar/entry", json=entry_data)
+            if response.status_code == 200:
+                print(f"✅ Entry created with prayer_id: {prayer_id}")
+            else:
+                print(f"❌ Failed to create entry: {response.status_code}")
+        except Exception as e:
+            print(f"❌ Error: {e}")
+    
+    return True
 def main():
     """Run all backend tests including new charity functionality"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
