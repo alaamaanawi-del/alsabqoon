@@ -196,7 +196,7 @@ export default function RecordPrayer() {
   
   // Add focus effect to refresh data when user returns from Dawa page
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       // Refresh existing data when screen becomes focused
       if (p && day && record) {
         const refreshData = async () => {
