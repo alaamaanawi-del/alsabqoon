@@ -158,10 +158,11 @@ export default function CharityDetailScreen() {
       }
       
       const date = new Date(timeString);
-      return date.toLocaleTimeString('ar-SA', {
+      return date.toLocaleTimeString('ar', {
         hour: '2-digit',
         minute: '2-digit',
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Use device timezone
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Use device timezone
+        calendar: 'gregory', // Explicitly use Gregorian calendar
       });
     } catch (error) {
       console.error('Error formatting time:', error);
