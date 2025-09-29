@@ -427,8 +427,7 @@ export default function RecordPrayer() {
         
         // Check if entry already exists for this specific prayer session + rakka
         try {
-          const existingHistory = await fetch(`http://localhost:8001/api/azkar/13/history?days=1`);
-          const historyData = await existingHistory.json();
+          const historyData = await getZikrHistory(13, 1); // Get today's history only
           const existingEntry = historyData.entries.find(entry => 
             entry.prayer_id === uniquePrayerId && entry.date === dateStr
           );
