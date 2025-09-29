@@ -655,9 +655,58 @@ export default function ZikrDetailsScreen() {
                       disabled={entry.source !== 'prayer'}
                     >
                       <View style={styles.historyInfo}>
-                        <Text style={styles.historyTime}>
-                          {formatTime(entry.timestamp)}
-                        </Text>
+                        <View style={styles.historyHeader}>
+                          <Text style={styles.historyTime}>
+                            {formatTime(entry.timestamp)}
+                          </Text>
+                          {entry.source === 'prayer' && (
+                            <View style={styles.prayerLinkIndicator}>
+                              <Ionicons name="link" size={14} color={Colors.warmOrange} />
+                              <Text style={styles.prayerLinkText}>من الصلاة</Text>
+                            </View>
+                          )}
+                        </View>
+
+                        {/* Comments Section with Inline Editing */}
+                        {entry.comments && (
+                          <View style={styles.commentsSection}>
+                            {editingNoteId === entry.id ? (
+                              <View style={styles.inlineEditContainer}>
+                                <TextInput
+                                  style={styles.inlineEditInput}
+                                  value={editNoteText}
+                                  onChangeText={setEditNoteText}
+                                  multiline
+                                  placeholder="تحرير الملاحظة..."
+                                  autoFocus
+                                />
+                                <View style={styles.inlineEditButtons}>
+                                  <TouchableOpacity 
+                                    style={styles.inlineEditSave}
+                                    onPress={() => handleSaveNote(entry.id)}
+                                  >
+                                    <Text style={styles.inlineEditSaveText}>حفظ</Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity 
+                                    style={styles.inlineEditCancel}
+                                    onPress={handleCancelEdit}
+                                  >
+                                    <Text style={styles.inlineEditCancelText}>إلغاء</Text>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            ) : (
+                              <TouchableOpacity 
+                                onPress={() => handleEditNote(entry.id, entry.comments)}
+                                style={styles.editableComment}
+                              >
+                                <Text style={styles.historyComments}>{entry.comments}</Text>
+                                <Ionicons name="create-outline" size={16} color={Colors.mediumGray} />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        )}
+
                         {/* Show edit notes if available */}
                         {entry.edit_notes && entry.edit_notes.length > 0 && (
                           <View style={styles.editNotesContainer}>
