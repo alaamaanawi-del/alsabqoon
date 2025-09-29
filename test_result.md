@@ -393,7 +393,7 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ COMPREHENSIVE TIMEZONE TESTING COMPLETE: All 6 timezone tests passed successfully. Client-side timestamp handling working perfectly across different timezones (New York EST, Dubai GST, London GMT). Date boundary handling verified for both azkar and charity daily endpoints. Midnight edge cases thoroughly tested - entries created just before/after midnight are correctly stored with proper local dates. Timezone consistency verified across all operations. The timezone and date handling fixes are working perfectly and ready for production use."
-  - task: "NEW: Da'wah Category Functionality (ID 13)"
+  - task: "NEW: Prayer and Dawa Integration Features"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -403,10 +403,10 @@ backend:
     status_history:
       - working: false
         agent: "main"
-        comment: "Implemented new Da'wah category (ID 13 - 'الدعوة – تعليم') with comment functionality for prayer integration"
+        comment: "Implemented Prayer and Dawa integration with ZikrEntry model updates (source, prayer_id, rakka fields), Da'wah category (ID 13), and enhanced comment functionality for prayer-sourced entries"
       - working: true
         agent: "testing"
-        comment: "✅ COMPREHENSIVE DA'WAH CATEGORY TESTING COMPLETE: All 6 test scenarios passed successfully! TESTED ALL REQUIREMENTS: 1) Da'wah category (ID 13) appears correctly in /api/azkar endpoint with Arabic name 'الدعوة – تعليم' and English name 'Da'wah - Teaching Islam', 2) Entry creation with comment functionality working - comment 'تعليم آيات الصلاة - الفجر (الركعة 1)' stored correctly in edit_notes field, 3) Entry creation without comment working - no edit_notes created (correct behavior), 4) Integration testing successful - Da'wah category behaves identically to other azkar categories: history endpoint returns 2 entries, stats endpoint shows 3 total count with 2 sessions, daily summary includes Da'wah with correct counts, 5) Range queries include Da'wah category correctly with proper aggregation, 6) All backend endpoints (history, stats, daily, range) work perfectly with the new category. NEW Da'wah category is fully functional and ready for prayer integration as requested."
+        comment: "✅ COMPREHENSIVE PRAYER AND DAWA INTEGRATION TESTING COMPLETE: All 8 core functionality tests passed successfully! TESTED ALL REQUIREMENTS: 1) ZikrEntry Model Updates - Verified Azkar entries can be created with source, prayer_id, and rakka fields (Prayer entry created with source='prayer', prayer_id='fajr_2025-01-30', rakka=1), 2) Entry Creation - Successfully tested creating Dawa entries with source='prayer' and proper metadata (comment stored in edit_notes: 'تعليم آيات من الصلاة - الفجر'), 3) Entry Updates - Tested updating existing Dawa entries without creating duplicates (count updated from 5→8, comment updated successfully), 4) Comment Updates - Tested updating comments in existing entries using new comment field (edit_notes updated correctly with Arabic text), 5) Prayer-sourced Entry Filtering - History shows 1 prayer-sourced entry vs 29 manual entries with proper source identification, 6) Statistics Integration - Prayer entries included in stats (Total: 5088 count, 116 sessions), 7) Daily Summary Integration - Prayer entries appear in daily summaries with correct aggregation (11 total count, 2 sessions, 100% percentage), 8) No Duplicate Entries - Update operations maintain entry count (30 entries before/after update). SPECIFIC TEST SCENARIOS VERIFIED: POST /api/azkar/entry with source='prayer'/prayer_id/rakka creates prayer-sourced Dawa entry, PUT /api/azkar/entry/{entry_id} updates count and comments independently, GET /api/azkar/13/history returns prayer vs manual entries with proper filtering. Prayer-Dawa integration backend is fully operational and ready for production use."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
