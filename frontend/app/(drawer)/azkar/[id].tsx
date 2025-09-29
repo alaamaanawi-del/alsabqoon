@@ -640,15 +640,12 @@ export default function ZikrDetailsScreen() {
 
                   {/* Entries for this day */}
                   {dayGroup.entries.map((entry, entryIndex) => (
-                    <TouchableOpacity 
-                      key={entry.id} 
+                    <View 
+                      key={entry.id}
                       style={[
                         styles.historyItem,
                         { backgroundColor: getDayColor(dayGroup.dayIndex) },
-                        entry.source === 'prayer' && styles.historyItemClickable
                       ]}
-                      onPress={() => handlePrayerRecordClick(entry)}
-                      disabled={entry.source !== 'prayer'}
                     >
                       <View style={styles.historyInfo}>
                         <View style={styles.historyHeader}>
