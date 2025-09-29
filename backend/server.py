@@ -187,8 +187,9 @@ class ZikrEntryCreate(BaseModel):
     rakka: Optional[int] = None  # Rakka number if from prayer
 
 class ZikrEntryUpdate(BaseModel):
-    count: int
+    count: Optional[int] = None
     edit_note: Optional[str] = None
+    comment: Optional[str] = None  # Allow updating comments
     timezone: Optional[str] = None  # User's device timezone for edit timestamp
     client_timestamp: Optional[str] = None  # Exact timestamp from client device
 
