@@ -390,15 +390,69 @@ export default function CharityDetailScreen() {
                   {formatDate(date)}
                 </Text>
                 {entries.map((entry, entryIndex) => (
-                  <View key={entry.id} style={styles.historyEntry}>
+                  <TouchableOpacity 
+                    key={entry.id} 
+                    style={[
+                      styles.historyEntry,
+                      entry.source === 'prayer' && styles.historyEntryClickable
+                    ]}
+                    onPress={() => handlePrayerRecordClick(entry)}
+                    disabled={entry.source !== 'prayer'}
+                  >
                     <View style={styles.historyEntryContent}>
                       <View style={styles.historyEntryHeader}>
-                        <Text style={styles.historyEntryCount}>عدد الصدقات: {entry.count}</Text>
+                        <View style={styles.historyEntryHeaderLeft}>
+                          <Text style={styles.historyEntryCount}>عدد الصدقات: {entry.count}</Text>
+                          {entry.source === 'prayer' && (
+                            <View style={styles.prayerLinkIndicator}>
+                              <Ionicons name="link" size={14} color={Colors.warmOrange} />
+                              <Text style={styles.prayerLinkText}>من الصلاة</Text>
+                            </View>
+                          )}
+                        </View>
                         <Text style={styles.historyEntryTime}>{formatTime(entry.timestamp)}</Text>
                       </View>
+                      
+                      {/* Comments Section with Inline Editing */}
                       {entry.comments && (
-                        <Text style={styles.historyEntryComments}>{entry.comments}</Text>
+                        <View style={styles.commentsSection}>
+                          {editingNoteId === entry.id ? (
+                            <View style={styles.inlineEditContainer}>
+                              <TextInput
+                                style={styles.inlineEditInput}
+                                value={editNoteText}
+                                onChangeText={setEditNoteText}
+                                multiline
+                                placeholder="تحرير الملاحظة..."
+                                autoFocus
+                              />
+                              <View style={styles.inlineEditButtons}>
+                                <TouchableOpacity 
+                                  style={styles.inlineEditSave}
+                                  onPress={() => handleSaveNote(entry.id)}
+                                >
+                                  <Text style={styles.inlineEditSaveText}>حفظ</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity 
+                                  style={styles.inlineEditCancel}
+                                  onPress={handleCancelEdit}
+                                >
+                                  <Text style={styles.inlineEditCancelText}>إلغاء</Text>
+                                </TouchableOpacity>
+                              </View>
+                            </View>
+                          ) : (
+                            <TouchableOpacity 
+                              onPress={() => handleEditNote(entry.id, entry.comments)}
+                              style={styles.editableComment}
+                            >
+                              <Text style={styles.historyEntryComments}>{entry.comments}</Text>
+                              <Ionicons name="create-outline" size={16} color={Colors.mediumGray} />
+                            </TouchableOpacity>
+                          )}
+                        </View>
                       )}
+                      
                       {entry.edit_notes && entry.edit_notes.length > 0 && (
                         <View style={styles.editNotesContainer}>
                           <Text style={styles.editNotesTitle}>سجل التعديلات:</Text>
