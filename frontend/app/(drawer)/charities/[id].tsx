@@ -216,7 +216,7 @@ export default function CharityDetailScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backIcon}>
+          <TouchableOpacity onPress={() => router.push('/(drawer)/my-charities')} style={styles.backIcon}>
             <Ionicons name="arrow-forward" size={24} color={Colors.light} />
           </TouchableOpacity>
           <View style={styles.headerContent}>
