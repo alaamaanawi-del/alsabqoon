@@ -637,12 +637,7 @@ export default function ZikrDetailsScreen() {
                   </View>
 
                   {/* Entries for this day */}
-                  {dayGroup.entries.filter(entry => {
-                    if (historyFilter === 'all') return true;
-                    if (historyFilter === 'prayer') return entry.source === 'prayer';
-                    if (historyFilter === 'manual') return !entry.source || entry.source === 'manual';
-                    return true;
-                  }).map((entry, entryIndex) => (
+                  {dayGroup.entries.map((entry, entryIndex) => (
                     <TouchableOpacity 
                       key={entry.id} 
                       style={[
