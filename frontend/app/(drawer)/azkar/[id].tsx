@@ -232,6 +232,32 @@ export default function ZikrDetailsScreen() {
       return true;
     });
   };
+  
+  // Group filtered history by day
+  const groupHistoryByDay = () => {
+    const filteredHistory = getFilteredHistory();
+    const grouped: { [date: string]: ZikrEntry[] } = {};
+    
+    filteredHistory.forEach(entry => {
+      const entryDate = entry.date || entry.timestamp.split('T')[0];
+      if (!grouped[entryDate]) {
+        grouped[entryDate] = [];
+      }
+      grouped[entryDate].push(entry);
+    });
+
+    return Object.keys(grouped)
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+      .map((date, index) => {
+        const dayName = new Date(date).toLocaleDateString('ar-SA', { weekday: 'long' });
+        return {
+          date,
+          dayName,
+          entries: grouped[date].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+          dayIndex: index
+        };
+      });
+  };
 
   const loadAzkarFromAPI = async () => {
     try {
