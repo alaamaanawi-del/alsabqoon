@@ -171,6 +171,9 @@ class ZikrEntry(BaseModel):
     date: str  # ISO date string (YYYY-MM-DD)
     timestamp: datetime = Field(default_factory=lambda: get_user_timezone_now())
     edit_notes: Optional[List[str]] = []  # Track edit history
+    source: Optional[str] = "manual"  # 'prayer' or 'manual'
+    prayer_id: Optional[str] = None  # Link to prayer entry if source is 'prayer'
+    rakka: Optional[int] = None  # Rakka number if from prayer
 
 class ZikrEntryCreate(BaseModel):
     zikr_id: int
