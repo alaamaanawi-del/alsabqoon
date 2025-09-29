@@ -90,7 +90,7 @@ function QuestionRow({
 }
 
 export default function RecordPrayer() {
-  const { prayer, date, focus } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string }>();
+  const { prayer, date, focus, rakka } = useLocalSearchParams<{ prayer?: string; date?: string; focus?: string; rakka?: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const p = (prayer as string) || 'fajr';
