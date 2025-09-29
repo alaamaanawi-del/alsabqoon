@@ -124,7 +124,10 @@ export async function createZikrEntry(
   zikrId: number,
   count: number,
   date: string,
-  comment?: string
+  comment?: string,
+  source?: 'prayer' | 'manual',
+  prayerId?: string,
+  rakka?: number
 ): Promise<ZikrEntry> {
   return postJson<ZikrEntry>("/azkar/entry", {
     zikr_id: zikrId,
@@ -133,6 +136,9 @@ export async function createZikrEntry(
     timezone: getDeviceTimezone(), // Include device timezone
     client_timestamp: getCurrentLocalTimestamp(), // Include exact client timestamp
     comment: comment, // Include optional comment
+    source: source || 'manual',
+    prayer_id: prayerId,
+    rakka: rakka
   });
 }
 
