@@ -35,9 +35,7 @@ export default function CharityDetailScreen() {
   const [history, setHistory] = useState<CharityEntry[]>([]);
   const [count, setCount] = useState('');
   const [comments, setComments] = useState('');
-  const [editingEntry, setEditingEntry] = useState<CharityEntry | null>(null);
-  const [editCount, setEditCount] = useState('');
-  const [editComments, setEditComments] = useState('');
+  // Removed unused modal state variables
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   
