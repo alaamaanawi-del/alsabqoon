@@ -392,7 +392,7 @@ export default function ZikrDetailsScreen() {
     }
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEntryEdit = () => {
     setEditingEntry(null);
     setEditCount('');
   };
