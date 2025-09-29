@@ -96,6 +96,9 @@ export interface ZikrEntry {
   created_at?: string;
   edit_notes?: string[];
   comments?: string;
+  source?: 'prayer' | 'manual';
+  prayer_id?: string;
+  rakka?: number;
 }
 
 export interface ZikrStats {
