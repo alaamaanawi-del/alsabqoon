@@ -140,11 +140,12 @@ export default function CharityDetailScreen() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ar-SA', {
+    return date.toLocaleDateString('ar', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      calendar: 'gregory', // Explicitly use Gregorian calendar
     });
   };
 
