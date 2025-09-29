@@ -462,27 +462,7 @@ export default function ZikrDetailsScreen() {
     return colors[dayIndex % 7];
   };
 
-  const groupHistoryByDay = () => {
-    const grouped = {};
-    
-    history.forEach(entry => {
-      const date = new Date(entry.created_at || entry.date);
-      const dateKey = date.toDateString();
-      
-      if (!grouped[dateKey]) {
-        grouped[dateKey] = {
-          date: date,
-          dayName: getDayName(entry.created_at || entry.date),
-          dayIndex: date.getDay(),
-          entries: []
-        };
-      }
-      
-      grouped[dateKey].entries.push(entry);
-    });
-
-    return Object.values(grouped).sort((a, b) => b.date - a.date);
-  };
+  // Removed duplicate groupHistoryByDay function
 
   if (!zikrDetails || loading) {
     return (
