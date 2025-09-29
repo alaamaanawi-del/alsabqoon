@@ -190,8 +190,10 @@ export default function ZikrDetailsScreen() {
 
   // Handle clicking on prayer-linked records
   const handlePrayerRecordClick = (entry: ZikrEntry) => {
-    if (entry.source === 'prayer' && entry.prayer_id) {
-      router.push(`/(drawer)/my-prayers/record?date=${entry.date}&rakka=${entry.rakka || 1}`);
+    if (entry.source === 'prayer' && entry.prayer_id && entry.rakka) {
+      // Extract prayer name from prayer_id (format: "fajr_2025-09-30_rakka_1")
+      const prayerName = entry.prayer_id.split('_')[0];
+      router.push(`/(drawer)/my-prayers/record?prayer=${prayerName}&date=${entry.date}&rakka=${entry.rakka}`);
     }
   };
 
