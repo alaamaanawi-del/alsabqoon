@@ -668,44 +668,53 @@ export default function ZikrDetailsScreen() {
                         </View>
 
                         {/* Comments Section with Inline Editing */}
-                        {entry.comments && (
-                          <View style={styles.commentsSection}>
-                            {editingNoteId === entry.id ? (
-                              <View style={styles.inlineEditContainer}>
-                                <TextInput
-                                  style={styles.inlineEditInput}
-                                  value={editNoteText}
-                                  onChangeText={setEditNoteText}
-                                  multiline
-                                  placeholder="تحرير الملاحظة..."
-                                  autoFocus
-                                />
-                                <View style={styles.inlineEditButtons}>
-                                  <TouchableOpacity 
-                                    style={styles.inlineEditSave}
-                                    onPress={() => handleSaveNote(entry.id)}
-                                  >
-                                    <Text style={styles.inlineEditSaveText}>حفظ</Text>
-                                  </TouchableOpacity>
-                                  <TouchableOpacity 
-                                    style={styles.inlineEditCancel}
-                                    onPress={handleCancelEdit}
-                                  >
-                                    <Text style={styles.inlineEditCancelText}>إلغاء</Text>
-                                  </TouchableOpacity>
+                        {(() => {
+                          // Extract comment from edit_notes (first non-timestamp entry)
+                          const comment = entry.edit_notes && entry.edit_notes.length > 0 ? 
+                            entry.edit_notes.find(note => !note.startsWith('20')) || entry.comments : 
+                            entry.comments;
+                          
+                          if (!comment) return null;
+                          
+                          return (
+                            <View style={styles.commentsSection}>
+                              {editingNoteId === entry.id ? (
+                                <View style={styles.inlineEditContainer}>
+                                  <TextInput
+                                    style={styles.inlineEditInput}
+                                    value={editNoteText}
+                                    onChangeText={setEditNoteText}
+                                    multiline
+                                    placeholder="تحرير الملاحظة..."
+                                    autoFocus
+                                  />
+                                  <View style={styles.inlineEditButtons}>
+                                    <TouchableOpacity 
+                                      style={styles.inlineEditSave}
+                                      onPress={() => handleSaveNote(entry.id)}
+                                    >
+                                      <Text style={styles.inlineEditSaveText}>حفظ</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity 
+                                      style={styles.inlineEditCancel}
+                                      onPress={handleCancelEdit}
+                                    >
+                                      <Text style={styles.inlineEditCancelText}>إلغاء</Text>
+                                    </TouchableOpacity>
+                                  </View>
                                 </View>
-                              </View>
-                            ) : (
-                              <TouchableOpacity 
-                                onPress={() => handleEditNote(entry.id, entry.comments)}
-                                style={styles.editableComment}
-                              >
-                                <Text style={styles.historyComments}>{entry.comments}</Text>
-                                <Ionicons name="create-outline" size={16} color={Colors.mediumGray} />
-                              </TouchableOpacity>
-                            )}
-                          </View>
-                        )}
+                              ) : (
+                                <TouchableOpacity 
+                                  onPress={() => handleEditNote(entry.id, comment)}
+                                  style={styles.editableComment}
+                                >
+                                  <Text style={styles.historyComments}>{comment}</Text>
+                                  <Ionicons name="create-outline" size={16} color={Colors.mediumGray} />
+                                </TouchableOpacity>
+                              )}
+                            </View>
+                          );
+                        })()}
 
                         {/* Show edit notes if available */}
                         {entry.edit_notes && entry.edit_notes.length > 0 && (
