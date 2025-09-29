@@ -323,7 +323,27 @@ async def update_zikr_entry(entry_id: str, update_data: ZikrEntryUpdate):
             raise HTTPException(status_code=404, detail="Entry not found")
         
         # Prepare update data
-        update_dict = {"count": update_data.count}
+        update_dict = {}
+        
+        # Update count if provided
+        if update_data.count is not None:
+            update_dict["count"] = update_data.count
+        
+        # Update comment if provided
+        if update_data.comment is not None:
+            # Update the comments field directly - comments are stored in edit_notes for display
+            edit_notes = existing_entry.get("edit_notes", [])
+            # If there's an existing comment in edit_notes, replace it; otherwise add it
+            if update_data.comment.strip():
+                # Add/update comment as first entry in edit_notes
+                if edit_notes and not edit_notes[0].startswith("20"):  # Not a timestamp-based edit note
+                    edit_notes[0] = update_data.comment
+                else:
+                    edit_notes.insert(0, update_data.comment)
+            else:
+                # Remove comment if empty - keep only timestamp-based edit notes
+                edit_notes = [note for note in edit_notes if note.startswith("20")]
+            update_dict["edit_notes"] = edit_notes
         
         # Add edit note if provided
         if update_data.edit_note:
