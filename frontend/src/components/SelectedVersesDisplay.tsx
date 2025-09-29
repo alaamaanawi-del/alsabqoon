@@ -140,28 +140,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 138, 88, 0.3)',
     overflow: 'hidden',
   },
-  emptyContainer: {
-    backgroundColor: '#1d2a29',
-    borderRadius: 12,
-    margin: 12,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  emptyText: {
-    color: Colors.warmOrange,
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  emptySubText: {
-    color: '#A6D3CF',
-    fontSize: 14,
-    textAlign: 'center',
-    opacity: 0.8,
-  },
+  // Removed unused empty state styles
   header: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
