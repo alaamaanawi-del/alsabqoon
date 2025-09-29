@@ -193,6 +193,59 @@ export default function RecordPrayer() {
       loadExistingData();
     }
   }, [p, day, record?.prayer]); // Add record?.prayer as dependency to ensure it runs after record is loaded
+  
+  // Add focus effect to refresh data when user returns from Dawa page
+  useFocusEffect(
+    React.useCallback(() => {
+      // Refresh existing data when screen becomes focused
+      if (p && day && record) {
+        const refreshData = async () => {
+          try {
+            const dateStr = getCurrentLocalDateString();
+            const historyData = await getZikrHistory(13, 1); // Get today's entries
+            
+            let hasUpdates = false;
+            const updatedRecord = { ...record };
+            
+            // Check both rakkas for updates
+            for (let rakkaNum = 1; rakkaNum <= 2; rakkaNum++) {
+              const prayerId = `${p}_${day}_rakka_${rakkaNum}`;
+              const existingEntry = historyData.entries.find(entry => 
+                entry.prayer_id === prayerId && entry.date === dateStr
+              );
+              
+              if (existingEntry && existingEntry.count > 0) {
+                if (!updatedRecord.rakka[rakkaNum]) {
+                  updatedRecord.rakka[rakkaNum] = {
+                    verses: [],
+                    questions: { understood: false, memorized: false, applied: false, taught: false },
+                    taughtCount: 0
+                  };
+                }
+                
+                // Update if count has changed
+                if (updatedRecord.rakka[rakkaNum].taughtCount !== existingEntry.count) {
+                  updatedRecord.rakka[rakkaNum].questions.taught = true;
+                  updatedRecord.rakka[rakkaNum].taughtCount = existingEntry.count;
+                  hasUpdates = true;
+                  console.log(`Updated count for Rakka ${rakkaNum} on focus:`, existingEntry.count);
+                }
+              }
+            }
+            
+            // Update record if there were changes
+            if (hasUpdates) {
+              setRecord(updatedRecord);
+            }
+          } catch (error) {
+            console.log('Error refreshing data on focus:', error);
+          }
+        };
+        
+        refreshData();
+      }
+    }, [p, day, record?.prayer])
+  );
 
   // Clear range selection when switching rakkas to prevent contamination
   const handleRakkaSwitch = (newRakka: RakkaIndex) => {
