@@ -203,8 +203,8 @@ export default function ZikrDetailsScreen() {
 
   const handleSaveNote = async (entryId: string) => {
     try {
-      // Update the note via API
-      const response = await updateZikrEntry(entryId, undefined, editNoteText);
+      // Update the note via API using the new comment parameter
+      const response = await updateZikrEntry(entryId, undefined, undefined, editNoteText);
       if (response.success) {
         // Refresh history
         await loadZikrHistory();
