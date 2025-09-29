@@ -892,18 +892,25 @@ const styles = StyleSheet.create({
     minWidth: 50,
     textAlign: 'center',
   },
-  progressBarContainer: {
+  // New Clean Progress Bar System
+  newProgressBarContainer: {
     flex: 1,
+    height: 10,
+    justifyContent: 'center',
   },
-  progressBarBg: {
-    height: 8,
-    backgroundColor: Colors.lightGray,
-    borderRadius: 4,
+  newProgressBarTrack: {
+    height: 10,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 5,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
-  progressBarFill: {
+  newProgressBarFill: {
     height: '100%',
-    borderRadius: 4,
+    backgroundColor: '#006400',
+    borderRadius: 5,
+    minWidth: 2,
   },
   countNumber: {
     fontSize: 14,
