@@ -1045,4 +1045,113 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     marginBottom: 2,
   },
+  // History Enhancement Styles
+  historyHeader: {
+    marginBottom: 16,
+  },
+  historyFilters: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 12,
+  },
+  filterButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    backgroundColor: Colors.lightGray,
+    borderWidth: 1,
+    borderColor: Colors.mediumGray,
+  },
+  filterButtonActive: {
+    backgroundColor: Colors.warmOrange,
+    borderColor: Colors.warmOrange,
+  },
+  filterButtonText: {
+    fontSize: 12,
+    color: Colors.darkGray,
+    fontWeight: '500',
+  },
+  filterButtonTextActive: {
+    color: Colors.light,
+  },
+  historyItemClickable: {
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.warmOrange,
+  },
+  prayerLinkIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  prayerLinkText: {
+    fontSize: 11,
+    color: Colors.warmOrange,
+    fontWeight: '600',
+  },
+  commentsSection: {
+    marginTop: 8,
+  },
+  editableComment: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    padding: 8,
+    backgroundColor: Colors.background,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+  },
+  historyComments: {
+    fontSize: 12,
+    color: Colors.darkGray,
+    fontStyle: 'italic',
+    flex: 1,
+  },
+  inlineEditContainer: {
+    backgroundColor: Colors.background,
+    borderRadius: 6,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: Colors.mediumGray,
+  },
+  inlineEditInput: {
+    minHeight: 60,
+    borderWidth: 1,
+    borderColor: Colors.lightGray,
+    borderRadius: 4,
+    padding: 8,
+    fontSize: 14,
+    textAlignVertical: 'top',
+    marginBottom: 8,
+  },
+  inlineEditButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  inlineEditSave: {
+    backgroundColor: Colors.warmOrange,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    flex: 1,
+    alignItems: 'center',
+  },
+  inlineEditCancel: {
+    backgroundColor: Colors.lightGray,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    flex: 1,
+    alignItems: 'center',
+  },
+  inlineEditSaveText: {
+    color: Colors.light,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  inlineEditCancelText: {
+    color: Colors.darkGray,
+    fontWeight: '500',
+    fontSize: 14,
+  },
 });
