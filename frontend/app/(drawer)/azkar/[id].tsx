@@ -741,7 +741,7 @@ export default function ZikrDetailsScreen() {
                             </TouchableOpacity>
                             <TouchableOpacity 
                               style={styles.editActionButton}
-                              onPress={handleCancelEdit}
+                              onPress={handleCancelEntryEdit}
                             >
                               <Ionicons name="close" size={16} color={Colors.accent} />
                             </TouchableOpacity>
