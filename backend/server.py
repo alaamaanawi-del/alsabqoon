@@ -182,6 +182,9 @@ class ZikrEntryCreate(BaseModel):
     timezone: Optional[str] = None  # User's device timezone (e.g., "America/New_York")
     client_timestamp: Optional[str] = None  # Exact timestamp from client device
     comment: Optional[str] = None  # Optional comment for the entry
+    source: Optional[str] = "manual"  # 'prayer' or 'manual'
+    prayer_id: Optional[str] = None  # Link to prayer entry if source is 'prayer'
+    rakka: Optional[int] = None  # Rakka number if from prayer
 
 class ZikrEntryUpdate(BaseModel):
     count: int
