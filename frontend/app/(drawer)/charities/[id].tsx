@@ -348,7 +348,39 @@ export default function CharityDetailScreen() {
 
           {/* History */}
           <View style={styles.historyContainer}>
-            <Text style={styles.historyTitle}>سجل الصدقات</Text>
+            <View style={styles.historyHeader}>
+              <Text style={styles.historyTitle}>سجل الصدقات</Text>
+              
+              {/* Filter Controls */}
+              <View style={styles.historyFilters}>
+                <TouchableOpacity 
+                  style={[styles.filterButton, historyFilter === 'all' && styles.filterButtonActive]}
+                  onPress={() => setHistoryFilter('all')}
+                >
+                  <Text style={[styles.filterButtonText, historyFilter === 'all' && styles.filterButtonTextActive]}>
+                    الكل
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.filterButton, historyFilter === 'prayer' && styles.filterButtonActive]}
+                  onPress={() => setHistoryFilter('prayer')}
+                >
+                  <Text style={[styles.filterButtonText, historyFilter === 'prayer' && styles.filterButtonTextActive]}>
+                    من الصلاة
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={[styles.filterButton, historyFilter === 'manual' && styles.filterButtonActive]}
+                  onPress={() => setHistoryFilter('manual')}
+                >
+                  <Text style={[styles.filterButtonText, historyFilter === 'manual' && styles.filterButtonTextActive]}>
+                    يدوي
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
             {Object.entries(groupHistoryByDate()).map(([date, entries], dateIndex) => (
               <View key={date} style={[
                 styles.dateGroup,
