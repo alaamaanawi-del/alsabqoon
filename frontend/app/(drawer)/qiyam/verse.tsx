@@ -53,7 +53,7 @@ function TabBtn({ label, active, onPress }: { label: string; active: boolean; on
   );
 }
 
-// Question Row Component - EXACT SAME as prayers
+// Question Row Component - EXACT SAME as prayers with task icon
 function QuestionRow({ 
   label, 
   value, 
@@ -71,23 +71,24 @@ function QuestionRow({
 }) {
   return (
     <View style={[styles.questionRow, isHighlighted && styles.highlightedRow]}>
-      <TouchableOpacity
-        onPress={onTask}
-        style={[styles.taskButton, taskOn && styles.taskButtonActive]}
-        activeOpacity={0.8}
-      >
-        <Text style={[styles.taskButtonText, taskOn && styles.taskButtonActiveText]}>مهام</Text>
-      </TouchableOpacity>
-      
       <View style={styles.questionContent}>
         <Text style={styles.questionLabel}>{label}</Text>
-        <Switch
-          value={value}
-          onValueChange={onToggle}
-          trackColor={{ false: '#767577', true: Colors.warmOrange }}
-          thumbColor={value ? Colors.light : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-        />
+        <View style={styles.rightControls}>
+          <TouchableOpacity
+            onPress={onTask}
+            style={[styles.taskIcon, taskOn && styles.taskIconActive]}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.taskIconText, taskOn && styles.taskIconActiveText]}>📋</Text>
+          </TouchableOpacity>
+          <Switch
+            value={value}
+            onValueChange={onToggle}
+            trackColor={{ false: '#767577', true: Colors.warmOrange }}
+            thumbColor={value ? Colors.light : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+          />
+        </View>
       </View>
     </View>
   );
