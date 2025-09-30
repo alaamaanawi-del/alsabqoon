@@ -17,6 +17,7 @@ const PRAYERS = [
   { key: "asr", label: "العصر" },
   { key: "maghrib", label: "المغرب" },
   { key: "isha", label: "العشاء" },
+  { key: "qiyam", label: "قيام الليل" },  // Add Qiyam prayer
 ];
 
 export default function MyPrayers() {
