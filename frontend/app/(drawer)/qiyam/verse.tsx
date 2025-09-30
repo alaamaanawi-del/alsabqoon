@@ -991,6 +991,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  rightControls: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 12,
+  },
+  taskIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  taskIconActive: {
+    backgroundColor: Colors.warmOrange,
+  },
+  taskIconText: {
+    fontSize: 16,
+    opacity: 0.5,
+  },
+  taskIconActiveText: {
+    opacity: 1.0,
+  },
   questionLabel: {
     color: Colors.light,
     fontSize: 14,
