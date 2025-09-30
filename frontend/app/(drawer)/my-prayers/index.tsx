@@ -385,4 +385,19 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginBottom: 12,
   },
+  qiyamStatsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 60,
+  },
+  qiyamVerseCount: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  qiyamProgressText: {
+    color: Colors.warmOrange,
+    fontSize: 12,
+    fontWeight: '600',
+  },
 });
