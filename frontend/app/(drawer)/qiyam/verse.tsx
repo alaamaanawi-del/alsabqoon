@@ -296,30 +296,16 @@ export default function QiyamVerseScreen() {
     });
   };
 
-  // Search functionality - SAME AS PRAYER RECORD
-  const handleSearchChange = (text: string) => {
-    setQuery(text);
-    if (text.trim().length > 2) {
-      performSearch(text);
-    } else {
-      setSearchResults([]);
-      setShowSearchModal(false);
-    }
-  };
-
-  const performSearch = async (term: string) => {
-    if (!term.trim()) {
-      setSearchResults([]);
-      return;
-    }
-    
-    try {
-      const results = await searchQuran(term.trim());
-      setSearchResults(results);
-      setShowSearchModal(true);
-    } catch (error) {
-      console.error('Search error:', error);
-    }
+  // Search handlers - EXACT SAME AS PRAYERS
+  const onVerseNumberPress = (item: SearchItem) => {
+    setSelectedSura({
+      number: item.surahNumber,
+      nameAr: item.nameAr,
+      nameEn: item.nameEn || "",
+      initialVerse: item.ayah
+    });
+    setShowSuraViewer(true);
+    setShowSearchResults(false);
   };
 
   const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
@@ -334,51 +320,34 @@ export default function QiyamVerseScreen() {
   };
 
   const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
+    if (!activeVerse) return;
+    
     try {
-      // Add selected verses to display - same logic as prayers
-      const newVerses = verses.map(verse => ({
+      const ranges: VerseRange[] = verses.map(verse => ({
         surahNumber: selectedSura!.number,
         nameAr: selectedSura!.nameAr,
         nameEn: selectedSura!.nameEn,
         fromAyah: verse.ayah,
         toAyah: verse.ayah,
-        verseText: verse.textAr,
       }));
 
-      setSelectedVerses(prev => [...prev, ...newVerses]);
+      updateActiveVerse({ 
+        ranges: [...(activeVerse.ranges || []), ...ranges]
+      });
+      
+      setQuery("");
+      setResults([]);
       setShowSuraViewer(false);
       setSelectedSura(null);
+      
+      const verseCount = endVerse - startVerse + 1;
+      const verseText = verseCount === 1 ? `الآية ${startVerse}` : `الآيات ${startVerse}-${endVerse}`;
+      showToast(`تم إضافة ${verseText} من ${selectedSura!.nameAr}`);
+      
     } catch (error) {
-      console.error('Error handling range selection:', error);
+      console.error("Error handling range selection:", error);
+      showToast("حدث خطأ في حفظ الآيات المحددة");
     }
-  };
-
-  const handleSearchResultSelect = (result: SearchItem) => {
-    try {
-      // Add search result to selected verses - same as prayers
-      const newVerse = {
-        surahNumber: result.surahNumber,
-        nameAr: result.nameAr,
-        nameEn: result.nameEn,
-        fromAyah: result.ayah,
-        toAyah: result.ayah,
-        verseText: result.textAr,
-      };
-
-      setSelectedVerses(prev => [...prev, newVerse]);
-      setShowSearchModal(false);
-      setQuery('');
-    } catch (error) {
-      console.error('Error handling search result selection:', error);
-    }
-  };
-
-  // Navigation between verses
-  const navigateToVerse = (targetVerse: number) => {
-    router.replace({
-      pathname: '/(drawer)/qiyam/verse',
-      params: { date: currentDate, verse: targetVerse.toString() }
-    });
   };
 
   // Save entry
