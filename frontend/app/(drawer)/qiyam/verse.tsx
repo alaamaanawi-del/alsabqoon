@@ -281,13 +281,14 @@ export default function QiyamVerseScreen() {
 
   const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
     try {
-      // Add selected verses to display
+      // Add selected verses to display - same logic as prayers
       const newVerses = verses.map(verse => ({
         surahNumber: selectedSura!.number,
         nameAr: selectedSura!.nameAr,
         nameEn: selectedSura!.nameEn,
         fromAyah: verse.ayah,
         toAyah: verse.ayah,
+        verseText: verse.textAr,
       }));
 
       setSelectedVerses(prev => [...prev, ...newVerses]);
@@ -295,6 +296,26 @@ export default function QiyamVerseScreen() {
       setSelectedSura(null);
     } catch (error) {
       console.error('Error handling range selection:', error);
+    }
+  };
+
+  const handleSearchResultSelect = (result: SearchItem) => {
+    try {
+      // Add search result to selected verses - same as prayers
+      const newVerse = {
+        surahNumber: result.surahNumber,
+        nameAr: result.nameAr,
+        nameEn: result.nameEn,
+        fromAyah: result.ayah,
+        toAyah: result.ayah,
+        verseText: result.textAr,
+      };
+
+      setSelectedVerses(prev => [...prev, newVerse]);
+      setShowSearchModal(false);
+      setQuery('');
+    } catch (error) {
+      console.error('Error handling search result selection:', error);
     }
   };
 
