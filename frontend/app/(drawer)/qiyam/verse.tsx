@@ -722,18 +722,22 @@ export default function QiyamVerseScreen() {
         </View>
       </ScrollView>
 
-      {/* Fixed Bottom Bar - EXACTLY THE SAME AS PRAYER */}
+      {/* Fixed Bottom Bar */}
       <View style={styles.fixedBottomBar}>
         <TouchableOpacity 
           onPress={handleDone}
-          style={styles.doneButton}
+          style={[styles.doneButton, saving && styles.disabledButton]}
+          disabled={saving}
         >
-          <Text style={styles.doneButtonText}>تم</Text>
+          <Text style={styles.doneButtonText}>
+            {saving ? 'جاري الحفظ...' : 'تم'}
+          </Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
           onPress={handleAddVerse}
-          style={styles.addVerseButton}
+          style={[styles.addVerseButton, saving && styles.disabledButton]}
+          disabled={saving}
         >
           <Text style={styles.addVerseButtonText}>أضف آية</Text>
         </TouchableOpacity>
