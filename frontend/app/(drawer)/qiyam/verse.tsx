@@ -205,36 +205,94 @@ export default function QiyamVerseScreen() {
     loadData();
   }, [currentDate, currentVerseNumber]);
 
-  // Calculate total verses when surahs are selected
-  const totalVersesFromSurahs = useMemo(() => {
-    if (selectedSurahs.length === 0) return 0;
-    return selectedSurahs.reduce((total, surahNumber) => {
+  // Search logic - EXACT SAME AS PRAYERS
+  const bilingualParam = useMemo(() => (
+    lang === "ar_tafseer" ? "tafseer" : 
+    lang === "ar_en" ? "en" : 
+    lang === "ar_es" ? "es" : 
+    ""
+  ), [lang]);
+
+  const doSearch = async () => {
+    if (!query.trim()) { 
+      setResults([]); 
+      setShowSearchResults(false);
+      return; 
+    }
+    try {
+      const rows = await searchQuran(query, (bilingualParam as any) || '');
+      setResults(rows as SearchItem[]);
+      if (rows.length > 0) {
+        setShowSearchResults(true);
+      }
+    } catch (e) {
+      console.warn("search error", e);
+      setResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  const handleSearchChange = (text: string) => {
+    setQuery(text);
+  };
+  
+  useEffect(() => { 
+    const t = setTimeout(doSearch, 250); 
+    return () => clearTimeout(t); 
+  }, [query, bilingualParam]);
+
+  // Compute numberOfVerses when selectedSurahs changes
+  useEffect(() => {
+    if (!activeVerse || activeVerse.inputMethod !== 'surah_selection') return;
+    
+    const totalVerses = activeVerse.selectedSurahs.reduce((total, surahNumber) => {
       const surah = surahs.find(s => s.number === surahNumber);
       return total + (surah?.verse_count || 0);
     }, 0);
-  }, [selectedSurahs, surahs]);
+    
+    if (totalVerses !== activeVerse.numberOfVerses) {
+      updateActiveVerse({ numberOfVerses: totalVerses });
+    }
+  }, [activeVerse?.selectedSurahs, surahs, activeVerse?.inputMethod]);
 
-  // Get final verses count
-  const finalVersesCount = inputMethod === 'surah_selection' ? totalVersesFromSurahs : parseInt(manualVersesCount) || 0;
+  // Helper to update active verse
+  const updateActiveVerse = (updates: Partial<QiyamVerse>) => {
+    setVerses(prev => prev.map((v, i) => 
+      i === activeIndex ? { ...v, ...updates } : v
+    ));
+  };
 
   // Toggle functions
-  const toggleQuestion = (key: QiyamQuestionKey) => {
-    setQuestions(prev => ({ ...prev, [key]: !prev[key] }));
+  const toggleQuestion = (key: keyof Pick<QiyamVerse, 'understood' | 'made_dua' | 'practiced' | 'taught'>) => {
+    updateActiveVerse({ [key]: !activeVerse[key] });
   };
 
-  const toggleTask = (key: QiyamQuestionKey) => {
-    setAddToTask(prev => ({ ...prev, [key]: !prev[key] }));
-    showToast(addToTask[key] ? 'أُزيلت من المهام' : 'أُضيفت للمَهَام');
+  const toggleTask = (key: keyof QiyamVerse['taskMarked']) => {
+    const newTaskMarked = { 
+      ...activeVerse.taskMarked, 
+      [key]: !activeVerse.taskMarked[key] 
+    };
+    updateActiveVerse({ taskMarked: newTaskMarked });
+    showToast(newTaskMarked[key] ? 'أُضيفت للمَهَام' : 'أُزيلت من المهام');
   };
 
-  // Handle surah selection
+  // Surah selection toggle
   const handleSurahToggle = (surahNumber: number) => {
-    setSelectedSurahs(prev => {
-      if (prev.includes(surahNumber)) {
-        return prev.filter(s => s !== surahNumber);
-      } else {
-        return [...prev, surahNumber];
-      }
+    if (!activeVerse) return;
+    
+    const newSelectedSurahs = activeVerse.selectedSurahs.includes(surahNumber)
+      ? activeVerse.selectedSurahs.filter(s => s !== surahNumber)
+      : [...activeVerse.selectedSurahs, surahNumber];
+    
+    updateActiveVerse({ selectedSurahs: newSelectedSurahs });
+  };
+
+  // Navigation between verses
+  const navigateToVerse = (targetVerse: number) => {
+    setActiveIndex(targetVerse - 1);
+    router.replace({
+      pathname: '/(drawer)/qiyam/verse',
+      params: { date: currentDate, verse: targetVerse.toString() }
     });
   };
 
