@@ -146,24 +146,44 @@ export default function QiyamVerseScreen() {
     taught: false,
   });
 
-  // Load data
+  // Load data with proper cleanup
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         
+        // Clear all form data first to prevent state leakage
+        setInputMethod('manual');
+        setManualVersesCount('');
+        setSelectedSurahs([]);
+        setQuestions({
+          understood: false,
+          made_dua: false,
+          practiced: false,
+          taught: false,
+        });
+        setTaughtCount(0);
+        setTeachingComment('');
+        setNotes('');
+        setSelectedVerses([]);
+        setQuery('');
+        setCurrentEntry(null);
+        
         // Load surahs with verse counts
         const surahsData = await getSurahsWithVerseCounts();
         setSurahs(surahsData);
         
-        // Load Qiyam history for this date
+        // Load Qiyam history for this specific date
         const historyResponse = await getQiyamHistory(currentDate);
         setQiyamHistory(historyResponse.entries || []);
         
-        // Find current entry
-        const existing = historyResponse.entries.find(e => e.verse_number === verseNumber);
+        // Find current entry for this specific verse and date
+        const existing = (historyResponse.entries || []).find(e => 
+          e.verse_number === verseNumber && e.date === currentDate
+        );
         
         if (existing) {
+          // Only load data if entry exists for this specific verse and date
           setCurrentEntry(existing);
           setInputMethod(existing.input_method);
           setManualVersesCount(existing.verses_count.toString());
@@ -187,7 +207,7 @@ export default function QiyamVerseScreen() {
     };
     
     loadData();
-  }, [currentDate, verseNumber]);
+  }, [currentDate, verseNumber]); // Reload when date OR verse changes
 
   // Calculate total verses when surahs are selected
   const totalVersesFromSurahs = useMemo(() => {
