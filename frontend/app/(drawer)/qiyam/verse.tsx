@@ -122,52 +122,34 @@ export default function QiyamVerseScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   
-  const verseNumber = parseInt(verse || '1');
+  const currentVerseNumber = parseInt(verse || '1');
   const currentDate = date || new Date().toISOString().split('T')[0];
 
-  // State management - same structure as prayer record
+  // Main state - array of verses like prayers have rakkas
+  const [verses, setVerses] = useState<QiyamVerse[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [surahs, setSurahs] = useState<SurahWithVerseCount[]>([]);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [qiyamHistory, setQiyamHistory] = useState<QiyamEntry[]>([]);
-  const [currentEntry, setCurrentEntry] = useState<QiyamEntry | null>(null);
-  
-  // Search and selection state - SAME AS PRAYER RECORD
-  const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
-  const [showSearchModal, setShowSearchModal] = useState(false);
+
+  // Search state - EXACT SAME AS PRAYERS
+  const [query, setQuery] = useState("");
+  const [lang, setLang] = useState<"ar" | "ar_tafseer" | "ar_en" | "ar_es">("ar");
+  const [results, setResults] = useState<SearchItem[]>([]);
   const [showSurahSelector, setShowSurahSelector] = useState(false);
   const [showSuraViewer, setShowSuraViewer] = useState(false);
-  const [selectedSura, setSelectedSura] = useState<{ number: number; nameAr: string; nameEn: string; initialVerse: number } | null>(null);
-  const [selectedVerses, setSelectedVerses] = useState<any[]>([]);
-  
-  // Input method state (manual vs surah selection)
-  const [inputMethod, setInputMethod] = useState<'manual' | 'surah_selection'>('manual');
-  const [manualVersesCount, setManualVersesCount] = useState('');
-  const [selectedSurahs, setSelectedSurahs] = useState<number[]>([]);
-  const [surahs, setSurahs] = useState<SurahWithVerseCount[]>([]);
-  
-  // Evaluation questions state
-  const [questions, setQuestions] = useState({
-    understood: false,
-    made_dua: false,
-    practiced: false,
-    taught: false,
-  });
-  
-  // Teaching details
-  const [taughtCount, setTaughtCount] = useState(0);
-  const [teachingComment, setTeachingComment] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [selectedSura, setSelectedSura] = useState<{
+    number: number;
+    nameAr: string;
+    nameEn: string;
+    initialVerse?: number;
+  } | null>(null);
+
+  // Teaching comments state
   const [showTeachingComments, setShowTeachingComments] = useState(false);
-  
-  // General notes
-  const [notes, setNotes] = useState('');
-  
-  // Add to task state
-  const [addToTask, setAddToTask] = useState({
-    understood: false,
-    made_dua: false,
-    practiced: false,
-    taught: false,
-  });
+
+  const activeVerse = verses[activeIndex];
 
   // Load data with proper cleanup
   useEffect(() => {
