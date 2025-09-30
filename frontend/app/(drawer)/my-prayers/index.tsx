@@ -40,11 +40,25 @@ export default function MyPrayers() {
     const date = fmtYMD(selectedDate);
     const out: Record<string, { r1: number; r2: number }> = {};
     for (const p of PRAYERS) {
-      const rec = await loadPrayerRecord(p.key, date);
-      const sc = computeScore(rec);
-      out[p.key] = { r1: sc.r1, r2: sc.r2 };
+      if (p.key !== 'qiyam') {
+        const rec = await loadPrayerRecord(p.key, date);
+        const sc = computeScore(rec);
+        out[p.key] = { r1: sc.r1, r2: sc.r2 };
+      }
     }
     setScores(out);
+    
+    // Load Qiyam stats
+    try {
+      const qStats = await getQiyamStats(date);
+      setQiyamStats({
+        total_verses: qStats.total_verses,
+        progress_percentage: qStats.progress_percentage
+      });
+    } catch (error) {
+      console.log('No Qiyam data for this date:', error);
+      setQiyamStats({ total_verses: 0, progress_percentage: 0 });
+    }
     
     // Load tasks to check task icons
     const allTasks = await loadTasks();
