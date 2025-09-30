@@ -2285,6 +2285,19 @@ def main():
     test_results.append(("Prayer-Dawa Synchronization", test_prayer_dawa_synchronization()))
     test_results.append(("Prayer Navigation Links", test_prayer_navigation_links()))
     
+    print("\n" + "=" * 70)
+    print("🌙 NEW QIYAM PRAYER API FUNCTIONALITY TESTS")
+    print("=" * 70)
+    
+    # NEW: Qiyam Prayer API tests as requested in review
+    test_results.append(("Qiyam: Surahs with Counts", test_qiyam_surahs_with_counts()))
+    test_results.append(("Qiyam: Create Manual Entry", test_qiyam_create_manual_entry()))
+    test_results.append(("Qiyam: Create Surah Selection Entry", test_qiyam_create_surah_selection_entry()))
+    test_results.append(("Qiyam: Update Entry", test_qiyam_update_entry()))
+    test_results.append(("Qiyam: History API", test_qiyam_history()))
+    test_results.append(("Qiyam: Statistics API", test_qiyam_stats()))
+    test_results.append(("Qiyam: Auto-linking Verification", test_qiyam_auto_linking()))
+    
     # Summary
     print("\n" + "=" * 70)
     print("📊 COMPREHENSIVE TEST SUMMARY")
