@@ -706,14 +706,14 @@ export default function QiyamVerseScreen() {
           )}
         </View>
 
-        {/* Comments Section - EXACTLY THE SAME AS PRAYER */}
+        {/* Comments Section */}
         <View style={styles.commentsSection}>
           <Text style={styles.sectionTitle}>التعليقات والملاحظات</Text>
           <TextInput
             placeholder="اضف تعليقاتك وملاحظاتك هنا..."
             placeholderTextColor="#888"
-            value={notes}
-            onChangeText={setNotes}
+            value={activeVerse.notes}
+            onChangeText={(text) => updateActiveVerse({ notes: text })}
             style={styles.commentsInput}
             textAlign="right"
             multiline
