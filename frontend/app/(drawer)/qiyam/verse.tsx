@@ -658,6 +658,39 @@ export default function QiyamVerseScreen() {
           <Text style={styles.addVerseButtonText}>أضف آية</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Search Results Modal - SAME AS PRAYER */}
+      <SearchResultsModal
+        visible={showSearchModal}
+        results={searchResults}
+        onClose={() => setShowSearchModal(false)}
+        onSelectResult={(result) => {
+          // Handle search result selection
+          setShowSearchModal(false);
+          setQuery('');
+        }}
+      />
+
+      {/* Surah Selector Modal - SAME AS PRAYER */}
+      <SurahSelector
+        visible={showSurahSelector}
+        onClose={() => setShowSurahSelector(false)}
+        onSelectSurah={handleSelectSurah}
+        onSelectWholeSurah={handleSelectSurah}
+      />
+
+      {/* Sura Viewer Modal - SAME AS PRAYER */}
+      {selectedSura && (
+        <SuraViewer
+          visible={showSuraViewer}
+          surah={selectedSura}
+          onClose={() => {
+            setShowSuraViewer(false);
+            setSelectedSura(null);
+          }}
+          onRangeSelected={handleRangeSelected}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
