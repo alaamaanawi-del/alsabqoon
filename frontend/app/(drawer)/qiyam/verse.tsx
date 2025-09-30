@@ -605,7 +605,7 @@ export default function QiyamVerseScreen() {
           </View>
         )}
 
-        {/* Search Section - ALWAYS VISIBLE */}
+        {/* Search Section - EXACT SAME AS PRAYER RECORD */}
         <View style={styles.searchSection}>
           <View style={styles.controlsRow}>
             <TouchableOpacity 
@@ -614,6 +614,7 @@ export default function QiyamVerseScreen() {
             >
               <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
             </TouchableOpacity>
+
           </View>
 
           <TextInput
@@ -624,6 +625,9 @@ export default function QiyamVerseScreen() {
             style={styles.searchInput}
             textAlign="right"
           />
+
+          {/* Search Results - Now shown in SearchResultsModal instead of inline */}
+          {/* Inline search results removed to prevent overlapping with questions */}
         </View>
 
         {/* Questions Section */}
