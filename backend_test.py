@@ -2209,6 +2209,291 @@ def test_prayer_navigation_links():
             print(f"❌ Error: {e}")
     
     return True
+
+def test_qiyam_surahs_with_counts():
+    """Test GET /api/quran/surahs-with-counts endpoint"""
+    print("\n🔍 Testing Qiyam: Surahs with Counts (GET /api/quran/surahs-with-counts)...")
+    
+    try:
+        response = requests.get(f"{BASE_URL}/quran/surahs-with-counts")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"   ✅ Found {len(data)} surahs with verse counts")
+            
+            # Verify specific surahs
+            al_fatiha = next((s for s in data if s['number'] == 1), None)
+            if al_fatiha:
+                print(f"   ✅ Al-Fatiha: {al_fatiha['nameAr']} ({al_fatiha['verse_count']} verses)")
+                if al_fatiha['verse_count'] == 7:
+                    print("   ✅ Al-Fatiha verse count correct (7 verses)")
+                else:
+                    print(f"   ❌ Al-Fatiha verse count incorrect: expected 7, got {al_fatiha['verse_count']}")
+                    return False
+            
+            al_baqarah = next((s for s in data if s['number'] == 2), None)
+            if al_baqarah:
+                print(f"   ✅ Al-Baqarah: {al_baqarah['nameAr']} ({al_baqarah['verse_count']} verses)")
+                if al_baqarah['verse_count'] == 286:
+                    print("   ✅ Al-Baqarah verse count correct (286 verses)")
+                else:
+                    print(f"   ❌ Al-Baqarah verse count incorrect: expected 286, got {al_baqarah['verse_count']}")
+                    return False
+            
+            return True
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error testing surahs with counts: {e}")
+        return False
+
+def test_qiyam_create_manual_entry():
+    """Test POST /api/qiyam/entry with manual input method"""
+    print("\n🔍 Testing Qiyam: Create Manual Entry (POST /api/qiyam/entry)...")
+    
+    test_date = "2025-01-30"
+    entry_data = {
+        "verse_number": 1,
+        "verses_count": 10,
+        "date": test_date,
+        "input_method": "manual",
+        "understood": True,
+        "made_dua": False,
+        "practiced": True,
+        "taught": True,
+        "people_taught": 3,
+        "teaching_comment": "علمت الآيات لثلاثة أشخاص في المسجد",
+        "notes": "قراءة مفيدة جداً، تدبرت معاني الآيات"
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/qiyam/entry", json=entry_data)
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"   ✅ Created Qiyam entry: {data['id']}")
+            print(f"   ✅ Verse number: {data['verse_number']}, Verses count: {data['verses_count']}")
+            print(f"   ✅ Questions answered: understood={data['understood']}, taught={data['taught']}")
+            print(f"   ✅ People taught: {data['people_taught']}")
+            print(f"   ✅ Auto-linked to verses read entry: {data.get('verses_read_entry_id', 'Not found')}")
+            
+            # Store entry ID for later tests
+            global qiyam_manual_entry_id
+            qiyam_manual_entry_id = data['id']
+            
+            return True
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error creating manual Qiyam entry: {e}")
+        return False
+
+def test_qiyam_create_surah_selection_entry():
+    """Test POST /api/qiyam/entry with surah_selection method"""
+    print("\n🔍 Testing Qiyam: Create Surah Selection Entry (POST /api/qiyam/entry)...")
+    
+    test_date = "2025-01-30"
+    entry_data = {
+        "verse_number": 2,
+        "verses_count": 50,
+        "date": test_date,
+        "input_method": "surah_selection",
+        "selected_surahs": [1, 2],  # Al-Fatiha and Al-Baqarah
+        "understood": True,
+        "made_dua": True,
+        "practiced": True,
+        "taught": True,
+        "people_taught": 2,
+        "teaching_comment": "شرحت معاني الآيات من الفاتحة والبقرة",
+        "notes": "قراءة من سورتي الفاتحة والبقرة مع التدبر"
+    }
+    
+    try:
+        response = requests.post(f"{BASE_URL}/qiyam/entry", json=entry_data)
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"   ✅ Created Qiyam entry: {data['id']}")
+            print(f"   ✅ Verse number: {data['verse_number']}, Verses count: {data['verses_count']}")
+            print(f"   ✅ Input method: {data['input_method']}")
+            print(f"   ✅ Selected surahs: {data['selected_surahs']}")
+            print(f"   ✅ Surah names: {data.get('surah_names', 'Not resolved')}")
+            print(f"   ✅ All questions answered: {data['understood']}, {data['made_dua']}, {data['practiced']}, {data['taught']}")
+            
+            # Store entry ID for later tests
+            global qiyam_surah_entry_id
+            qiyam_surah_entry_id = data['id']
+            
+            return True
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error creating surah selection Qiyam entry: {e}")
+        return False
+
+def test_qiyam_update_entry():
+    """Test PUT /api/qiyam/entry/{entry_id}"""
+    print("\n🔍 Testing Qiyam: Update Entry (PUT /api/qiyam/entry/{entry_id})...")
+    
+    # Use the manual entry ID from previous test
+    try:
+        entry_id = qiyam_manual_entry_id
+    except NameError:
+        print("   ❌ Skipping update test - no manual entry ID available")
+        return False
+        
+    update_data = {
+        "verses_count": 15,  # Changed from 10 to 15
+        "understood": True,
+        "made_dua": True,  # Changed from False to True
+        "practiced": True,
+        "taught": False,  # Changed from True to False
+        "notes": "تحديث: قراءة إضافية مع مزيد من التدبر"
+    }
+    
+    try:
+        response = requests.put(f"{BASE_URL}/qiyam/entry/{entry_id}", json=update_data)
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"   ✅ Updated Qiyam entry successfully")
+            print(f"   ✅ Response: {data.get('message', 'Success')}")
+            
+            return True
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error updating Qiyam entry: {e}")
+        return False
+
+def test_qiyam_history():
+    """Test GET /api/qiyam/history/{date}"""
+    print("\n🔍 Testing Qiyam: History API (GET /api/qiyam/history/{date})...")
+    
+    test_date = "2025-01-30"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/qiyam/history/{test_date}")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            entries = data.get('entries', [])
+            print(f"   ✅ Found {len(entries)} Qiyam entries for {test_date}")
+            
+            for i, entry in enumerate(entries, 1):
+                print(f"   ✅ Entry {i}: Verse {entry['verse_number']}, {entry['verses_count']} verses")
+                print(f"      Method: {entry['input_method']}")
+                if entry.get('surah_names'):
+                    print(f"      Surahs: {entry['surah_names']}")
+                questions = [entry.get('understood'), entry.get('made_dua'), entry.get('practiced'), entry.get('taught')]
+                print(f"      Questions: {questions.count(True)}/4 answered yes")
+                if entry.get('notes'):
+                    print(f"      Notes: {entry['notes'][:50]}...")
+            
+            return len(entries) > 0
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error getting Qiyam history: {e}")
+        return False
+
+def test_qiyam_stats():
+    """Test GET /api/qiyam/stats/{date}"""
+    print("\n🔍 Testing Qiyam: Statistics API (GET /api/qiyam/stats/{date})...")
+    
+    test_date = "2025-01-30"
+    
+    try:
+        response = requests.get(f"{BASE_URL}/qiyam/stats/{test_date}")
+        print(f"   Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"   ✅ Qiyam Statistics for {test_date}:")
+            print(f"      Total verses: {data['total_verses']}")
+            print(f"      Total sessions: {data['total_sessions']}")
+            print(f"      Progress percentage: {data['progress_percentage']}% (based on 4 questions per verse)")
+            if data.get('last_entry'):
+                print(f"      Last entry: {data['last_entry']}")
+            
+            # Verify progress calculation (4 questions per verse)
+            expected_total_questions = data['total_sessions'] * 4
+            print(f"   ✅ Progress calculation based on {expected_total_questions} total questions")
+            
+            return True
+        else:
+            print(f"   ❌ Failed with status {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error getting Qiyam stats: {e}")
+        return False
+
+def test_qiyam_auto_linking():
+    """Test auto-linking functionality to azkar entries (ID 12 and 13)"""
+    print("\n🔍 Testing Qiyam: Auto-linking Verification...")
+    
+    test_date = "2025-01-30"
+    
+    # Test auto-linking to "آيات قرأتها" (zikr_id=12)
+    print("   Testing auto-link to 'آيات قرأتها' (zikr_id=12)...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/12/history")
+        if response.status_code == 200:
+            data = response.json()
+            qiyam_entries = [e for e in data['entries'] if e.get('source') == 'qiyam' and e['date'] == test_date]
+            if qiyam_entries:
+                print(f"   ✅ Found {len(qiyam_entries)} Qiyam-linked entries in 'آيات قرأتها'")
+                entry = qiyam_entries[0]
+                print(f"   ✅ Entry count: {entry['count']}, Comment: {entry.get('edit_notes', [''])[0] if entry.get('edit_notes') else 'No comment'}")
+            else:
+                print("   ❌ No Qiyam-linked entries found in 'آيات قرأتها'")
+                return False
+        else:
+            print(f"   ❌ Failed to get azkar history: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ Error checking auto-link to آيات قرأتها: {e}")
+        return False
+    
+    # Test auto-linking to "الدعوة – تعليم" (zikr_id=13) when taught=True
+    print("   Testing auto-link to 'الدعوة – تعليم' (zikr_id=13)...")
+    try:
+        response = requests.get(f"{BASE_URL}/azkar/13/history")
+        if response.status_code == 200:
+            data = response.json()
+            qiyam_dawa_entries = [e for e in data['entries'] if e.get('source') == 'qiyam' and e['date'] == test_date]
+            if qiyam_dawa_entries:
+                print(f"   ✅ Found {len(qiyam_dawa_entries)} Qiyam-linked entries in 'الدعوة – تعليم'")
+                entry = qiyam_dawa_entries[0]
+                print(f"   ✅ Entry count: {entry['count']}, Comment: {entry.get('edit_notes', [''])[0] if entry.get('edit_notes') else 'No comment'}")
+            else:
+                print("   ❌ No Qiyam-linked entries found in 'الدعوة – تعليم'")
+                return False
+        else:
+            print(f"   ❌ Failed to get dawa azkar history: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"   ❌ Error checking auto-link to الدعوة – تعليم: {e}")
+        return False
+    
+    return True
+
 def main():
     """Run all backend tests including new charity functionality"""
     print("🚀 Starting Comprehensive Backend API Tests for ALSABQON")
