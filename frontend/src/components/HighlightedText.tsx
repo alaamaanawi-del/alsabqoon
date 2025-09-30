@@ -15,7 +15,7 @@ export default function HighlightedText({
   style, 
   highlightStyle 
 }: HighlightedTextProps) {
-  if (!searchTerm.trim()) {
+  if (!searchTerm || !searchTerm.trim()) {
     return <Text style={style}>{text}</Text>;
   }
 
