@@ -508,7 +508,7 @@ export default function QiyamVerseScreen() {
         </ScrollView>
       </View>
 
-      {/* Main Scrollable Content - SAME STRUCTURE AS PRAYER */}
+      {/* Main Scrollable Content */}
       <ScrollView 
         style={styles.scrollContent} 
         contentContainerStyle={{
@@ -517,10 +517,10 @@ export default function QiyamVerseScreen() {
           paddingRight: Math.max(0, insets.right),
         }}
       >
-        {/* Selected Verses Display - SAME AS PRAYER */}
-        {selectedVerses.length > 0 && (
+        {/* Selected Verses Display */}
+        {activeVerse.ranges.length > 0 && (
           <SelectedVersesDisplay 
-            ranges={selectedVerses} 
+            ranges={activeVerse.ranges} 
             maxLines={8}
           />
         )}
