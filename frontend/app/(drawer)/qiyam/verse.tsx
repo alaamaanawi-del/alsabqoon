@@ -20,7 +20,7 @@ import SelectedVersesDisplay from "../../../src/components/SelectedVersesDisplay
 import HighlightedText from "../../../src/components/HighlightedText";
 import TaskProgressBar from "../../../src/components/TaskProgressBar";
 
-// Types for search rows
+// Types - EXACT SAME AS PRAYERS
 interface DBItem {
   surahNumber: number;
   nameAr: string;
@@ -33,11 +33,34 @@ interface DBItem {
 }
 interface SearchItem extends DBItem {}
 
-type QiyamQuestionKey = 'understood' | 'made_dua' | 'practiced' | 'taught';
+interface VerseRange {
+  surahNumber: number;
+  nameAr: string;
+  nameEn: string;
+  fromAyah: number;
+  toAyah: number;
+}
 
-function ymdFromParam(dateParam?: string): string {
-  if (!dateParam) return new Date().toISOString().split('T')[0];
-  return dateParam;
+// Qiyam Verse Object Structure
+interface QiyamVerse {
+  verseNumber: number;
+  numberOfVerses: number;
+  inputMethod: 'manual' | 'surah_selection';
+  selectedSurahs: number[];
+  understood: boolean;
+  made_dua: boolean;
+  practiced: boolean;
+  taught: boolean;
+  people_taught: number;
+  teaching_comment: string;
+  notes: string;
+  ranges: VerseRange[];
+  taskMarked: {
+    understood: boolean;
+    made_dua: boolean;
+    practiced: boolean;
+    taught: boolean;
+  };
 }
 
 // Tab Button Component - EXACT SAME as prayers
