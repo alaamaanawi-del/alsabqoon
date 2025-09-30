@@ -23,6 +23,10 @@ const PRAYERS = [
 export default function MyPrayers() {
   const [scores, setScores] = useState<Record<string, { r1: number; r2: number }>>({});
   const [tasks, setTasks] = useState<any[]>([]);
+  const [qiyamStats, setQiyamStats] = useState<{ total_verses: number; progress_percentage: number }>({ 
+    total_verses: 0, 
+    progress_percentage: 0 
+  });
   const [showCal, setShowCal] = useState(false);
   const [monthDate, setMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
