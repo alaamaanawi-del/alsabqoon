@@ -221,6 +221,62 @@ export default function QiyamVerseScreen() {
     });
   };
 
+  // Search functionality - SAME AS PRAYER RECORD
+  const handleSearchChange = (text: string) => {
+    setQuery(text);
+    if (text.trim().length > 2) {
+      performSearch(text);
+    } else {
+      setSearchResults([]);
+      setShowSearchModal(false);
+    }
+  };
+
+  const performSearch = async (term: string) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    
+    try {
+      const results = await searchQuran(term.trim());
+      setSearchResults(results);
+      setShowSearchModal(true);
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+  };
+
+  const handleSelectSurah = (surah: { number: number; nameAr: string; nameEn: string }) => {
+    setSelectedSura({
+      number: surah.number,
+      nameAr: surah.nameAr,
+      nameEn: surah.nameEn,
+      initialVerse: 1
+    });
+    setShowSuraViewer(true);
+    setShowSurahSelector(false);
+  };
+
+  const handleRangeSelected = (startVerse: number, endVerse: number, verses: any[]) => {
+    try {
+      // Add selected verses to display
+      const newVerses = verses.map(verse => ({
+        surahNumber: selectedSura!.number,
+        nameAr: selectedSura!.nameAr,
+        nameEn: selectedSura!.nameEn,
+        fromAyah: verse.ayah,
+        toAyah: verse.ayah,
+      }));
+
+      setSelectedVerses(prev => [...prev, ...newVerses]);
+      setShowSuraViewer(false);
+      setSelectedSura(null);
+    } catch (error) {
+      console.error('Error handling range selection:', error);
+    }
+  };
+
   // Navigation between verses
   const navigateToVerse = (targetVerse: number) => {
     router.replace({
