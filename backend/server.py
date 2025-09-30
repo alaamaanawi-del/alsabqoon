@@ -98,11 +98,32 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Extended Surah metadata for Qiyam prayers
+class SurahMetaWithVerseCounts(BaseModel):
+    number: int
+    nameAr: str
+    nameEn: str
+    verse_count: int
+
 # Quran endpoints
 @api_router.get('/quran/surahs', response_model=List[SurahMeta])
 async def list_surahs():
     metas: List[SurahMeta] = [
         SurahMeta(number=s['number'], nameAr=s['surah'], nameEn=s.get('nameEn', f"Surah {s['number']}"))
+        for s in QURAN_DATA['surahs']
+    ]
+    return metas
+
+@api_router.get('/quran/surahs-with-counts', response_model=List[SurahMetaWithVerseCounts])
+async def list_surahs_with_verse_counts():
+    """Get surahs with verse counts for Qiyam prayer calculations"""
+    metas: List[SurahMetaWithVerseCounts] = [
+        SurahMetaWithVerseCounts(
+            number=s['number'], 
+            nameAr=s['surah'], 
+            nameEn=s.get('nameEn', f"Surah {s['number']}"),
+            verse_count=len(s['ayahs'])
+        )
         for s in QURAN_DATA['surahs']
     ]
     return metas
