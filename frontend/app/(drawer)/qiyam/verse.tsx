@@ -760,6 +760,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
   },
+  verseHighlight: {
+    backgroundColor: Colors.warmOrange,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  currentVerseText: {
+    color: Colors.dark,
+    fontSize: 16,
+    fontWeight: '700',
+  },
   dayText: {
     color: Colors.light,
     fontSize: 14,
