@@ -453,41 +453,39 @@ export default function QiyamVerseScreen() {
           />
         )}
 
-        {/* Search Section - SAME AS PRAYER */}
-        <View style={styles.searchSection}>
-          <View style={styles.controlsRow}>
-            <TouchableOpacity 
-              onPress={() => setShowSurahSelector(true)} 
-              style={styles.wholeSurahBtn}
-            >
-              <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TextInput
-            placeholder="ابحث في القرآن..."
-            placeholderTextColor="#888"
-            value={query}
-            onChangeText={handleSearchChange}
-            style={styles.searchInput}
-            textAlign="right"
-          />
-        </View>
-        {/* Dual Input System Section */}
+        {/* Dual Input System Section - FIRST */}
         <View style={styles.inputSection}>
           <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
+          
+          {/* Show current totals in header */}
+          <View style={styles.totalsHeader}>
+            <Text style={styles.totalVersesHeaderText}>
+              إجمالي الآيات: {finalVersesCount}
+            </Text>
+            {inputMethod === 'surah_selection' && selectedSurahs.length > 0 && (
+              <Text style={styles.totalSurahsText}>
+                عدد السور: {selectedSurahs.length}
+              </Text>
+            )}
+          </View>
           
           {/* Input Method Tabs */}
           <View style={styles.inputMethodTabs}>
             <TabBtn
               label="ادخل العدد"
               active={inputMethod === 'manual'}
-              onPress={() => setInputMethod('manual')}
+              onPress={() => {
+                setInputMethod('manual');
+                setSelectedSurahs([]);
+              }}
             />
             <TabBtn
               label="اختر السور التي قرأت"
               active={inputMethod === 'surah_selection'}
-              onPress={() => setInputMethod('surah_selection')}
+              onPress={() => {
+                setInputMethod('surah_selection');
+                setManualVersesCount('');
+              }}
             />
           </View>
 
@@ -505,10 +503,6 @@ export default function QiyamVerseScreen() {
             </View>
           ) : (
             <View style={styles.surahSelectionSection}>
-              <Text style={styles.totalVersesText}>
-                إجمالي الآيات: {totalVersesFromSurahs}
-              </Text>
-              
               <ScrollView 
                 style={styles.surahsList}
                 showsVerticalScrollIndicator={false}
@@ -535,16 +529,29 @@ export default function QiyamVerseScreen() {
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-
-              {/* Locked input showing total */}
-              <TextInput
-                style={[styles.versesInput, styles.lockedInput]}
-                value={totalVersesFromSurahs.toString()}
-                editable={false}
-                textAlign="center"
-              />
             </View>
           )}
+        </View>
+
+        {/* Search Section - SECOND, UNDER VERSE COUNT */}
+        <View style={styles.searchSection}>
+          <View style={styles.controlsRow}>
+            <TouchableOpacity 
+              onPress={() => setShowSurahSelector(true)} 
+              style={styles.wholeSurahBtn}
+            >
+              <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TextInput
+            placeholder="ابحث في القرآن..."
+            placeholderTextColor="#888"
+            value={query}
+            onChangeText={handleSearchChange}
+            style={styles.searchInput}
+            textAlign="right"
+          />
         </View>
 
         {/* Questions Section - EXACTLY THE SAME AS PRAYER */}
