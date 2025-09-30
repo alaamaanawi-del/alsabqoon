@@ -211,13 +211,13 @@ export default function MyPrayers() {
               
               {/* Qiyam Progress (smaller width as requested) */}
               <View style={[styles.progressContainer, { maxWidth: 60 }]}>
-                <TaskProgressBar score={0} showPercentage={false} />
+                <TaskProgressBar score={qiyamStats.progress_percentage} showPercentage={false} />
               </View>
               
               {/* Verses Count and Progress */}
               <View style={styles.qiyamStatsContainer}>
-                <Text style={styles.qiyamVerseCount}>0</Text>
-                <Text style={styles.qiyamProgressText}>0%</Text>
+                <Text style={styles.qiyamVerseCount}>{qiyamStats.total_verses}</Text>
+                <Text style={styles.qiyamProgressText}>{qiyamStats.progress_percentage}%</Text>
               </View>
             </TouchableOpacity>
           );
