@@ -388,6 +388,34 @@ export default function QiyamVerseScreen() {
           paddingRight: Math.max(0, insets.right),
         }}
       >
+        {/* Selected Verses Display - SAME AS PRAYER */}
+        {selectedVerses.length > 0 && (
+          <SelectedVersesDisplay 
+            ranges={selectedVerses} 
+            maxLines={8}
+          />
+        )}
+
+        {/* Search Section - SAME AS PRAYER */}
+        <View style={styles.searchSection}>
+          <View style={styles.controlsRow}>
+            <TouchableOpacity 
+              onPress={() => setShowSurahSelector(true)} 
+              style={styles.wholeSurahBtn}
+            >
+              <Text style={styles.wholeSurahBtnText}>السورة كاملة</Text>
+            </TouchableOpacity>
+          </View>
+
+          <TextInput
+            placeholder="ابحث في القرآن..."
+            placeholderTextColor="#888"
+            value={query}
+            onChangeText={handleSearchChange}
+            style={styles.searchInput}
+            textAlign="right"
+          />
+        </View>
         {/* Dual Input System Section */}
         <View style={styles.inputSection}>
           <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
