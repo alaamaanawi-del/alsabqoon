@@ -63,7 +63,7 @@ interface QiyamVerse {
   };
 }
 
-// Tab Button Component - EXACT SAME as prayers
+// Tab Button Component
 function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <TouchableOpacity
@@ -76,7 +76,7 @@ function TabBtn({ label, active, onPress }: { label: string; active: boolean; on
   );
 }
 
-// Question Row Component - EXACT SAME as prayers with task icon
+// Question Row Component - EXACT SAME as prayers
 function QuestionRow({ 
   label, 
   value, 
