@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Use the production URL from frontend/.env
-BASE_URL = "https://muslim-tracker-2.preview.emergentagent.com/api"
+BASE_URL = "https://prayer-tracker-27.preview.emergentagent.com/api"
 
 def test_quran_search_endpoint_exists():
     """Test if the Quran search API endpoint exists and responds"""

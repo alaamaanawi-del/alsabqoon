@@ -6,7 +6,7 @@ Debug script to understand Quran search issues
 import requests
 import json
 
-BASE_URL = "https://muslim-tracker-2.preview.emergentagent.com/api"
+BASE_URL = "https://prayer-tracker-27.preview.emergentagent.com/api"
 
 def debug_search(query, description):
     print(f"\n🔍 Testing: {description} - Query: '{query}'")

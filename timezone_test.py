@@ -11,7 +11,7 @@ from datetime import datetime, timezone, timedelta
 import pytz
 
 # Use the production URL from frontend/.env
-BASE_URL = "https://muslim-tracker-2.preview.emergentagent.com/api"
+BASE_URL = "https://prayer-tracker-27.preview.emergentagent.com/api"
 
 def test_azkar_entry_with_client_timestamp():
     """Test creating azkar entry with client-side timestamp"""

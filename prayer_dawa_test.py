@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://muslim-tracker-2.preview.emergentagent.com/api"
+BACKEND_URL = "https://prayer-tracker-27.preview.emergentagent.com/api"
 
 def test_prayer_dawa_integration():
     """Test Prayer and Dawa integration features as requested in review"""
