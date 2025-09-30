@@ -499,87 +499,89 @@ export default function QiyamVerseScreen() {
           />
         )}
 
-        {/* Dual Input System Section - FIRST */}
-        <View style={styles.inputSection}>
-          <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
-          
-          {/* Show current totals in header */}
-          <View style={styles.totalsHeader}>
-            <Text style={styles.totalVersesHeaderText}>
-              إجمالي الآيات: {finalVersesCount}
-            </Text>
-            {inputMethod === 'surah_selection' && selectedSurahs.length > 0 && (
-              <Text style={styles.totalSurahsText}>
-                عدد السور: {selectedSurahs.length}
+        {/* Verse Count Input - ONLY ON VERSE 1 */}
+        {verseNumber === 1 && (
+          <View style={styles.inputSection}>
+            <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
+            
+            {/* Show current totals in header */}
+            <View style={styles.totalsHeader}>
+              <Text style={styles.totalVersesHeaderText}>
+                إجمالي الآيات: {finalVersesCount}
               </Text>
-            )}
-          </View>
-          
-          {/* Input Method Tabs */}
-          <View style={styles.inputMethodTabs}>
-            <TabBtn
-              label="ادخل العدد"
-              active={inputMethod === 'manual'}
-              onPress={() => {
-                setInputMethod('manual');
-                setSelectedSurahs([]);
-              }}
-            />
-            <TabBtn
-              label="اختر السور التي قرأت"
-              active={inputMethod === 'surah_selection'}
-              onPress={() => {
-                setInputMethod('surah_selection');
-                setManualVersesCount('');
-              }}
-            />
-          </View>
-
-          {inputMethod === 'manual' ? (
-            <View style={styles.manualInputSection}>
-              <TextInput
-                style={styles.versesInput}
-                value={manualVersesCount}
-                onChangeText={setManualVersesCount}
-                placeholder="أدخل عدد الآيات"
-                placeholderTextColor="#888"
-                keyboardType="number-pad"
-                textAlign="center"
+              {inputMethod === 'surah_selection' && selectedSurahs.length > 0 && (
+                <Text style={styles.totalSurahsText}>
+                  عدد السور: {selectedSurahs.length}
+                </Text>
+              )}
+            </View>
+            
+            {/* Input Method Tabs */}
+            <View style={styles.inputMethodTabs}>
+              <TabBtn
+                label="ادخل العدد"
+                active={inputMethod === 'manual'}
+                onPress={() => {
+                  setInputMethod('manual');
+                  setSelectedSurahs([]);
+                }}
+              />
+              <TabBtn
+                label="اختر السور التي قرأت"
+                active={inputMethod === 'surah_selection'}
+                onPress={() => {
+                  setInputMethod('surah_selection');
+                  setManualVersesCount('');
+                }}
               />
             </View>
-          ) : (
-            <View style={styles.surahSelectionSection}>
-              <ScrollView 
-                style={styles.surahsList}
-                showsVerticalScrollIndicator={false}
-                nestedScrollEnabled={true}
-              >
-                {surahs.map(surah => (
-                  <TouchableOpacity
-                    key={surah.number}
-                    style={[
-                      styles.surahItem,
-                      selectedSurahs.includes(surah.number) && styles.surahItemSelected
-                    ]}
-                    onPress={() => handleSurahToggle(surah.number)}
-                  >
-                    <Text style={[
-                      styles.surahText,
-                      selectedSurahs.includes(surah.number) && styles.surahTextSelected
-                    ]}>
-                      {surah.nameAr} ({surah.verse_count} آية)
-                    </Text>
-                    {selectedSurahs.includes(surah.number) && (
-                      <Text style={styles.checkmark}>✓</Text>
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          )}
-        </View>
 
-        {/* Search Section - SECOND, UNDER VERSE COUNT */}
+            {inputMethod === 'manual' ? (
+              <View style={styles.manualInputSection}>
+                <TextInput
+                  style={styles.versesInput}
+                  value={manualVersesCount}
+                  onChangeText={setManualVersesCount}
+                  placeholder="أدخل عدد الآيات"
+                  placeholderTextColor="#888"
+                  keyboardType="number-pad"
+                  textAlign="center"
+                />
+              </View>
+            ) : (
+              <View style={styles.surahSelectionSection}>
+                <ScrollView 
+                  style={styles.surahsList}
+                  showsVerticalScrollIndicator={false}
+                  nestedScrollEnabled={true}
+                >
+                  {surahs.map(surah => (
+                    <TouchableOpacity
+                      key={surah.number}
+                      style={[
+                        styles.surahItem,
+                        selectedSurahs.includes(surah.number) && styles.surahItemSelected
+                      ]}
+                      onPress={() => handleSurahToggle(surah.number)}
+                    >
+                      <Text style={[
+                        styles.surahText,
+                        selectedSurahs.includes(surah.number) && styles.surahTextSelected
+                      ]}>
+                        {surah.nameAr} ({surah.verse_count} آية)
+                      </Text>
+                      {selectedSurahs.includes(surah.number) && (
+                        <Text style={styles.checkmark}>✓</Text>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Search Section - ALWAYS VISIBLE */}
         <View style={styles.searchSection}>
           <View style={styles.controlsRow}>
             <TouchableOpacity 
