@@ -259,11 +259,13 @@ export default function MyPrayers() {
         <Text style={styles.dailyProgressTitle}>التقدم اليومي</Text>
         <TaskProgressBar 
           score={(() => {
-            const totalScore = PRAYERS.reduce((sum, p) => {
+            // Exclude Qiyam prayer from daily progress calculation
+            const regularPrayers = PRAYERS.filter(p => p.key !== 'qiyam');
+            const totalScore = regularPrayers.reduce((sum, p) => {
               const sc = scores[p.key] || { r1: 0, r2: 0 };
               return sum + sc.r1 + sc.r2; // Total score 0-100 (each rakka 0-50)
             }, 0);
-            return Math.round(totalScore / PRAYERS.length);
+            return Math.round(totalScore / regularPrayers.length);
           })()} 
           showPercentage={true} 
         />
