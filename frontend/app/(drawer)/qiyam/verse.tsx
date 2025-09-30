@@ -450,10 +450,10 @@ export default function QiyamVerseScreen() {
         </View>
       </View>
 
-      {/* Verse Tabs - SAME STRUCTURE AS RAKKA TABS */}
+      {/* Verse Tabs - UNLIMITED VERSES */}
       <View style={styles.tabsContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.verseTabsContent}>
-          {Array.from({ length: Math.max(qiyamHistory.length + 1, 7) }, (_, i) => {
+          {Array.from({ length: Math.max(qiyamHistory.length + 2, 10) }, (_, i) => {
             const verseNum = i + 1;
             const hasEntry = qiyamHistory.some(entry => entry.verse_number === verseNum);
             return (
