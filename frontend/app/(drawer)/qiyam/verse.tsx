@@ -878,6 +878,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 12,
   },
+  totalsHeader: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  totalVersesHeaderText: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  totalSurahsText: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '600',
+    opacity: 0.8,
+  },
   surahsList: {
     maxHeight: 200,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
