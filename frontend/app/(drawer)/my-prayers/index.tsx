@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from "../../../src/theme/colors";
 import { Link, useRouter, useFocusEffect } from "expo-router";
 import { loadPrayerRecord, computeScore, loadTasks } from "../../../src/storage/prayer";
+import { getQiyamStats, QiyamStats } from "../../../src/api/client";
 import MonthCalendar from "../../../src/components/MonthCalendar";
 import { addDays, colorForScore, fmtYMD, hijriFullString, gregFullString } from "../../../src/utils/date";
 import { loadSettings, saveSettings } from "../../../src/storage/settings";
