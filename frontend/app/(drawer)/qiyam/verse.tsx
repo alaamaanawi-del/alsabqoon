@@ -350,101 +350,100 @@ export default function QiyamVerseScreen() {
     }
   };
 
-  // Save entry
-  const handleDone = async () => {
-    if (finalVersesCount === 0) {
-      Alert.alert('تنبيه', 'يرجى إدخال عدد الآيات أو اختيار السور');
-      return;
+  // Save current verse
+  const saveCurrentVerse = async () => {
+    if (!activeVerse || saving) return;
+
+    setSaving(true);
+    try {
+      const historyResponse = await getQiyamHistory(currentDate);
+      const existingEntry = historyResponse.entries.find(e => e.verse_number === activeVerse.verseNumber);
+
+      if (existingEntry) {
+        await updateQiyamEntry(
+          existingEntry.id,
+          activeVerse.numberOfVerses,
+          activeVerse.understood,
+          activeVerse.made_dua,
+          activeVerse.practiced,
+          activeVerse.taught,
+          activeVerse.people_taught,
+          activeVerse.teaching_comment,
+          activeVerse.notes
+        );
+      } else {
+        await createQiyamEntry(
+          activeVerse.verseNumber,
+          activeVerse.numberOfVerses,
+          currentDate,
+          activeVerse.inputMethod,
+          activeVerse.selectedSurahs,
+          activeVerse.understood,
+          activeVerse.made_dua,
+          activeVerse.practiced,
+          activeVerse.taught,
+          activeVerse.people_taught,
+          activeVerse.teaching_comment,
+          activeVerse.notes
+        );
+      }
+    } catch (error) {
+      console.error('Error saving verse:', error);
+      throw error;
+    } finally {
+      setSaving(false);
     }
+  };
+
+  // Handle Done
+  const handleDone = async () => {
+    if (saving || !activeVerse) return;
 
     try {
-      if (currentEntry) {
-        // Update existing entry
-        await updateQiyamEntry(
-          currentEntry.id,
-          finalVersesCount,
-          questions.understood,
-          questions.made_dua,
-          questions.practiced,
-          questions.taught,
-          taughtCount,
-          teachingComment,
-          notes
-        );
-        showToast('تم تحديث الآية بنجاح');
-      } else {
-        // Create new entry
-        await createQiyamEntry(
-          verseNumber,
-          finalVersesCount,
-          currentDate,
-          inputMethod,
-          selectedSurahs,
-          questions.understood,
-          questions.made_dua,
-          questions.practiced,
-          questions.taught,
-          taughtCount,
-          teachingComment,
-          notes
-        );
-        showToast('تم حفظ الآية بنجاح');
-      }
-
-      // Navigate back to prayers list, not main app
+      await saveCurrentVerse();
+      showToast('تم حفظ الآية بنجاح');
       router.push('/(drawer)/my-prayers');
     } catch (error) {
-      console.error('Error saving Qiyam entry:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
     }
   };
 
+  // Handle Add Verse
   const handleAddVerse = async () => {
-    if (finalVersesCount === 0) {
-      Alert.alert('تنبيه', 'يرجى إدخال عدد الآيات أو اختيار السور');
-      return;
-    }
+    if (saving || !activeVerse) return;
 
     try {
-      if (currentEntry) {
-        // Update existing entry
-        await updateQiyamEntry(
-          currentEntry.id,
-          finalVersesCount,
-          questions.understood,
-          questions.made_dua,
-          questions.practiced,
-          questions.taught,
-          taughtCount,
-          teachingComment,
-          notes
-        );
-      } else {
-        // Create new entry
-        await createQiyamEntry(
-          verseNumber,
-          finalVersesCount,
-          currentDate,
-          inputMethod,
-          selectedSurahs,
-          questions.understood,
-          questions.made_dua,
-          questions.practiced,
-          questions.taught,
-          taughtCount,
-          teachingComment,
-          notes
-        );
-      }
-
-      showToast('تم حفظ الآية بنجاح');
+      await saveCurrentVerse();
       
-      // Navigate to next verse - state will be cleared automatically by useEffect
-      const nextVerse = verseNumber + 1;
-      navigateToVerse(nextVerse);
+      // Add new verse
+      const newVerseNumber = verses.length + 1;
+      const newVerse: QiyamVerse = {
+        verseNumber: newVerseNumber,
+        numberOfVerses: 0,
+        inputMethod: 'manual',
+        selectedSurahs: [],
+        understood: false,
+        made_dua: false,
+        practiced: false,
+        taught: false,
+        people_taught: 0,
+        teaching_comment: '',
+        notes: '',
+        ranges: [],
+        taskMarked: {
+          understood: false,
+          made_dua: false,
+          practiced: false,
+          taught: false,
+        }
+      };
+      
+      setVerses(prev => [...prev, newVerse]);
+      
+      showToast('تم حفظ الآية بنجاح');
+      navigateToVerse(newVerseNumber);
       
     } catch (error) {
-      console.error('Error saving Qiyam entry:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
     }
   };
