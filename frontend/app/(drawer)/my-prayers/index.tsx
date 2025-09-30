@@ -151,8 +151,46 @@ export default function MyPrayers() {
         <MonthCalendar monthDate={monthDate} selectedDate={selectedDate} onChangeMonth={setMonthDate} onSelectDate={onSelectDateFromMonth} />
       )}
 
-{PRAYERS.map((p) => {
+      {PRAYERS.map((p) => {
         const ymd = fmtYMD(selectedDate);
+        
+        // Handle Qiyam prayer separately
+        if (p.key === 'qiyam') {
+          return (
+            <TouchableOpacity 
+              key={p.key} 
+              style={styles.enhancedRow}
+              onPress={() => router.push({ 
+                pathname: '/(drawer)/qiyam/main', 
+                params: { date: ymd } 
+              })}
+              activeOpacity={0.7}
+            >
+              {/* Qiyam Prayer Icon */}
+              <View style={styles.iconContainer}>
+                <View style={[styles.placeholderIcon, { backgroundColor: '#9B59B6' }]} />
+              </View>
+              
+              {/* Prayer Name */}
+              <View style={styles.prayerNameContainer}>
+                <Text style={styles.prayer}>{p.label}</Text>
+              </View>
+              
+              {/* Qiyam Progress (smaller width as requested) */}
+              <View style={[styles.progressContainer, { maxWidth: 60 }]}>
+                <TaskProgressBar score={0} showPercentage={false} />
+              </View>
+              
+              {/* Verses Count and Progress */}
+              <View style={styles.qiyamStatsContainer}>
+                <Text style={styles.qiyamVerseCount}>0</Text>
+                <Text style={styles.qiyamProgressText}>0%</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }
+
+        // Handle regular prayers (fajr, dhuhr, asr, maghrib, isha)
         const sc = scores[p.key] || { r1: 0, r2: 0 };
         // FIXED: Use actual total score, not max of rakkas
         const score = sc.r1 + sc.r2; // Total score 0-100 (each rakka 0-50)
