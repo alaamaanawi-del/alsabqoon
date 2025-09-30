@@ -660,16 +660,16 @@ export default function QiyamVerseScreen() {
             onTask={() => toggleTask('taught')}
           />
 
-          {/* Teaching Details - EXACT SAME AS PRAYER */}
-          {questions.taught && (
+          {/* Teaching Details */}
+          {activeVerse.taught && (
             <View style={styles.teachingSection}>
               <View style={styles.countRow}>
                 <Text style={styles.countLabel}>كم شخص علمت؟</Text>
                 <TextInput
                   placeholder="أدخل العدد"
                   placeholderTextColor="#888"
-                  value={String(taughtCount)}
-                  onChangeText={(text) => setTaughtCount(parseInt(text) || 0)}
+                  value={activeVerse.people_taught.toString()}
+                  onChangeText={(text) => updateActiveVerse({ people_taught: parseInt(text) || 0 })}
                   keyboardType="number-pad"
                   style={styles.countInput}
                   textAlign="center"
@@ -692,8 +692,8 @@ export default function QiyamVerseScreen() {
                 <View style={styles.commentSection}>
                   <TextInput
                     style={styles.commentInput}
-                    value={teachingComment}
-                    onChangeText={setTeachingComment}
+                    value={activeVerse.teaching_comment}
+                    onChangeText={(text) => updateActiveVerse({ teaching_comment: text })}
                     placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
                     placeholderTextColor="#888"
                     multiline
