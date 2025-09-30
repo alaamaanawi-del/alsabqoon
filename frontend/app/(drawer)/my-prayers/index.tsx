@@ -161,8 +161,8 @@ export default function MyPrayers() {
               key={p.key} 
               style={styles.enhancedRow}
               onPress={() => router.push({ 
-                pathname: '/(drawer)/qiyam/main', 
-                params: { date: ymd } 
+                pathname: '/(drawer)/qiyam/verse', 
+                params: { date: ymd, verse: '1' } 
               })}
               activeOpacity={0.7}
             >
