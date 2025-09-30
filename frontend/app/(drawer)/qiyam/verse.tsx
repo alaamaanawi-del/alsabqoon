@@ -794,6 +794,36 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  searchSection: {
+    backgroundColor: Colors.greenTeal,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  controlsRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  wholeSurahBtn: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  wholeSurahBtnText: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  searchInput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: 8,
+    padding: 12,
+    color: Colors.light,
+    fontSize: 14,
+    marginBottom: 8,
+  },
   inputSection: {
     backgroundColor: Colors.greenTeal,
     borderRadius: 12,
