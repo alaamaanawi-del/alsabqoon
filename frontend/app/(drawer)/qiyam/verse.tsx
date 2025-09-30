@@ -743,15 +743,15 @@ export default function QiyamVerseScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Search Results Modal - SAME AS PRAYER */}
+      {/* Search Results Modal */}
       <SearchResultsModal
-        visible={showSearchModal}
-        results={searchResults}
-        onClose={() => setShowSearchModal(false)}
-        onSelectResult={handleSearchResultSelect}
+        visible={showSearchResults}
+        results={results}
+        onClose={() => setShowSearchResults(false)}
+        onSelectResult={onVerseNumberPress}
       />
 
-      {/* Surah Selector Modal - SAME AS PRAYER */}
+      {/* Surah Selector Modal */}
       <SurahSelector
         visible={showSurahSelector}
         onClose={() => setShowSurahSelector(false)}
@@ -759,7 +759,7 @@ export default function QiyamVerseScreen() {
         onSelectWholeSurah={handleSelectSurah}
       />
 
-      {/* Sura Viewer Modal - SAME AS PRAYER */}
+      {/* Sura Viewer Modal */}
       {selectedSura && (
         <SuraViewer
           visible={showSuraViewer}
