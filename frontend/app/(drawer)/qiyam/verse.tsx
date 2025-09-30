@@ -40,7 +40,7 @@ function ymdFromParam(dateParam?: string): string {
   return dateParam;
 }
 
-// Tab Button Component - same as prayers
+// Tab Button Component - EXACT SAME as prayers
 function TabBtn({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <TouchableOpacity
@@ -53,7 +53,7 @@ function TabBtn({ label, active, onPress }: { label: string; active: boolean; on
   );
 }
 
-// Question Row Component - same as prayers but adapted for Qiyam questions
+// Question Row Component - EXACT SAME as prayers
 function QuestionRow({ 
   label, 
   value, 
@@ -101,9 +101,10 @@ export default function QiyamVerseScreen() {
   const verseNumber = parseInt(verse || '1');
   const currentDate = date || new Date().toISOString().split('T')[0];
 
-  // State management - similar to prayer record but adapted for Qiyam
+  // State management - same structure as prayer record
   const [loading, setLoading] = useState(true);
-  const [existingEntry, setExistingEntry] = useState<QiyamEntry | null>(null);
+  const [qiyamHistory, setQiyamHistory] = useState<QiyamEntry[]>([]);
+  const [currentEntry, setCurrentEntry] = useState<QiyamEntry | null>(null);
   
   // Input method state (manual vs surah selection)
   const [inputMethod, setInputMethod] = useState<'manual' | 'surah_selection'>('manual');
@@ -112,13 +113,15 @@ export default function QiyamVerseScreen() {
   const [surahs, setSurahs] = useState<SurahWithVerseCount[]>([]);
   
   // Evaluation questions state
-  const [understood, setUnderstood] = useState(false);
-  const [madeDua, setMadeDua] = useState(false);
-  const [practiced, setPracticed] = useState(false);
-  const [taught, setTaught] = useState(false);
+  const [questions, setQuestions] = useState({
+    understood: false,
+    made_dua: false,
+    practiced: false,
+    taught: false,
+  });
   
   // Teaching details
-  const [taughtCount, setTaughtCount] = useState('0');
+  const [taughtCount, setTaughtCount] = useState(0);
   const [teachingComment, setTeachingComment] = useState('');
   const [showTeachingComments, setShowTeachingComments] = useState(false);
   
@@ -133,15 +136,7 @@ export default function QiyamVerseScreen() {
     taught: false,
   });
 
-  // Search and selection state - same as prayer record
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
-  const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showSurahSelector, setShowSurahSelector] = useState(false);
-  const [showSuraViewer, setShowSuraViewer] = useState(false);
-  const [selectedSura, setSelectedSura] = useState<{ number: number; nameAr: string; nameEn: string; initialVerse: number } | null>(null);
-
-  // Load surahs and existing entry
+  // Load data
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -151,27 +146,31 @@ export default function QiyamVerseScreen() {
         const surahsData = await getSurahsWithVerseCounts();
         setSurahs(surahsData);
         
-        // Load existing entry if it exists
+        // Load Qiyam history for this date
         const historyResponse = await getQiyamHistory(currentDate);
+        setQiyamHistory(historyResponse.entries || []);
+        
+        // Find current entry
         const existing = historyResponse.entries.find(e => e.verse_number === verseNumber);
         
         if (existing) {
-          setExistingEntry(existing);
+          setCurrentEntry(existing);
           setInputMethod(existing.input_method);
           setManualVersesCount(existing.verses_count.toString());
           setSelectedSurahs(existing.selected_surahs || []);
-          setUnderstood(existing.understood);
-          setMadeDua(existing.made_dua);
-          setPracticed(existing.practiced);
-          setTaught(existing.taught);
-          setTaughtCount((existing.people_taught || 0).toString());
+          setQuestions({
+            understood: existing.understood,
+            made_dua: existing.made_dua,
+            practiced: existing.practiced,
+            taught: existing.taught,
+          });
+          setTaughtCount(existing.people_taught || 0);
           setTeachingComment(existing.teaching_comment || '');
           setNotes(existing.notes || '');
         }
         
       } catch (error) {
         console.error('Error loading Qiyam data:', error);
-        Alert.alert('خطأ', 'حدث خطأ في تحميل البيانات');
       } finally {
         setLoading(false);
       }
@@ -194,20 +193,7 @@ export default function QiyamVerseScreen() {
 
   // Toggle functions
   const toggleQuestion = (key: QiyamQuestionKey) => {
-    switch (key) {
-      case 'understood':
-        setUnderstood(!understood);
-        break;
-      case 'made_dua':
-        setMadeDua(!madeDua);
-        break;
-      case 'practiced':
-        setPracticed(!practiced);
-        break;
-      case 'taught':
-        setTaught(!taught);
-        break;
-    }
+    setQuestions(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const toggleTask = (key: QiyamQuestionKey) => {
@@ -215,23 +201,7 @@ export default function QiyamVerseScreen() {
     showToast(addToTask[key] ? 'أُزيلت من المهام' : 'أُضيفت للمَهَام');
   };
 
-  // Search functionality - same as prayer record
-  const performSearch = async (term: string) => {
-    if (!term.trim()) {
-      setSearchResults([]);
-      return;
-    }
-    
-    try {
-      const results = await searchQuran(term.trim());
-      setSearchResults(results);
-      setShowSearchModal(true);
-    } catch (error) {
-      console.error('Search error:', error);
-    }
-  };
-
-  // Handle surah selection for auto-calculation
+  // Handle surah selection
   const handleSurahToggle = (surahNumber: number) => {
     setSelectedSurahs(prev => {
       if (prev.includes(surahNumber)) {
@@ -242,24 +212,32 @@ export default function QiyamVerseScreen() {
     });
   };
 
+  // Navigation between verses
+  const navigateToVerse = (targetVerse: number) => {
+    router.replace({
+      pathname: '/(drawer)/qiyam/verse',
+      params: { date: currentDate, verse: targetVerse.toString() }
+    });
+  };
+
   // Save entry
-  const handleSave = async (action: 'save' | 'next') => {
+  const handleDone = async () => {
     if (finalVersesCount === 0) {
       Alert.alert('تنبيه', 'يرجى إدخال عدد الآيات أو اختيار السور');
       return;
     }
 
     try {
-      if (existingEntry) {
+      if (currentEntry) {
         // Update existing entry
         await updateQiyamEntry(
-          existingEntry.id,
+          currentEntry.id,
           finalVersesCount,
-          understood,
-          madeDua,
-          practiced,
-          taught,
-          parseInt(taughtCount) || 0,
+          questions.understood,
+          questions.made_dua,
+          questions.practiced,
+          questions.taught,
+          taughtCount,
           teachingComment,
           notes
         );
@@ -272,26 +250,65 @@ export default function QiyamVerseScreen() {
           currentDate,
           inputMethod,
           selectedSurahs,
-          understood,
-          madeDua,
-          practiced,
-          taught,
-          parseInt(taughtCount) || 0,
+          questions.understood,
+          questions.made_dua,
+          questions.practiced,
+          questions.taught,
+          taughtCount,
           teachingComment,
           notes
         );
         showToast('تم حفظ الآية بنجاح');
       }
 
-      if (action === 'save') {
-        router.back();
-      } else if (action === 'next') {
-        // Navigate to next verse
-        router.replace({
-          pathname: '/(drawer)/qiyam/verse',
-          params: { date: currentDate, verse: (verseNumber + 1).toString() }
-        });
+      router.back();
+    } catch (error) {
+      console.error('Error saving Qiyam entry:', error);
+      Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
+    }
+  };
+
+  const handleAddVerse = async () => {
+    if (finalVersesCount === 0) {
+      Alert.alert('تنبيه', 'يرجى إدخال عدد الآيات أو اختيار السور');
+      return;
+    }
+
+    try {
+      if (currentEntry) {
+        // Update existing entry
+        await updateQiyamEntry(
+          currentEntry.id,
+          finalVersesCount,
+          questions.understood,
+          questions.made_dua,
+          questions.practiced,
+          questions.taught,
+          taughtCount,
+          teachingComment,
+          notes
+        );
+      } else {
+        // Create new entry
+        await createQiyamEntry(
+          verseNumber,
+          finalVersesCount,
+          currentDate,
+          inputMethod,
+          selectedSurahs,
+          questions.understood,
+          questions.made_dua,
+          questions.practiced,
+          questions.taught,
+          taughtCount,
+          teachingComment,
+          notes
+        );
       }
+
+      showToast('تم حفظ الآية بنجاح');
+      // Navigate to next verse
+      navigateToVerse(verseNumber + 1);
     } catch (error) {
       console.error('Error saving Qiyam entry:', error);
       Alert.alert('خطأ', 'حدث خطأ في حفظ البيانات');
@@ -306,235 +323,253 @@ export default function QiyamVerseScreen() {
     );
   }
 
-  return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={[styles.safeContainer, { paddingTop: insets.top }]}>
-        {/* Header - same style as prayer record */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Text style={styles.backBtnText}>رجوع</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>قيام الليل - آية {verseNumber}</Text>
-        </View>
+  // Calculate progress
+  const questionsAnswered = Object.values(questions).filter(Boolean).length;
+  const progress = Math.round((questionsAnswered / 4) * 100);
 
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 20 }]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Progress Bar */}
-          <View style={styles.progressSection}>
-            <Text style={styles.progressTitle}>التقدم</Text>
-            <TaskProgressBar 
-              score={(() => {
-                const questionsAnswered = [understood, madeDua, practiced, taught].filter(Boolean).length;
-                return Math.round((questionsAnswered / 4) * 100);
-              })()} 
-              showPercentage={true} 
+  return (
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      {/* Fixed Header - SAME AS PRAYER */}
+      <View style={styles.header}>
+        <View style={styles.headerInfoRow}>
+          <Text style={styles.prayerNameText}>القيام</Text>
+          <Text style={styles.dayText}>{new Date(currentDate).toLocaleDateString('en-US', { weekday: 'long' })}</Text>
+          <Text style={styles.dateText}>{new Date(currentDate).toLocaleDateString('en-GB')}</Text>
+          <View style={styles.progressBarContainer}>
+            <TaskProgressBar score={progress} showPercentage={true} />
+          </View>
+        </View>
+      </View>
+
+      {/* Verse Tabs - SAME STRUCTURE AS RAKKA TABS */}
+      <View style={styles.tabsContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.verseTabsContent}>
+          {Array.from({ length: Math.max(qiyamHistory.length + 1, 7) }, (_, i) => {
+            const verseNum = i + 1;
+            const hasEntry = qiyamHistory.some(entry => entry.verse_number === verseNum);
+            return (
+              <TouchableOpacity
+                key={verseNum}
+                style={[
+                  styles.verseTab,
+                  verseNum === verseNumber && styles.activeTab,
+                  hasEntry && styles.completedTab
+                ]}
+                onPress={() => navigateToVerse(verseNum)}
+              >
+                <Text style={[
+                  styles.verseTabText,
+                  verseNum === verseNumber && styles.activeTabText,
+                  hasEntry && styles.completedTabText
+                ]}>
+                  آية {verseNum}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* Main Scrollable Content - SAME STRUCTURE AS PRAYER */}
+      <ScrollView 
+        style={styles.scrollContent} 
+        contentContainerStyle={{
+          paddingBottom: Math.max(120, insets.bottom + 30),
+          paddingLeft: Math.max(0, insets.left),
+          paddingRight: Math.max(0, insets.right),
+        }}
+      >
+        {/* Dual Input System Section */}
+        <View style={styles.inputSection}>
+          <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
+          
+          {/* Input Method Tabs */}
+          <View style={styles.inputMethodTabs}>
+            <TabBtn
+              label="ادخل العدد"
+              active={inputMethod === 'manual'}
+              onPress={() => setInputMethod('manual')}
+            />
+            <TabBtn
+              label="اختر السور التي قرأت"
+              active={inputMethod === 'surah_selection'}
+              onPress={() => setInputMethod('surah_selection')}
             />
           </View>
 
-          {/* Input Method Selection - DUAL SYSTEM */}
-          <View style={styles.inputMethodSection}>
-            <Text style={styles.sectionTitle}>طريقة الإدخال</Text>
-            
-            <View style={styles.inputMethodTabs}>
-              <TabBtn
-                label="إدخال يدوي"
-                active={inputMethod === 'manual'}
-                onPress={() => setInputMethod('manual')}
-              />
-              <TabBtn
-                label="اختيار السور"
-                active={inputMethod === 'surah_selection'}
-                onPress={() => setInputMethod('surah_selection')}
+          {inputMethod === 'manual' ? (
+            <View style={styles.manualInputSection}>
+              <TextInput
+                style={styles.versesInput}
+                value={manualVersesCount}
+                onChangeText={setManualVersesCount}
+                placeholder="أدخل عدد الآيات"
+                placeholderTextColor="#888"
+                keyboardType="number-pad"
+                textAlign="center"
               />
             </View>
+          ) : (
+            <View style={styles.surahSelectionSection}>
+              <Text style={styles.totalVersesText}>
+                إجمالي الآيات: {totalVersesFromSurahs}
+              </Text>
+              
+              <ScrollView 
+                style={styles.surahsList}
+                showsVerticalScrollIndicator={false}
+                nestedScrollEnabled={true}
+              >
+                {surahs.map(surah => (
+                  <TouchableOpacity
+                    key={surah.number}
+                    style={[
+                      styles.surahItem,
+                      selectedSurahs.includes(surah.number) && styles.surahItemSelected
+                    ]}
+                    onPress={() => handleSurahToggle(surah.number)}
+                  >
+                    <Text style={[
+                      styles.surahText,
+                      selectedSurahs.includes(surah.number) && styles.surahTextSelected
+                    ]}>
+                      {surah.nameAr} ({surah.verse_count} آية)
+                    </Text>
+                    {selectedSurahs.includes(surah.number) && (
+                      <Text style={styles.checkmark}>✓</Text>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
 
-            {inputMethod === 'manual' ? (
-              <View style={styles.manualInputSection}>
-                <Text style={styles.inputLabel}>عدد الآيات</Text>
+              {/* Locked input showing total */}
+              <TextInput
+                style={[styles.versesInput, styles.lockedInput]}
+                value={totalVersesFromSurahs.toString()}
+                editable={false}
+                textAlign="center"
+              />
+            </View>
+          )}
+        </View>
+
+        {/* Questions Section - EXACTLY THE SAME AS PRAYER */}
+        <View style={styles.questionsSection}>
+          <QuestionRow
+            label="هل فهمت الآيات؟"
+            value={questions.understood}
+            onToggle={() => toggleQuestion('understood')}
+            taskOn={addToTask.understood}
+            onTask={() => toggleTask('understood')}
+          />
+
+          <QuestionRow
+            label="الدعاء المتعلق بالآيات."
+            value={questions.made_dua}
+            onToggle={() => toggleQuestion('made_dua')}
+            taskOn={addToTask.made_dua}
+            onTask={() => toggleTask('made_dua')}
+          />
+
+          <QuestionRow
+            label="هل اتبعت الآيات؟"
+            value={questions.practiced}
+            onToggle={() => toggleQuestion('practiced')}
+            taskOn={addToTask.practiced}
+            onTask={() => toggleTask('practiced')}
+          />
+
+          <QuestionRow
+            label="هل علمت الآيات؟"
+            value={questions.taught}
+            onToggle={() => toggleQuestion('taught')}
+            taskOn={addToTask.taught}
+            onTask={() => toggleTask('taught')}
+          />
+
+          {/* Teaching Details - EXACT SAME AS PRAYER */}
+          {questions.taught && (
+            <View style={styles.teachingSection}>
+              <View style={styles.countRow}>
+                <Text style={styles.countLabel}>كم شخص علمت؟</Text>
                 <TextInput
-                  style={styles.versesInput}
-                  value={manualVersesCount}
-                  onChangeText={setManualVersesCount}
-                  placeholder="أدخل عدد الآيات"
+                  placeholder="أدخل العدد"
                   placeholderTextColor="#888"
+                  value={String(taughtCount)}
+                  onChangeText={(text) => setTaughtCount(parseInt(text) || 0)}
                   keyboardType="number-pad"
+                  style={styles.countInput}
                   textAlign="center"
                 />
               </View>
-            ) : (
-              <View style={styles.surahSelectionSection}>
-                <Text style={styles.inputLabel}>اختيار السور</Text>
-                <Text style={styles.totalVersesText}>
-                  إجمالي الآيات: {totalVersesFromSurahs}
+              
+              <TouchableOpacity 
+                style={styles.addCommentButton}
+                onPress={() => setShowTeachingComments(!showTeachingComments)}
+              >
+                <Text style={styles.addCommentButtonText}>
+                  أضف ملاحظات (ماذا علمته، أيه، حديث، موعظة إلخ)
                 </Text>
-                
-                <ScrollView 
-                  style={styles.surahsList}
-                  showsVerticalScrollIndicator={false}
-                  nestedScrollEnabled={true}
-                >
-                  {surahs.map(surah => (
-                    <TouchableOpacity
-                      key={surah.number}
-                      style={[
-                        styles.surahItem,
-                        selectedSurahs.includes(surah.number) && styles.surahItemSelected
-                      ]}
-                      onPress={() => handleSurahToggle(surah.number)}
-                    >
-                      <Text style={[
-                        styles.surahText,
-                        selectedSurahs.includes(surah.number) && styles.surahTextSelected
-                      ]}>
-                        {surah.nameAr} ({surah.verse_count} آية)
-                      </Text>
-                      {selectedSurahs.includes(surah.number) && (
-                        <Text style={styles.checkmark}>✓</Text>
-                      )}
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-
-                {/* Lock/Read-only indicator for manual input */}
-                <View style={styles.lockedInputSection}>
-                  <Text style={styles.inputLabel}>عدد الآيات (محسوب تلقائياً)</Text>
+                <Text style={styles.expandIcon}>
+                  {showTeachingComments ? '▲' : '▼'}
+                </Text>
+              </TouchableOpacity>
+              
+              {showTeachingComments && (
+                <View style={styles.commentSection}>
                   <TextInput
-                    style={[styles.versesInput, styles.lockedInput]}
-                    value={totalVersesFromSurahs.toString()}
-                    editable={false}
-                    textAlign="center"
-                  />
-                </View>
-              </View>
-            )}
-          </View>
-
-          {/* Evaluation Questions - Same style as prayer record */}
-          <View style={styles.questionsSection}>
-            <Text style={styles.sectionTitle}>الأسئلة التقييمية</Text>
-            
-            <QuestionRow
-              label="هل فهمت الآيات؟"
-              value={understood}
-              onToggle={() => toggleQuestion('understood')}
-              taskOn={addToTask.understood}
-              onTask={() => toggleTask('understood')}
-            />
-
-            <QuestionRow
-              label="هل دعوت بها؟"
-              value={madeDua}
-              onToggle={() => toggleQuestion('made_dua')}
-              taskOn={addToTask.made_dua}
-              onTask={() => toggleTask('made_dua')}
-            />
-
-            <QuestionRow
-              label="هل عملت بها؟"
-              value={practiced}
-              onToggle={() => toggleQuestion('practiced')}
-              taskOn={addToTask.practiced}
-              onTask={() => toggleTask('practiced')}
-            />
-
-            <QuestionRow
-              label="هل علمت بها؟"
-              value={taught}
-              onToggle={() => toggleQuestion('taught')}
-              taskOn={addToTask.taught}
-              onTask={() => toggleTask('taught')}
-            />
-
-            {/* Teaching Details - Same as prayer record */}
-            {taught && (
-              <View style={styles.teachingSection}>
-                <View style={styles.countRow}>
-                  <Text style={styles.countLabel}>كم شخص علمت؟</Text>
-                  <TextInput
-                    placeholder="أدخل العدد"
+                    style={styles.commentInput}
+                    value={teachingComment}
+                    onChangeText={setTeachingComment}
+                    placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
                     placeholderTextColor="#888"
-                    value={taughtCount}
-                    onChangeText={setTaughtCount}
-                    keyboardType="number-pad"
-                    style={styles.countInput}
-                    textAlign="center"
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
                   />
                 </View>
-                
-                <TouchableOpacity 
-                  style={styles.addCommentButton}
-                  onPress={() => setShowTeachingComments(!showTeachingComments)}
-                >
-                  <Text style={styles.addCommentButtonText}>
-                    أضف ملاحظات (ماذا علمته، أيه، حديث، موعظة إلخ)
-                  </Text>
-                  <Text style={styles.expandIcon}>
-                    {showTeachingComments ? '▲' : '▼'}
-                  </Text>
-                </TouchableOpacity>
-                
-                {showTeachingComments && (
-                  <View style={styles.commentSection}>
-                    <TextInput
-                      style={styles.commentInput}
-                      value={teachingComment}
-                      onChangeText={setTeachingComment}
-                      placeholder="مثال: علمت سورة الفاتحة، شرحت معنى الآيات، قرأت حديث عن الصلاة..."
-                      placeholderTextColor="#888"
-                      multiline
-                      numberOfLines={4}
-                      textAlignVertical="top"
-                    />
-                  </View>
-                )}
-              </View>
-            )}
-          </View>
+              )}
+            </View>
+          )}
+        </View>
 
-          {/* Notes Section - Same as prayer record */}
-          <View style={styles.commentsSection}>
-            <Text style={styles.sectionTitle}>الملاحظات والتعليقات</Text>
-            <TextInput
-              placeholder="اضف تعليقاتك وملاحظاتك هنا..."
-              placeholderTextColor="#888"
-              value={notes}
-              onChangeText={setNotes}
-              style={styles.commentsInput}
-              textAlign="right"
-              multiline
-              numberOfLines={4}
-            />
-          </View>
+        {/* Comments Section - EXACTLY THE SAME AS PRAYER */}
+        <View style={styles.commentsSection}>
+          <Text style={styles.sectionTitle}>التعليقات والملاحظات</Text>
+          <TextInput
+            placeholder="اضف تعليقاتك وملاحظاتك هنا..."
+            placeholderTextColor="#888"
+            value={notes}
+            onChangeText={setNotes}
+            style={styles.commentsInput}
+            textAlign="right"
+            multiline
+            numberOfLines={4}
+          />
+        </View>
+      </ScrollView>
 
-          {/* Action Buttons - Same style as prayer record */}
-          <View style={styles.actionButtons}>
-            <TouchableOpacity 
-              style={styles.primaryButton}
-              onPress={() => handleSave('save')}
-            >
-              <Text style={styles.primaryButtonText}>تم</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.secondaryButton}
-              onPress={() => handleSave('next')}
-            >
-              <Text style={styles.secondaryButtonText}>إضافة آية</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+      {/* Fixed Bottom Bar - EXACTLY THE SAME AS PRAYER */}
+      <View style={styles.fixedBottomBar}>
+        <TouchableOpacity 
+          onPress={handleDone}
+          style={styles.doneButton}
+        >
+          <Text style={styles.doneButtonText}>تم</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          onPress={handleAddVerse}
+          style={styles.addVerseButton}
+        >
+          <Text style={styles.addVerseButtonText}>أضف آية</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
-// Styles - copied exactly from prayer record and adapted
+// Styles - COPIED EXACTLY FROM PRAYER RECORD
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -551,60 +586,100 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  safeContainer: {
-    flex: 1,
-    backgroundColor: Colors.dark,
-  },
   header: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
     backgroundColor: Colors.greenTeal,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  backBtn: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  headerInfoRow: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  backBtnText: {
-    color: Colors.light,
-    fontWeight: '600',
-  },
-  title: {
+  prayerNameText: {
     color: Colors.light,
     fontSize: 18,
     fontWeight: '700',
-    flex: 1,
-    textAlign: 'right',
-    marginRight: 16,
   },
-  scrollView: {
+  dayText: {
+    color: Colors.light,
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  dateText: {
+    color: Colors.light,
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  progressBarContainer: {
     flex: 1,
+    marginHorizontal: 16,
+  },
+  tabsContainer: {
+    backgroundColor: Colors.greenTeal,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  verseTabsContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  verseTab: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  activeTab: {
+    backgroundColor: Colors.warmOrange,
+  },
+  completedTab: {
+    backgroundColor: 'rgba(34, 197, 94, 0.3)',
+    borderColor: '#22C55E',
+    borderWidth: 1,
+  },
+  verseTabText: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  activeTabText: {
+    color: Colors.dark,
+  },
+  completedTabText: {
+    color: '#22C55E',
+  },
+  tab: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginHorizontal: 4,
+  },
+  tabText: {
+    color: Colors.light,
+    fontSize: 14,
+    fontWeight: '600',
   },
   scrollContent: {
+    flex: 1,
     padding: 16,
   },
-  progressSection: {
+  inputSection: {
     backgroundColor: Colors.greenTeal,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20,
+    marginBottom: 16,
   },
-  progressTitle: {
+  sectionTitle: {
     color: Colors.warmOrange,
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'right',
-    marginBottom: 8,
-  },
-  inputMethodSection: {
-    backgroundColor: Colors.greenTeal,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    marginBottom: 12,
   },
   inputMethodTabs: {
     flexDirection: 'row-reverse',
@@ -613,33 +688,8 @@ const styles = StyleSheet.create({
     padding: 4,
     marginBottom: 16,
   },
-  tab: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  activeTab: {
-    backgroundColor: Colors.warmOrange,
-  },
-  tabText: {
-    color: Colors.light,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  activeTabText: {
-    color: Colors.dark,
-  },
   manualInputSection: {
     alignItems: 'center',
-  },
-  inputLabel: {
-    color: Colors.light,
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'right',
-    marginBottom: 8,
   },
   versesInput: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -649,7 +699,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     minWidth: 100,
-    textAlign: 'center',
+  },
+  lockedInput: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    opacity: 0.7,
   },
   surahSelectionSection: {
     // Container for surah selection
@@ -691,24 +744,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  lockedInputSection: {
-    alignItems: 'center',
-  },
-  lockedInput: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    opacity: 0.7,
-  },
   questionsSection: {
     backgroundColor: Colors.greenTeal,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    color: Colors.warmOrange,
-    fontSize: 16,
-    fontWeight: '700',
-    textAlign: 'right',
     marginBottom: 16,
   },
   questionRow: {
@@ -817,7 +856,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.greenTeal,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   commentsInput: {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
@@ -828,33 +867,37 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
   },
-  actionButtons: {
+  fixedBottomBar: {
     flexDirection: 'row-reverse',
+    backgroundColor: Colors.greenTeal,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
     gap: 12,
-    marginTop: 20,
   },
-  primaryButton: {
+  doneButton: {
     flex: 1,
     backgroundColor: Colors.warmOrange,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
-  primaryButtonText: {
+  doneButtonText: {
     color: Colors.dark,
     fontSize: 16,
     fontWeight: '700',
   },
-  secondaryButton: {
+  addVerseButton: {
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 8,
+    paddingVertical: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.warmOrange,
   },
-  secondaryButtonText: {
+  addVerseButtonText: {
     color: Colors.warmOrange,
     fontSize: 16,
     fontWeight: '700',
