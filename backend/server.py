@@ -531,6 +531,253 @@ async def get_azkar_range(start_date: str, end_date: str):
         "entries": entries
     }
 
+# Qiyam Prayer Models and Endpoints
+class QiyamEntry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str = "default"
+    verse_number: int  # Sequential verse number (1, 2, 3, etc.)
+    verses_count: int  # Number of verses read
+    date: str  # ISO date string (YYYY-MM-DD)
+    timestamp: datetime = Field(default_factory=lambda: get_user_timezone_now())
+    
+    # Manual vs Surah selection fields
+    input_method: str = "manual"  # "manual" or "surah_selection"
+    selected_surahs: Optional[List[int]] = []  # List of surah numbers if surah_selection
+    surah_names: Optional[str] = None  # Comma-separated surah names for history display
+    
+    # Four evaluation questions
+    understood: bool = False
+    made_dua: bool = False
+    practiced: bool = False
+    taught: bool = False
+    
+    # Teaching details (for question 4)
+    people_taught: Optional[int] = 0
+    teaching_comment: Optional[str] = None
+    
+    # General notes
+    notes: Optional[str] = None
+    
+    # Auto-link to "آيات قرأتها" (zikr_id 12)
+    verses_read_entry_id: Optional[str] = None
+
+class QiyamEntryCreate(BaseModel):
+    verse_number: int
+    verses_count: int
+    date: str
+    input_method: str = "manual"
+    selected_surahs: Optional[List[int]] = []
+    understood: bool = False
+    made_dua: bool = False
+    practiced: bool = False
+    taught: bool = False
+    people_taught: Optional[int] = 0
+    teaching_comment: Optional[str] = None
+    notes: Optional[str] = None
+    timezone: Optional[str] = None
+    client_timestamp: Optional[str] = None
+
+class QiyamEntryUpdate(BaseModel):
+    verses_count: Optional[int] = None
+    understood: Optional[bool] = None
+    made_dua: Optional[bool] = None
+    practiced: Optional[bool] = None
+    taught: Optional[bool] = None
+    people_taught: Optional[int] = None
+    teaching_comment: Optional[str] = None
+    notes: Optional[str] = None
+    timezone: Optional[str] = None
+    client_timestamp: Optional[str] = None
+
+class QiyamStats(BaseModel):
+    total_verses: int
+    total_sessions: int
+    progress_percentage: float  # Based on evaluation questions
+    last_entry: Optional[datetime] = None
+
+@api_router.post("/qiyam/entry", response_model=QiyamEntry)
+async def create_qiyam_entry(entry: QiyamEntryCreate):
+    """Record a Qiyam prayer entry and auto-link to Verses I Read (آيات قرأتها)"""
+    
+    # If surah selection, calculate surah names for display
+    surah_names = None
+    if entry.input_method == "surah_selection" and entry.selected_surahs:
+        surah_names_list = []
+        for surah_num in entry.selected_surahs:
+            # Find surah name from QURAN_DATA
+            for s in QURAN_DATA['surahs']:
+                if s['number'] == surah_num:
+                    surah_names_list.append(s['surah'])
+                    break
+        surah_names = ", ".join(surah_names_list)
+    
+    # Create Qiyam entry
+    qiyam_obj = QiyamEntry(
+        verse_number=entry.verse_number,
+        verses_count=entry.verses_count,
+        date=entry.date,
+        timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone),
+        input_method=entry.input_method,
+        selected_surahs=entry.selected_surahs or [],
+        surah_names=surah_names,
+        understood=entry.understood,
+        made_dua=entry.made_dua,
+        practiced=entry.practiced,
+        taught=entry.taught,
+        people_taught=entry.people_taught or 0,
+        teaching_comment=entry.teaching_comment,
+        notes=entry.notes
+    )
+    
+    await db.qiyam_entries.insert_one(qiyam_obj.dict())
+    
+    # Auto-create entry in "آيات قرأتها" (zikr_id = 12)
+    verses_read_comment = f"قيام الليل - آية {entry.verse_number}"
+    if surah_names:
+        verses_read_comment += f" - {surah_names}"
+    
+    verses_read_obj = ZikrEntry(
+        zikr_id=12,  # آيات قرأتها
+        count=entry.verses_count,
+        date=entry.date,
+        timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone),
+        edit_notes=[verses_read_comment],
+        source="qiyam",
+        prayer_id=f"qiyam_{entry.date}_{entry.verse_number}",
+        rakka=entry.verse_number
+    )
+    
+    await db.zikr_entries.insert_one(verses_read_obj.dict())
+    
+    # Link back to Qiyam entry
+    qiyam_obj.verses_read_entry_id = verses_read_obj.id
+    await db.qiyam_entries.update_one(
+        {"id": qiyam_obj.id}, 
+        {"$set": {"verses_read_entry_id": verses_read_obj.id}}
+    )
+    
+    # Auto-create Da'wah entry if taught=True
+    if entry.taught and entry.people_taught and entry.people_taught > 0:
+        dawa_comment = f"تعليم من قيام الليل - آية {entry.verse_number}"
+        if entry.teaching_comment:
+            dawa_comment += f" - {entry.teaching_comment}"
+        
+        dawa_obj = ZikrEntry(
+            zikr_id=13,  # الدعوة – تعليم
+            count=entry.people_taught,
+            date=entry.date,
+            timestamp=create_timestamp_from_client(entry.client_timestamp, entry.timezone),
+            edit_notes=[dawa_comment],
+            source="qiyam",
+            prayer_id=f"qiyam_{entry.date}_{entry.verse_number}",
+            rakka=entry.verse_number
+        )
+        
+        await db.zikr_entries.insert_one(dawa_obj.dict())
+    
+    return qiyam_obj
+
+@api_router.put("/qiyam/entry/{entry_id}")
+async def update_qiyam_entry(entry_id: str, update_data: QiyamEntryUpdate):
+    """Update a Qiyam prayer entry and sync with linked entries"""
+    try:
+        # Get existing entry
+        existing_entry = await db.qiyam_entries.find_one({"id": entry_id, "user_id": "default"})
+        if not existing_entry:
+            raise HTTPException(status_code=404, detail="Qiyam entry not found")
+        
+        # Prepare update data
+        update_dict = {}
+        if update_data.verses_count is not None:
+            update_dict["verses_count"] = update_data.verses_count
+        if update_data.understood is not None:
+            update_dict["understood"] = update_data.understood
+        if update_data.made_dua is not None:
+            update_dict["made_dua"] = update_data.made_dua
+        if update_data.practiced is not None:
+            update_dict["practiced"] = update_data.practiced
+        if update_data.taught is not None:
+            update_dict["taught"] = update_data.taught
+        if update_data.people_taught is not None:
+            update_dict["people_taught"] = update_data.people_taught
+        if update_data.teaching_comment is not None:
+            update_dict["teaching_comment"] = update_data.teaching_comment
+        if update_data.notes is not None:
+            update_dict["notes"] = update_data.notes
+            
+        # Update Qiyam entry
+        await db.qiyam_entries.update_one(
+            {"id": entry_id, "user_id": "default"}, 
+            {"$set": update_dict}
+        )
+        
+        # Sync with linked "آيات قرأتها" entry
+        if update_data.verses_count is not None and existing_entry.get("verses_read_entry_id"):
+            await db.zikr_entries.update_one(
+                {"id": existing_entry["verses_read_entry_id"], "user_id": "default"},
+                {"$set": {"count": update_data.verses_count}}
+            )
+        
+        return {"message": "Qiyam entry updated successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating entry: {str(e)}")
+
+@api_router.get("/qiyam/history/{date}")
+async def get_qiyam_history(date: str):
+    """Get all Qiyam entries for a specific date"""
+    entries = await db.qiyam_entries.find(
+        {"date": date, "user_id": "default"}
+    ).sort("verse_number", 1).to_list(100)
+    
+    # Convert ObjectId to string for JSON serialization
+    for entry in entries:
+        if "_id" in entry:
+            entry["_id"] = str(entry["_id"])
+    
+    return {"entries": entries}
+
+@api_router.get("/qiyam/stats/{date}")
+async def get_qiyam_stats(date: str):
+    """Get Qiyam statistics for a specific date"""
+    entries = await db.qiyam_entries.find(
+        {"date": date, "user_id": "default"}
+    ).to_list(100)
+    
+    if not entries:
+        return QiyamStats(
+            total_verses=0,
+            total_sessions=0,
+            progress_percentage=0.0,
+            last_entry=None
+        )
+    
+    total_verses = sum(entry["verses_count"] for entry in entries)
+    total_sessions = len(entries)
+    
+    # Calculate progress based on evaluation questions
+    total_questions = len(entries) * 4  # 4 questions per verse
+    answered_yes = 0
+    for entry in entries:
+        if entry.get("understood"):
+            answered_yes += 1
+        if entry.get("made_dua"):
+            answered_yes += 1
+        if entry.get("practiced"):
+            answered_yes += 1
+        if entry.get("taught"):
+            answered_yes += 1
+    
+    progress_percentage = (answered_yes / total_questions * 100) if total_questions > 0 else 0
+    last_entry = max(entries, key=lambda x: x["timestamp"])["timestamp"] if entries else None
+    
+    return QiyamStats(
+        total_verses=total_verses,
+        total_sessions=total_sessions,
+        progress_percentage=round(progress_percentage, 1),
+        last_entry=last_entry
+    )
+
 # Charity endpoints
 @api_router.get("/charities")
 async def get_charity_list():
