@@ -470,11 +470,11 @@ export default function QiyamVerseScreen() {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      {/* Fixed Header - SAME AS PRAYER */}
+      {/* Fixed Header */}
       <View style={styles.header}>
         <View style={styles.headerInfoRow}>
           <Text style={styles.prayerNameText}>القيام</Text>
-          <Text style={[styles.verseHighlight, styles.currentVerseText]}>آية {verseNumber}</Text>
+          <Text style={[styles.verseHighlight, styles.currentVerseText]}>آية {activeVerse.verseNumber}</Text>
           <Text style={styles.dayText}>{new Date(currentDate).toLocaleDateString('en-US', { weekday: 'long' })}</Text>
           <Text style={styles.dateText}>{new Date(currentDate).toLocaleDateString('en-GB')}</Text>
           <View style={styles.progressBarContainer}>
