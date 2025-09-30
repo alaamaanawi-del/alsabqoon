@@ -292,3 +292,114 @@ export async function getCharityRange(startDate: string, endDate: string): Promi
 }> {
   return getJson(`/charities/range/${startDate}/${endDate}`);
 }
+
+// Qiyam Prayer Types
+export interface QiyamEntry {
+  id: string;
+  user_id: string;
+  verse_number: number;
+  verses_count: number;
+  date: string;
+  timestamp: string;
+  input_method: "manual" | "surah_selection";
+  selected_surahs?: number[];
+  surah_names?: string;
+  understood: boolean;
+  made_dua: boolean;
+  practiced: boolean;
+  taught: boolean;
+  people_taught?: number;
+  teaching_comment?: string;
+  notes?: string;
+  verses_read_entry_id?: string;
+}
+
+export interface QiyamStats {
+  total_verses: number;
+  total_sessions: number;
+  progress_percentage: number;
+  last_entry?: string;
+}
+
+export interface SurahWithVerseCount {
+  number: number;
+  nameAr: string;
+  nameEn: string;
+  verse_count: number;
+}
+
+// Qiyam Prayer API Functions
+export async function getSurahsWithVerseCounts(): Promise<SurahWithVerseCount[]> {
+  return getJson<SurahWithVerseCount[]>("/quran/surahs-with-counts");
+}
+
+export async function createQiyamEntry(
+  verseNumber: number,
+  versesCount: number,
+  date: string,
+  inputMethod: "manual" | "surah_selection",
+  selectedSurahs?: number[],
+  understood: boolean = false,
+  madeDua: boolean = false,
+  practiced: boolean = false,
+  taught: boolean = false,
+  peopleTaught?: number,
+  teachingComment?: string,
+  notes?: string
+): Promise<QiyamEntry> {
+  return postJson<QiyamEntry>("/qiyam/entry", {
+    verse_number: verseNumber,
+    verses_count: versesCount,
+    date: date,
+    input_method: inputMethod,
+    selected_surahs: selectedSurahs || [],
+    understood: understood,
+    made_dua: madeDua,
+    practiced: practiced,
+    taught: taught,
+    people_taught: peopleTaught || 0,
+    teaching_comment: teachingComment || "",
+    notes: notes || "",
+    timezone: getDeviceTimezone(),
+    client_timestamp: getCurrentLocalTimestamp(),
+  });
+}
+
+export async function updateQiyamEntry(
+  entryId: string,
+  versesCount?: number,
+  understood?: boolean,
+  madeDua?: boolean,
+  practiced?: boolean,
+  taught?: boolean,
+  peopleTaught?: number,
+  teachingComment?: string,
+  notes?: string
+): Promise<{ message: string }> {
+  const res = await fetch(api(`/qiyam/entry/${entryId}`), {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      verses_count: versesCount,
+      understood: understood,
+      made_dua: madeDua,
+      practiced: practiced,
+      taught: taught,
+      people_taught: peopleTaught,
+      teaching_comment: teachingComment,
+      notes: notes,
+      timezone: getDeviceTimezone(),
+      client_timestamp: getCurrentLocalTimestamp(),
+    }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return (await res.json()) as { message: string };
+}
+
+export async function getQiyamHistory(date: string): Promise<{ entries: QiyamEntry[] }> {
+  return getJson<{ entries: QiyamEntry[] }>(`/qiyam/history/${date}`);
+}
+
+export async function getQiyamStats(date: string): Promise<QiyamStats> {
+  return getJson<QiyamStats>(`/qiyam/stats/${date}`);
+}
