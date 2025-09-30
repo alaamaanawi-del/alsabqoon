@@ -106,6 +106,15 @@ export default function QiyamVerseScreen() {
   const [qiyamHistory, setQiyamHistory] = useState<QiyamEntry[]>([]);
   const [currentEntry, setCurrentEntry] = useState<QiyamEntry | null>(null);
   
+  // Search and selection state - SAME AS PRAYER RECORD
+  const [query, setQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showSurahSelector, setShowSurahSelector] = useState(false);
+  const [showSuraViewer, setShowSuraViewer] = useState(false);
+  const [selectedSura, setSelectedSura] = useState<{ number: number; nameAr: string; nameEn: string; initialVerse: number } | null>(null);
+  const [selectedVerses, setSelectedVerses] = useState<any[]>([]);
+  
   // Input method state (manual vs surah selection)
   const [inputMethod, setInputMethod] = useState<'manual' | 'surah_selection'>('manual');
   const [manualVersesCount, setManualVersesCount] = useState('');
