@@ -394,28 +394,10 @@ export default function QiyamVerseScreen() {
       }
 
       showToast('تم حفظ الآية بنجاح');
-      // Navigate to next verse with clean state
-      const nextVerse = verseNumber + 1;
-      router.replace({
-        pathname: '/(drawer)/qiyam/verse',
-        params: { date: currentDate, verse: nextVerse.toString() }
-      });
       
-      // Clear all form data for fresh start
-      setInputMethod('manual');
-      setManualVersesCount('');
-      setSelectedSurahs([]);
-      setQuestions({
-        understood: false,
-        made_dua: false,
-        practiced: false,
-        taught: false,
-      });
-      setTaughtCount(0);
-      setTeachingComment('');
-      setNotes('');
-      setSelectedVerses([]);
-      setQuery('');
+      // Navigate to next verse - state will be cleared automatically by useEffect
+      const nextVerse = verseNumber + 1;
+      navigateToVerse(nextVerse);
       
     } catch (error) {
       console.error('Error saving Qiyam entry:', error);
