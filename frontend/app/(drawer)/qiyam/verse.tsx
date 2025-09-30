@@ -151,58 +151,49 @@ export default function QiyamVerseScreen() {
 
   const activeVerse = verses[activeIndex];
 
-  // Load data with proper cleanup
+  // Load initial data
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         
-        // Clear all form data first to prevent state leakage
-        setInputMethod('manual');
-        setManualVersesCount('');
-        setSelectedSurahs([]);
-        setQuestions({
-          understood: false,
-          made_dua: false,
-          practiced: false,
-          taught: false,
-        });
-        setTaughtCount(0);
-        setTeachingComment('');
-        setNotes('');
-        setSelectedVerses([]);
-        setQuery('');
-        setCurrentEntry(null);
-        
         // Load surahs with verse counts
         const surahsData = await getSurahsWithVerseCounts();
         setSurahs(surahsData);
         
-        // Load Qiyam history for this specific date
+        // Load Qiyam history for this date
         const historyResponse = await getQiyamHistory(currentDate);
-        setQiyamHistory(historyResponse.entries || []);
+        const qiyamEntries = historyResponse.entries || [];
         
-        // Find current entry for this specific verse and date
-        const existing = (historyResponse.entries || []).find(e => 
-          e.verse_number === verseNumber && e.date === currentDate
-        );
-        
-        if (existing) {
-          // Only load data if entry exists for this specific verse and date
-          setCurrentEntry(existing);
-          setInputMethod(existing.input_method);
-          setManualVersesCount(existing.verses_count.toString());
-          setSelectedSurahs(existing.selected_surahs || []);
-          setQuestions({
-            understood: existing.understood,
-            made_dua: existing.made_dua,
-            practiced: existing.practiced,
-            taught: existing.taught,
+        // Convert to verses array
+        const versesArray: QiyamVerse[] = [];
+        for (let i = 1; i <= Math.max(currentVerseNumber, qiyamEntries.length + 1); i++) {
+          const existingEntry = qiyamEntries.find(e => e.verse_number === i);
+          
+          versesArray.push({
+            verseNumber: i,
+            numberOfVerses: existingEntry?.verses_count || 0,
+            inputMethod: existingEntry?.input_method || 'manual',
+            selectedSurahs: existingEntry?.selected_surahs || [],
+            understood: existingEntry?.understood || false,
+            made_dua: existingEntry?.made_dua || false,
+            practiced: existingEntry?.practiced || false,
+            taught: existingEntry?.taught || false,
+            people_taught: existingEntry?.people_taught || 0,
+            teaching_comment: existingEntry?.teaching_comment || '',
+            notes: existingEntry?.notes || '',
+            ranges: [],
+            taskMarked: {
+              understood: false,
+              made_dua: false,
+              practiced: false,
+              taught: false,
+            }
           });
-          setTaughtCount(existing.people_taught || 0);
-          setTeachingComment(existing.teaching_comment || '');
-          setNotes(existing.notes || '');
         }
+        
+        setVerses(versesArray);
+        setActiveIndex(currentVerseNumber - 1);
         
       } catch (error) {
         console.error('Error loading Qiyam data:', error);
@@ -212,7 +203,7 @@ export default function QiyamVerseScreen() {
     };
     
     loadData();
-  }, [currentDate, verseNumber]); // Reload when date OR verse changes
+  }, [currentDate, currentVerseNumber]);
 
   // Calculate total verses when surahs are selected
   const totalVersesFromSurahs = useMemo(() => {
