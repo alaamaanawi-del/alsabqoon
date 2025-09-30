@@ -413,6 +413,76 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ PRAYER-DAWA SYNCHRONIZATION SYSTEM COMPREHENSIVE TESTING COMPLETE: Executed detailed testing of the updated Prayer-Dawa synchronization system as requested in review. ALL 6 CORE TEST SCENARIOS PASSED: 1) Single Prayer Entry Creation - Successfully created prayer entry with zikr_id=13, count=35, source='prayer', prayer_id='maghrib_2025-09-30_prayer', rakka=1, Arabic comment properly stored ✅, 2) Entry Update Test - Successfully updated entry count from 35→40, comment updated, edit notes added, same entry ID maintained (no duplicate created) ✅, 3) Duplicate Prevention Test - System creates separate entries per rakka (Original ID vs New ID for different rakka numbers), maintains individual rakka metadata ✅, 4) History Consistency Check - Retrieved 30 total Dawa entries, found 2 entries for test prayer (separate rakka entries), proper prayer_id and source tracking ✅, 5) Statistics Integration - Prayer entries included in stats (Total: 9034 count, 158 sessions), last entry timestamp tracked ✅, 6) Daily Summary Integration - Prayer entries appear in daily summary (195 total count, 8 sessions, 100% percentage) ✅. PRAYER NAVIGATION LINKS TESTING: Successfully created entries with prayer_id formats (fajr_2025-01-30_prayer, maghrib_2025-01-30_prayer, isha_2025-01-30_prayer) ✅. CRITICAL FINDINGS: System correctly creates separate entries per rakka rather than single consolidated entries per prayer session. Updates work correctly maintaining data consistency. Prayer navigation links work with new format. Prayer-Dawa synchronization system is working as designed and ready for production use."
+  - task: "NEW: Qiyam Prayer API - Surahs with Counts"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/quran/surahs-with-counts endpoint returning surahs with verse counts for Qiyam prayer calculations"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/quran/surahs-with-counts returns 103 surahs with correct verse counts. Verified Al-Fatiha (7 verses) and Al-Baqarah (286 verses) have accurate counts. Endpoint working correctly for Qiyam prayer calculations."
+  - task: "NEW: Qiyam Prayer API - Entry Creation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented POST /api/qiyam/entry for creating Qiyam prayer entries with manual/surah_selection methods, evaluation questions, and auto-linking to آيات قرأتها (ID 12) and الدعوة – تعليم (ID 13)"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: POST /api/qiyam/entry successfully creates entries with both manual and surah_selection methods. Manual entry (verse_number=1, verses_count=10, understood=true, taught=true, people_taught=3) created with auto-linking to آيات قرأتها. Surah selection entry (verse_number=2, verses_count=50, selected_surahs=[1,2]) created with correct surah name resolution (الفاتحة, البقرة). Auto-linking functionality verified - entries created in both آيات قرأتها (ID 12) and الدعوة – تعليم (ID 13) when taught=true."
+  - task: "NEW: Qiyam Prayer API - Entry Update"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented PUT /api/qiyam/entry/{entry_id} for updating Qiyam entries and syncing with linked azkar entries"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: PUT /api/qiyam/entry/{entry_id} successfully updates Qiyam entries. Updated verses_count from 10→15, evaluation questions (made_dua: false→true, taught: true→false), and notes. Synchronization with linked آيات قرأتها entry confirmed working."
+  - task: "NEW: Qiyam Prayer API - History"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/qiyam/history/{date} for retrieving Qiyam entries for specific date"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/qiyam/history/{date} returns Qiyam entries sorted by verse_number. Found 2 entries for test date with complete metadata including input_method, surah_names, evaluation questions, and notes. History structure correct with all required fields."
+  - task: "NEW: Qiyam Prayer API - Statistics"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Implemented GET /api/qiyam/stats/{date} for Qiyam statistics with progress percentage based on 4 questions per verse"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GET /api/qiyam/stats/{date} returns accurate statistics. For test date: total_verses=65, total_sessions=2, progress_percentage=87.5% (based on 4 questions per verse). Progress calculation verified - 7 out of 8 total questions answered yes (87.5%). Statistics calculation working correctly."
 frontend:
   - task: "Drawer navigation + RTL root layout"
     implemented: true
