@@ -456,8 +456,16 @@ export default function QiyamVerseScreen() {
     );
   }
 
+  if (!activeVerse) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>جاري التحميل...</Text>
+      </View>
+    );
+  }
+
   // Calculate progress
-  const questionsAnswered = Object.values(questions).filter(Boolean).length;
+  const questionsAnswered = [activeVerse.understood, activeVerse.made_dua, activeVerse.practiced, activeVerse.taught].filter(Boolean).length;
   const progress = Math.round((questionsAnswered / 4) * 100);
 
   return (
