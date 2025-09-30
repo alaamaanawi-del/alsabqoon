@@ -626,37 +626,37 @@ export default function QiyamVerseScreen() {
           />
         </View>
 
-        {/* Questions Section - EXACTLY THE SAME AS PRAYER */}
+        {/* Questions Section */}
         <View style={styles.questionsSection}>
           <QuestionRow
             label="هل فهمت الآيات؟"
-            value={questions.understood}
+            value={activeVerse.understood}
             onToggle={() => toggleQuestion('understood')}
-            taskOn={addToTask.understood}
+            taskOn={activeVerse.taskMarked.understood}
             onTask={() => toggleTask('understood')}
           />
 
           <QuestionRow
             label="الدعاء المتعلق بالآيات."
-            value={questions.made_dua}
+            value={activeVerse.made_dua}
             onToggle={() => toggleQuestion('made_dua')}
-            taskOn={addToTask.made_dua}
+            taskOn={activeVerse.taskMarked.made_dua}
             onTask={() => toggleTask('made_dua')}
           />
 
           <QuestionRow
             label="هل اتبعت الآيات؟"
-            value={questions.practiced}
+            value={activeVerse.practiced}
             onToggle={() => toggleQuestion('practiced')}
-            taskOn={addToTask.practiced}
+            taskOn={activeVerse.taskMarked.practiced}
             onTask={() => toggleTask('practiced')}
           />
 
           <QuestionRow
             label="هل علمت الآيات؟"
-            value={questions.taught}
+            value={activeVerse.taught}
             onToggle={() => toggleQuestion('taught')}
-            taskOn={addToTask.taught}
+            taskOn={activeVerse.taskMarked.taught}
             onTask={() => toggleTask('taught')}
           />
 
