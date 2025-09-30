@@ -347,7 +347,7 @@ export default function QiyamVerseScreen() {
         showToast('تم حفظ الآية بنجاح');
       }
 
-      // Navigate to prayers list
+      // Navigate back to prayers list, not main app
       router.push('/(drawer)/my-prayers');
     } catch (error) {
       console.error('Error saving Qiyam entry:', error);
