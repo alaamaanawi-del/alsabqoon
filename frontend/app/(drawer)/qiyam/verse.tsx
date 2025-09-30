@@ -483,32 +483,28 @@ export default function QiyamVerseScreen() {
         </View>
       </View>
 
-      {/* Verse Tabs - UNLIMITED VERSES */}
+      {/* Verse Tabs */}
       <View style={styles.tabsContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.verseTabsContent}>
-          {Array.from({ length: Math.max(qiyamHistory.length + 2, 10) }, (_, i) => {
-            const verseNum = i + 1;
-            const hasEntry = qiyamHistory.some(entry => entry.verse_number === verseNum);
-            return (
-              <TouchableOpacity
-                key={verseNum}
-                style={[
-                  styles.verseTab,
-                  verseNum === verseNumber && styles.activeTab,
-                  hasEntry && styles.completedTab
-                ]}
-                onPress={() => navigateToVerse(verseNum)}
-              >
-                <Text style={[
-                  styles.verseTabText,
-                  verseNum === verseNumber && styles.activeTabText,
-                  hasEntry && styles.completedTabText
-                ]}>
-                  آية {verseNum}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+          {verses.map((v, i) => (
+            <TouchableOpacity
+              key={v.verseNumber}
+              style={[
+                styles.verseTab,
+                i === activeIndex && styles.activeTab,
+                v.numberOfVerses > 0 && styles.completedTab
+              ]}
+              onPress={() => navigateToVerse(v.verseNumber)}
+            >
+              <Text style={[
+                styles.verseTabText,
+                i === activeIndex && styles.activeTabText,
+                v.numberOfVerses > 0 && styles.completedTabText
+              ]}>
+                آية {v.verseNumber}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
 
