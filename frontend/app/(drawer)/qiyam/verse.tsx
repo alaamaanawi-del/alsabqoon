@@ -526,18 +526,18 @@ export default function QiyamVerseScreen() {
         )}
 
         {/* Verse Count Input - ONLY ON VERSE 1 */}
-        {verseNumber === 1 && (
+        {activeVerse.verseNumber === 1 && (
           <View style={styles.inputSection}>
             <Text style={styles.sectionTitle}>عدد الآيات التي قرأتها في صلاة القيام</Text>
             
             {/* Show current totals in header */}
             <View style={styles.totalsHeader}>
               <Text style={styles.totalVersesHeaderText}>
-                إجمالي الآيات: {finalVersesCount}
+                إجمالي الآيات: {activeVerse.numberOfVerses}
               </Text>
-              {inputMethod === 'surah_selection' && selectedSurahs.length > 0 && (
+              {activeVerse.inputMethod === 'surah_selection' && activeVerse.selectedSurahs.length > 0 && (
                 <Text style={styles.totalSurahsText}>
-                  عدد السور: {selectedSurahs.length}
+                  عدد السور: {activeVerse.selectedSurahs.length}
                 </Text>
               )}
             </View>
@@ -546,28 +546,26 @@ export default function QiyamVerseScreen() {
             <View style={styles.inputMethodTabs}>
               <TabBtn
                 label="ادخل العدد"
-                active={inputMethod === 'manual'}
+                active={activeVerse.inputMethod === 'manual'}
                 onPress={() => {
-                  setInputMethod('manual');
-                  setSelectedSurahs([]);
+                  updateActiveVerse({ inputMethod: 'manual', selectedSurahs: [] });
                 }}
               />
               <TabBtn
                 label="اختر السور التي قرأت"
-                active={inputMethod === 'surah_selection'}
+                active={activeVerse.inputMethod === 'surah_selection'}
                 onPress={() => {
-                  setInputMethod('surah_selection');
-                  setManualVersesCount('');
+                  updateActiveVerse({ inputMethod: 'surah_selection', numberOfVerses: 0 });
                 }}
               />
             </View>
 
-            {inputMethod === 'manual' ? (
+            {activeVerse.inputMethod === 'manual' ? (
               <View style={styles.manualInputSection}>
                 <TextInput
                   style={styles.versesInput}
-                  value={manualVersesCount}
-                  onChangeText={setManualVersesCount}
+                  value={activeVerse.numberOfVerses.toString()}
+                  onChangeText={(text) => updateActiveVerse({ numberOfVerses: parseInt(text) || 0 })}
                   placeholder="أدخل عدد الآيات"
                   placeholderTextColor="#888"
                   keyboardType="number-pad"
@@ -586,17 +584,17 @@ export default function QiyamVerseScreen() {
                       key={surah.number}
                       style={[
                         styles.surahItem,
-                        selectedSurahs.includes(surah.number) && styles.surahItemSelected
+                        activeVerse.selectedSurahs.includes(surah.number) && styles.surahItemSelected
                       ]}
                       onPress={() => handleSurahToggle(surah.number)}
                     >
                       <Text style={[
                         styles.surahText,
-                        selectedSurahs.includes(surah.number) && styles.surahTextSelected
+                        activeVerse.selectedSurahs.includes(surah.number) && styles.surahTextSelected
                       ]}>
                         {surah.nameAr} ({surah.verse_count} آية)
                       </Text>
-                      {selectedSurahs.includes(surah.number) && (
+                      {activeVerse.selectedSurahs.includes(surah.number) && (
                         <Text style={styles.checkmark}>✓</Text>
                       )}
                     </TouchableOpacity>
