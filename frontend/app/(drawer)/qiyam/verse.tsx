@@ -893,6 +893,25 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
   },
+  totalsHeader: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    padding: 8,
+    backgroundColor: 'rgba(244, 189, 36, 0.2)',
+    borderRadius: 8,
+  },
+  totalVersesHeaderText: {
+    color: Colors.warmOrange,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  totalSurahsText: {
+    color: Colors.warmOrange,
+    fontSize: 14,
+    fontWeight: '600',
+  },
   sectionTitle: {
     color: Colors.warmOrange,
     fontSize: 16,
