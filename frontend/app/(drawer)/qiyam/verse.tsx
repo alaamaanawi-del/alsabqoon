@@ -718,11 +718,7 @@ export default function QiyamVerseScreen() {
         visible={showSearchModal}
         results={searchResults}
         onClose={() => setShowSearchModal(false)}
-        onSelectResult={(result) => {
-          // Handle search result selection
-          setShowSearchModal(false);
-          setQuery('');
-        }}
+        onSelectResult={handleSearchResultSelect}
       />
 
       {/* Surah Selector Modal - SAME AS PRAYER */}
